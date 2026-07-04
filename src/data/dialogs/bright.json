@@ -1,0 +1,17 @@
+{
+  "npcId": "bright",
+  "displayName": "Captain Hosea Bright",
+  "greeting": "The wagon master looks up from a manifest longer than a psalm. \"Bright. If you can drive, lift, or shoot, I can use you. If you can do all three I can love you.\"",
+  "shrug": "\"Not on my manifest.\"",
+  "deflect": "\"Some roads I do not talk about with men I have not shared weather with.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Hosea Bright, captain of the westward trains. Twenty two crossings of the mountains and every wagon accounted for.\" The pause after it is very small and very deep." },
+    { "keyword": "JOB", "gate": "open", "text": "\"I take freight and families over the spine of this country and bring the wagons back for more. The TOWN eats because the trains run.\"" },
+    {
+      "keyword": "ROAD", "gate": "trust", "npc": "bright", "min": 2,
+      "deflect": "\"Braddock's Road is bad grades and worse memory. We run it in daylight and good company. That is all the answer the road deserves.\"",
+      "text": "He caps his ink. \"You have shared weather with me now, so. Braddock's Road, west of the Narrows, there is a mile I do not run after dark, and I tell the men it is the grade.\" He looks at his own hands. \"It is not the grade. I lost a man out there once, and the ledger says a storm took him, and the ledger is in my handwriting.\" He opens the manifest again. \"That is all tonight.\"",
+      "sets": { "brightOpened": true }
+    }
+  ]
+}

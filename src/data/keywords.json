@@ -1,0 +1,59 @@
+{
+  "tier1": [
+    "NAME",
+    "JOB",
+    "TOWN",
+    "FORT",
+    "MOUNTAIN",
+    "CREEK",
+    "QUARRY",
+    "ROAD"
+  ],
+  "tier2": [
+    "TAM",
+    "DROWNED",
+    "SINGING",
+    "PLAT",
+    "SURVEY",
+    "LEDGER",
+    "PAPER",
+    "GENTLEMAN",
+    "GRAVES",
+    "LIST",
+    "MEASURES",
+    "BOOTS"
+  ],
+  "tier3": [
+    "SEEN",
+    "MURMUR",
+    "HEX",
+    "SALT",
+    "WARD",
+    "WINONA",
+    "LEAP",
+    "SPRING",
+    "RITUAL",
+    "CROSSED",
+    "KEYS",
+    "1755",
+    "ELEVEN"
+  ],
+  "tier4": [
+    "WHISKEY",
+    "STILL",
+    "EXCISE",
+    "FREIGHT",
+    "FERRY",
+    "NIGHT",
+    "PAPERS",
+    "REVIVAL",
+    "BOUNTY"
+  ],
+  "tier5": [
+    "TOKEN",
+    "SEAM",
+    "GARRISON",
+    "PRYOR",
+    "NAN"
+  ]
+}

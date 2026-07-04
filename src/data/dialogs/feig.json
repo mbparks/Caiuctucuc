@@ -1,0 +1,18 @@
+{
+  "npcId": "feig",
+  "displayName": "Gunther Feig",
+  "greeting": "The hammer finishes its thought before the smith gives you his eyes. \"So. You need mending, making, or asking. Which.\"",
+  "shrug": "\"Ask the tavern. Iron I know. The rest is smoke.\"",
+  "deflect": "\"That I do not discuss with strangers. Bring me work first. Work is how a man introduces himself.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Feig. Gunther Feig. My father smithed in the Palatinate, I smith here. The anvil does not care which king taxes it.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Shoes, tires, hinges, and the honest repair of dishonest tools. If it is iron and it is broken, it comes to me eventually. Everything does.\"" },
+    { "keyword": "HEX", "gate": "open", "text": "\"You have seen the signs on the barns. My grandmother painted them. City men laugh. My grandmother buried three of the men who laughed, of old age, while their barns burned young.\"" },
+    {
+      "keyword": "IRON", "gate": "trust", "npc": "feig", "min": 2,
+      "deflect": "\"Iron is iron.\" The hammer starts again, which is the conversation ending.",
+      "text": "The forge pops in the quiet. \"Cold iron, you mean. Worked without fire, the old way. I did it once, for a man who paid triple and asked for no receipt.\" He wipes his hands slowly. \"He was dead inside the season. The blade was not on him when they found him. You want to ask where it went. So do I.\"",
+      "sets": { "knowsColdIron": true }
+    }
+  ]
+}

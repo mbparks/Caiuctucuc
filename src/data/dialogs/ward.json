@@ -1,0 +1,19 @@
+{
+  "npcId": "ward",
+  "displayName": "Dr. Silas Ward",
+  "greeting": "The doctor does not look up from his mortar at first. \"Sit if you are bleeding. Speak if you are not. I can attend to one of you at a time.\"",
+  "shrug": "\"Outside my practice, which is bodies and what troubles them.\"",
+  "deflect": "\"A physician keeps confidences. It is most of the job.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Silas Ward, doctor of physic, Edinburgh trained, Cumberland resigned. The TOWN and I have an understanding: it keeps hurting itself, I keep charging.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Fevers, fractures, teeth when the smith is busy. And I compound my own remedies, which is why my patients live and my prices sting.\"" },
+    { "keyword": "DROWNED", "gate": "open", "text": "\"A drowning is water in the lungs, and I report what I find. What I found, I reported.\" His pestle grinds a little faster. \"Boots dry as a sermon. I reported that too. Nobody thanked me.\"" },
+    { "keyword": "LAUDANUM", "gate": "open", "text": "\"A mercy in measured drops and a thief in bottles. I measure carefully. For everyone in my care, I measure very carefully.\"" },
+    {
+      "keyword": "WARD", "gate": "sight", "min": 2,
+      "deflect": "\"My name, sir. Wear it out and buy another.\"",
+      "text": "He sets the pestle down entirely. \"A ward. Yes. You have learned to hear the pun, which means you have learned other things.\" A long look at the locked cabinet. \"Some patients must be kept from what they see, friend. You may judge me when you have sat up nights with one of them.\"",
+      "sets": { "wardCracked": true }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "npcId": "cresap",
+  "displayName": "Magistrate Ezekiel Cresap",
+  "greeting": "The magistrate weighs you like produce. \"State your business or state your name. Either way, be brief. The wagon season waits for no man's troubles.\"",
+  "shrug": "\"Not a matter for this office.\"",
+  "deflect": "\"You mistake me for a man with time.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Cresap. Magistrate. The name has been on this river longer than the town has, and it intends to stay.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I keep the docket short and the wagons moving. Fines, writs, licenses. A town runs on paper, whatever the ROAD men tell you.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"Prospering, and it will keep prospering so long as nobody frightens the freight. Remember I said that.\"" },
+    { "keyword": "QUARRY", "gate": "open", "text": "\"McTeague's stone pays half this town's wages. I will thank you not to repeat tavern talk about it in my hearing.\"" },
+    {
+      "keyword": "LEDGER", "gate": "flag", "flag": "WARRANT",
+      "deflect": "\"The court's records are the clerk's business, and the clerk keeps hours. So do I.\"",
+      "text": "His pen stops. \"There are ledgers and ledgers, friend. The one you mean is not in this building, and if you know that much, then you and I should speak carefully, and not here.\"",
+      "sets": { "cresapRattled": true }
+    }
+  ]
+}

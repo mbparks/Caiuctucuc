@@ -1,0 +1,18 @@
+{
+  "npcId": "coombs",
+  "displayName": "Ezra Coombs",
+  "greeting": "The gravedigger leans on his spade like it is furniture. \"Evening. Or morning. In my trade the difference is mostly who is watching.\"",
+  "shrug": "\"Under my notice, and my notice starts six feet down.\"",
+  "deflect": "\"Some holes I dig and some I keep. You are asking after the kept kind.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Ezra Coombs, sexton and digger. Third generation. The dead of this town have had a Coombs see them down since before the war.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Digging, filling, keeping the yard tidy, tolling the bell. Quiet work. The customers never complain, and the complaints never stop coming.\"" },
+    { "keyword": "FORT", "gate": "open", "text": "\"Old ground up there. Older than the yard. My grandfather said never dig north of the fort fence, and he was not a man for saying things twice.\"" },
+    {
+      "keyword": "GRAVES", "gate": "trust", "npc": "coombs", "min": 2,
+      "deflect": "\"Full of dead folk, mostly.\" He grins with more gaps than teeth. \"Mostly.\"",
+      "text": "He checks the lane both ways. \"You have counted, then, or you have guessed. Aye, a few of my graves are lighter than the register says. And before you look at me sideways, the Philadelphia man pays for fresh, and these were empty when I opened them. Empty and tidy.\" He spits. \"Somebody is withdrawing, friend, and it is not me, and they do not use a spade.\"",
+      "sets": { "coombsShared": true }
+    }
+  ]
+}

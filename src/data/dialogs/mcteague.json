@@ -1,0 +1,19 @@
+{
+  "npcId": "mcteague",
+  "displayName": "Duncan McTeague",
+  "greeting": "The foreman's handshake is a rock slide that stops just short. \"McTeague. If you are after wages, we are hiring. If you are after gossip, we are not.\"",
+  "shrug": "\"Above my pay, and I set the pay.\"",
+  "deflect": "\"Quarry business stays on the quarry. That is not secrecy, that is management.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Duncan McTeague. Foreman of the workings. I have broken stone on two continents and this mountain pays best and sleeps worst.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I keep forty men cutting and none of them dead, which lately is the whole of the job description.\"" },
+    { "keyword": "QUARRY", "gate": "open", "text": "\"Good stone, fair wages, honest work.\" He says it like a man reciting. \"The men have been odd about the deep cut. Men get odd. Stone does not.\"" },
+    {
+      "keyword": "SINGING", "gate": "trust", "npc": "mcteague", "min": 1,
+      "deflect": "\"Who told you that word?\" He looks at you too long. \"Drunk talk. My men drink. Good day.\"",
+      "text": "He pulls you out of the wind first, which is not a thing he does. \"Aye. Singing. Low, like a saw through wet pine, coming up out of the deep cut where no man was working.\" His jaw sets. \"Tam Hollis went down to listen on his own hour. You know how Tam came back.\" He looks at the mountain. \"I ordered past the line because the line was wrong on the plat. That is what I told myself. You write that down wherever you are writing things.\"",
+      "sets": { "mcteagueConfessed": true },
+      "teaches": ["TAM", "PLAT"]
+    }
+  ]
+}

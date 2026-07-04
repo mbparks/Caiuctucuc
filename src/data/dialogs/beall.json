@@ -1,0 +1,32 @@
+{
+  "npcId": "beall",
+  "displayName": "Constable Amos Beall",
+  "greeting": "The constable takes your measure the way a carpenter takes a doorframe. \"New face. Keep it clean and we will get along.\"",
+  "shrug": "\"Not my department, and half of what is my department is not either.\"",
+  "deflect": "\"Some questions want a warmer acquaintance. Or a colder evening.\"",
+  "entries": [
+    {
+      "keyword": "NAME",
+      "gate": "open",
+      "text": "\"Beall. Constable of this district since before you were weaned, most like. The TOWN behaves, mostly, and I intend it keeps the habit.\""
+    },
+    {
+      "keyword": "JOB",
+      "gate": "open",
+      "text": "\"I keep the peace. The peace does not always care to be kept, but we have an arrangement.\""
+    },
+    {
+      "keyword": "FORT",
+      "gate": "open",
+      "text": "A pause you could park a wagon in. \"Ruins. Nothing up there but weather and rubbish.\" His hand finds his flask pocket without being asked."
+    },
+    {
+      "keyword": "SEEN",
+      "gate": "trust",
+      "npc": "beall",
+      "min": 2,
+      "deflect": "\"Careful with that word, stranger. It opens more than it asks.\"",
+      "text": "\"You want to know what I have seen.\" He looks up the hill a long moment. \"Buy me nothing tonight. Walk with me at dusk sometime, by the fort fence, and maybe I will tell you why I drink.\""
+    }
+  ]
+}

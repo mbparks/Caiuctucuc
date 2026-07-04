@@ -1,0 +1,363 @@
+{
+ "flintlock_pistol": {
+  "name": "flintlock pistol",
+  "category": "weapon",
+  "price": 12,
+  "condition": true,
+  "slot": "weapon"
+ },
+ "fowling_piece": {
+  "name": "fowling piece",
+  "category": "weapon",
+  "price": 10,
+  "condition": true,
+  "slot": "weapon"
+ },
+ "pennsylvania_rifle": {
+  "name": "Pennsylvania rifle",
+  "category": "weapon",
+  "price": 22,
+  "condition": true,
+  "slot": "weapon"
+ },
+ "belt_knife": {
+  "name": "belt knife",
+  "category": "tool",
+  "price": 3,
+  "condition": true,
+  "slot": "weapon"
+ },
+ "tomahawk": {
+  "name": "tomahawk",
+  "category": "weapon",
+  "price": 5,
+  "condition": true,
+  "slot": "weapon"
+ },
+ "cudgel": {
+  "name": "walking stick",
+  "category": "weapon",
+  "price": 1,
+  "condition": true,
+  "slot": "weapon"
+ },
+ "silvered_blade": {
+  "name": "silvered blade",
+  "category": "weapon",
+  "price": 0,
+  "condition": true,
+  "slot": "weapon",
+  "quest": true
+ },
+ "surveyors_compass": {
+  "name": "surveyor's compass",
+  "category": "tool",
+  "price": 15,
+  "condition": true
+ },
+ "fishing_line": {
+  "name": "fishing line",
+  "category": "tool",
+  "price": 1,
+  "condition": true
+ },
+ "lockpicks": {
+  "name": "bent awl picks",
+  "category": "tool",
+  "price": 4,
+  "condition": true
+ },
+ "drover_duster": {
+  "name": "drover's duster",
+  "category": "coat",
+  "price": 4,
+  "slot": "coat",
+  "coat": "drover"
+ },
+ "gentleman_frock": {
+  "name": "gentleman's frock",
+  "category": "coat",
+  "price": 9,
+  "slot": "coat",
+  "coat": "frock"
+ },
+ "preacher_black": {
+  "name": "preacher's black",
+  "category": "coat",
+  "price": 7,
+  "slot": "coat",
+  "coat": "preacher"
+ },
+ "trade_smock": {
+  "name": "trade smock",
+  "category": "coat",
+  "price": 3,
+  "slot": "coat",
+  "coat": "drover"
+ },
+ "militia_coat": {
+  "name": "militia coat",
+  "category": "coat",
+  "price": 0,
+  "slot": "coat",
+  "coat": "frock",
+  "quest": true
+ },
+ "tricorn": {
+  "name": "tricorn",
+  "category": "hat",
+  "price": 3,
+  "slot": "hat"
+ },
+ "slouch_hat": {
+  "name": "slouch hat",
+  "category": "hat",
+  "price": 2,
+  "slot": "hat"
+ },
+ "clergy_hat": {
+  "name": "clergy hat",
+  "category": "hat",
+  "price": 3,
+  "slot": "hat"
+ },
+ "fur_cap": {
+  "name": "fur cap",
+  "category": "hat",
+  "price": 4,
+  "slot": "hat"
+ },
+ "riding_boots": {
+  "name": "riding boots",
+  "category": "boots",
+  "price": 5,
+  "slot": "boots"
+ },
+ "moccasins": {
+  "name": "moccasins",
+  "category": "boots",
+  "price": 4,
+  "slot": "boots"
+ },
+ "work_boots": {
+  "name": "work boots",
+  "category": "boots",
+  "price": 3,
+  "slot": "boots"
+ },
+ "johnnycake": {
+  "name": "johnnycake",
+  "category": "food",
+  "price": 1,
+  "consume": "You eat the johnnycake. Plain and honest."
+ },
+ "salt_pork": {
+  "name": "salt pork",
+  "category": "food",
+  "price": 1,
+  "consume": "Salty, chewy, sustaining."
+ },
+ "stew": {
+  "name": "stew",
+  "category": "food",
+  "price": 2,
+  "consume": "Hot stew. The day improves."
+ },
+ "apple_brandy": {
+  "name": "apple brandy",
+  "category": "drink",
+  "price": 2,
+  "consume": "Warmth spreads from the middle out."
+ },
+ "whiskey": {
+  "name": "whiskey",
+  "category": "drink",
+  "price": 2,
+  "consume": "Rough as a towpath and twice as useful.",
+  "currency": true
+ },
+ "poultice": {
+  "name": "poultice",
+  "category": "remedy",
+  "price": 3,
+  "consume": "You bind the poultice on. It draws the ache."
+ },
+ "tonic": {
+  "name": "tonic",
+  "category": "remedy",
+  "price": 3,
+  "consume": "Bitter, then bracing."
+ },
+ "laudanum": {
+  "name": "laudanum",
+  "category": "remedy",
+  "price": 5,
+  "consume": "The edges of everything go soft.",
+  "quest": true
+ },
+ "coffee": {
+  "name": "coffee",
+  "category": "drink",
+  "price": 1,
+  "consume": "The fog lifts. All of it."
+ },
+ "tallow_candle": {
+  "name": "tallow candle",
+  "category": "supply",
+  "price": 1
+ },
+ "lantern_oil": {
+  "name": "lantern oil",
+  "category": "supply",
+  "price": 1
+ },
+ "powder_and_shot": {
+  "name": "powder and shot",
+  "category": "supply",
+  "price": 2
+ },
+ "salt_pouch": {
+  "name": "salt pouch",
+  "category": "supply",
+  "price": 1
+ },
+ "dried_sassafras": {
+  "name": "dried sassafras",
+  "category": "supply",
+  "price": 1
+ },
+ "hex_sign": {
+  "name": "hex sign",
+  "category": "ward",
+  "price": 4
+ },
+ "salt_line": {
+  "name": "salt line",
+  "category": "ward",
+  "price": 1
+ },
+ "cold_iron_nail": {
+  "name": "cold iron nail",
+  "category": "ward",
+  "price": 2
+ },
+ "silver_dollar": {
+  "name": "silver dollar",
+  "category": "ward",
+  "price": 8,
+  "currency": true
+ },
+ "witch_bottle": {
+  "name": "witch bottle",
+  "category": "ward",
+  "price": 3
+ },
+ "grave_dirt": {
+  "name": "grave dirt",
+  "category": "ward",
+  "price": 1
+ },
+ "rowan_sprig": {
+  "name": "rowan sprig",
+  "category": "ward",
+  "price": 1
+ },
+ "blessed_water": {
+  "name": "blessed water",
+  "category": "ward",
+  "price": 2
+ },
+ "spirit_board_fragment": {
+  "name": "spirit board fragment",
+  "category": "ward",
+  "price": 0,
+  "quest": true
+ },
+ "winona_token": {
+  "name": "the Winona token",
+  "category": "ward",
+  "price": 0,
+  "quest": true
+ },
+ "deed": {
+  "name": "deed",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "letter": {
+  "name": "letter",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "survey_plat": {
+  "name": "survey plat",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "dead_mans_daybook": {
+  "name": "dead man's daybook",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "fort_ledger_pages": {
+  "name": "fort ledger pages",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "keys": {
+  "name": "ring of keys",
+  "category": "tool",
+  "price": 0,
+  "quest": true
+ },
+ "wanted_bill": {
+  "name": "wanted bill",
+  "category": "paper",
+  "price": 0
+ },
+ "wampum_record": {
+  "name": "wampum record",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "anatomy_list": {
+  "name": "anatomy list",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "excise_stamps": {
+  "name": "excise stamps",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "plat_rubbings": {
+  "name": "plat stone rubbings",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "tams_cache_letter": {
+  "name": "Tam's letter",
+  "category": "paper",
+  "price": 0,
+  "quest": true
+ },
+ "whetstone": {
+  "name": "whetstone",
+  "category": "tool",
+  "price": 2
+ },
+ "oil_rag": {
+  "name": "oil rag",
+  "category": "tool",
+  "price": 1
+ }
+}

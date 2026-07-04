@@ -1,0 +1,19 @@
+{
+  "npcId": "shanks",
+  "displayName": "Old Toby Shanks",
+  "greeting": "The ferryman does not stop coiling rope. \"Crossing is a penny, standing there is free, and questions cost according to the question.\"",
+  "shrug": "\"River might know. Ask the river.\"",
+  "deflect": "\"That is night talk, and the sun is a gossip.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Shanks. Toby to the river, Mr. Shanks to the excise, Old Toby to everyone who wants a favor. Pick your rope.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I pole the flat across and back, dawn to dark. The Potomac is the county line, you know. Constables get seasick, I find. Terrible seasick.\"" },
+    { "keyword": "FERRY", "gate": "open", "text": "\"Runs when I run it. Penny a head, two for a horse, and the horse behaves better.\"" },
+    {
+      "keyword": "NIGHT", "gate": "reputation", "faction": "road", "min": 2,
+      "deflect": "\"Ferry keeps daylight hours.\" He looks straight through you. \"Mostly it keeps daylight hours.\"",
+      "text": "The rope stops. \"Night crossings happen. No lantern, no manifest, no memory. Some cargo is people, friend, and some people need the far bank more than the law needs to know about it.\" He starts coiling again. \"You never asked. I never answered. The river never talks.\"",
+      "sets": { "knowsNightRuns": true },
+      "teaches": ["PAPERS"]
+    }
+  ]
+}

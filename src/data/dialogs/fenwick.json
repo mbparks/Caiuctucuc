@@ -1,0 +1,18 @@
+{
+  "npcId": "fenwick",
+  "displayName": "Lyle Fenwick",
+  "greeting": "A neat man in a coat too good for the docks. \"Lyle Fenwick, agent, procurements and forwarding. And you are a person of initiative, I can always tell. Coffee?\"",
+  "shrug": "\"Not my line of goods, though for a finder's consideration, most things can become my line of goods.\"",
+  "deflect": "\"Discretion, friend, is the entire inventory of my firm.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Fenwick. Of the Philadelphia Fenwicks, in the sense that Philadelphia was glad to forward me here.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I procure. Specialized goods for specialized clients, learned men, institutions of science. The frontier is rich in what the academies lack, if one knows where to dig.\" He does not smile at his own joke, which is worse." },
+    {
+      "keyword": "LIST", "gate": "trust", "npc": "fenwick", "min": 2,
+      "deflect": "\"A list implies commitments, and my commitments are between me and my clients. Earn your way into that sentence.\"",
+      "text": "He weighs you, then slides a folded paper halfway across the crate and stops. \"My requirements, current. You will notice the compensation. You may also notice a name upon it that troubles you, and if you do, I advise you to consider that I fill orders, sir. I do not place them.\"",
+      "sets": { "sawTheList": true },
+      "teaches": ["GRAVES"]
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" font-family="Baskerville, 'Palatino Linotype', Georgia, 'Times New Roman', serif">
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.24  0 0 0 0 0.20  0 0 0 0 0.14  0 0 0 0.05 0"/>
+      <feComposite operator="over" in2="SourceGraphic"/>
+    </filter>
+    <!-- hachure comb: short downslope strokes -->
+    <g id="hach">
+      <line x1="0" y1="0" x2="2" y2="13" stroke="#6b5f4b" stroke-width="1.1"/>
+      <line x1="9" y1="1" x2="11" y2="15" stroke="#6b5f4b" stroke-width="1.3"/>
+      <line x1="18" y1="0" x2="20" y2="12" stroke="#6b5f4b" stroke-width="1"/>
+      <line x1="27" y1="1" x2="29" y2="16" stroke="#6b5f4b" stroke-width="1.3"/>
+      <line x1="36" y1="0" x2="38" y2="13" stroke="#6b5f4b" stroke-width="1.1"/>
+      <line x1="45" y1="1" x2="47" y2="14" stroke="#6b5f4b" stroke-width="1.2"/>
+    </g>
+    <g id="hachS"><!-- south-facing comb (strokes downward-left) -->
+      <line x1="2" y1="0" x2="0" y2="13" stroke="#6b5f4b" stroke-width="1.1"/>
+      <line x1="11" y1="1" x2="9" y2="15" stroke="#6b5f4b" stroke-width="1.3"/>
+      <line x1="20" y1="0" x2="18" y2="12" stroke="#6b5f4b" stroke-width="1"/>
+      <line x1="29" y1="1" x2="27" y2="16" stroke="#6b5f4b" stroke-width="1.3"/>
+      <line x1="38" y1="0" x2="36" y2="13" stroke="#6b5f4b" stroke-width="1.1"/>
+      <line x1="47" y1="1" x2="45" y2="14" stroke="#6b5f4b" stroke-width="1.2"/>
+    </g>
+    <g id="tree">
+      <circle cx="0" cy="0" r="3.2" fill="none" stroke="#6b5f4b" stroke-width="0.9"/>
+      <circle cx="4" cy="2" r="2.4" fill="none" stroke="#6b5f4b" stroke-width="0.8"/>
+      <circle cx="-4" cy="2.5" r="2.2" fill="none" stroke="#6b5f4b" stroke-width="0.8"/>
+    </g>
+    <g id="house">
+      <rect x="-4" y="-4" width="8" height="8" fill="#3b3226"/>
+    </g>
+    <g id="houseO">
+      <rect x="-4" y="-4" width="8" height="8" fill="none" stroke="#3b3226" stroke-width="1.4"/>
+    </g>
+  </defs>
+
+  <!-- paper -->
+  <rect x="0" y="0" width="1000" height="1400" fill="#e8dfc8"/>
+  <rect x="0" y="0" width="1000" height="1400" fill="#d9cdae" opacity="0.25" filter="url(#grain)"/>
+
+  <!-- frame: double rule with corner squares -->
+  <rect x="34" y="34" width="932" height="1332" fill="none" stroke="#3b3226" stroke-width="3"/>
+  <rect x="44" y="44" width="912" height="1312" fill="none" stroke="#3b3226" stroke-width="1"/>
+
+  <!-- ===================== TERRAIN ===================== -->
+
+  <!-- Wills Mountain ridge: two crest lines with hachures, broken at the Narrows -->
+  <!-- west ridge (left of the gap) -->
+  <path d="M 60 430 C 130 380 200 330 300 305" fill="none" stroke="#4a3f33" stroke-width="1.6"/>
+  <use href="#hach" transform="translate(70,432) rotate(-24)"/>
+  <use href="#hach" transform="translate(118,406) rotate(-26)"/>
+  <use href="#hach" transform="translate(166,382) rotate(-24)"/>
+  <use href="#hach" transform="translate(214,360) rotate(-18)"/>
+  <use href="#hach" transform="translate(258,344) rotate(-12)"/>
+  <use href="#hachS" transform="translate(64,398) rotate(-206)"/>
+  <use href="#hachS" transform="translate(112,372) rotate(-208)"/>
+  <use href="#hachS" transform="translate(160,348) rotate(-206)"/>
+  <use href="#hachS" transform="translate(208,326) rotate(-200)"/>
+  <use href="#hachS" transform="translate(252,310) rotate(-194)"/>
+  <!-- east ridge (right of the gap) -->
+  <path d="M 372 292 C 470 268 560 240 660 222" fill="none" stroke="#4a3f33" stroke-width="1.6"/>
+  <use href="#hach" transform="translate(378,294) rotate(-14)"/>
+  <use href="#hach" transform="translate(428,282) rotate(-15)"/>
+  <use href="#hach" transform="translate(478,268) rotate(-16)"/>
+  <use href="#hach" transform="translate(528,254) rotate(-15)"/>
+  <use href="#hach" transform="translate(578,240) rotate(-13)"/>
+  <use href="#hach" transform="translate(628,228) rotate(-11)"/>
+  <use href="#hachS" transform="translate(372,258) rotate(-196)"/>
+  <use href="#hachS" transform="translate(422,246) rotate(-197)"/>
+  <use href="#hachS" transform="translate(472,232) rotate(-198)"/>
+  <use href="#hachS" transform="translate(522,218) rotate(-197)"/>
+  <use href="#hachS" transform="translate(572,204) rotate(-195)"/>
+  <text x="360" y="188" font-size="26" letter-spacing="8" fill="#3b3226">WILLS MOUNTAIN</text>
+  <text x="72" y="470" font-size="15" font-style="italic" fill="#4a3f33">Lovers Leap</text>
+  <line x1="140" y1="462" x2="212" y2="404" stroke="#4a3f33" stroke-width="0.8"/>
+  <text x="300" y="352" font-size="16" font-style="italic" letter-spacing="2" fill="#4a3f33">The Narrows</text>
+  <text x="228" y="270" font-size="14" font-style="italic" fill="#4a3f33">cliff caves</text>
+
+  <!-- high hollows and the unsurveyed northwest -->
+  <use href="#tree" transform="translate(96,214)"/>
+  <use href="#tree" transform="translate(130,240)"/>
+  <use href="#tree" transform="translate(84,264)"/>
+  <use href="#tree" transform="translate(158,208)"/>
+  <text x="70" y="152" font-size="17" font-style="italic" letter-spacing="4" fill="#6b5f4b">UNSURVEYED</text>
+  <text x="96" y="300" font-size="14" font-style="italic" fill="#4a3f33">High Hollows</text>
+  <use href="#houseO" transform="translate(150,318)"/>
+  <text x="162" y="323" font-size="13" font-style="italic" fill="#4a3f33">Vachon</text>
+
+  <!-- the quarry on the SE flank -->
+  <path d="M 560 300 l 26 -8 l 10 16 l -30 10 z" fill="none" stroke="#3b3226" stroke-width="1.6"/>
+  <line x1="566" y1="304" x2="590" y2="312" stroke="#3b3226" stroke-width="0.8"/>
+  <line x1="572" y1="298" x2="592" y2="306" stroke="#3b3226" stroke-width="0.8"/>
+  <text x="606" y="300" font-size="15" font-style="italic" fill="#3b3226">S  Quarry</text>
+  <text x="606" y="318" font-size="13" font-style="italic" fill="#4a3f33">the deep cut</text>
+
+  <!-- SIGNATURE: the two plat lines, recorded and as-run, in surveyor's red -->
+  <line x1="520" y1="262" x2="640" y2="352" stroke="#9a4a32" stroke-width="1.8"/>
+  <line x1="530" y1="246" x2="652" y2="336" stroke="#9a4a32" stroke-width="1.2" stroke-dasharray="7 6" opacity="0.75"/>
+  <text x="648" y="356" font-size="13" font-style="italic" fill="#9a4a32">line as recorded</text>
+  <text x="658" y="336" font-size="13" font-style="italic" fill="#9a4a32">line as run, A.C. 1798</text>
+  <text x="648" y="374" font-size="12" font-style="italic" fill="#9a4a32">vide field notes</text>
+
+  <!-- Wills Creek: rises through the Narrows, winds SSE to the Potomac -->
+  <path d="M 336 236 C 342 280 348 320 356 366 C 370 440 396 500 416 552 C 436 606 452 660 458 716 C 464 772 468 830 474 890 C 480 950 490 1020 498 1078"
+        fill="none" stroke="#5d6b63" stroke-width="7" opacity="0.9"/>
+  <path d="M 336 236 C 342 280 348 320 356 366 C 370 440 396 500 416 552 C 436 606 452 660 458 716 C 464 772 468 830 474 890 C 480 950 490 1020 498 1078"
+        fill="none" stroke="#e8dfc8" stroke-width="3"/>
+  <text x="368" y="452" font-size="16" font-style="italic" fill="#5d6b63" transform="rotate(64 368 452)">Wills Creek</text>
+
+  <!-- Potomac: broad band along the bottom -->
+  <path d="M 60 1108 C 240 1092 420 1088 560 1094 C 720 1100 850 1092 950 1082" fill="none" stroke="#5d6b63" stroke-width="2"/>
+  <path d="M 60 1150 C 240 1134 420 1130 560 1136 C 720 1142 850 1134 950 1124" fill="none" stroke="#5d6b63" stroke-width="2"/>
+  <path d="M 70 1122 C 250 1106 430 1102 570 1108 C 720 1114 850 1106 944 1096" fill="none" stroke="#5d6b63" stroke-width="0.9"/>
+  <path d="M 70 1136 C 250 1120 430 1116 570 1122 C 720 1128 850 1120 944 1110" fill="none" stroke="#5d6b63" stroke-width="0.9"/>
+  <text x="340" y="1130" font-size="16" font-style="italic" letter-spacing="5" fill="#5d6b63">POTOMAC RIVER</text>
+
+  <!-- Virginia shore -->
+  <use href="#tree" transform="translate(160,1210)"/>
+  <use href="#tree" transform="translate(240,1228)"/>
+  <use href="#tree" transform="translate(330,1214)"/>
+  <use href="#tree" transform="translate(700,1220)"/>
+  <use href="#tree" transform="translate(790,1206)"/>
+  <use href="#houseO" transform="translate(560,1210)"/>
+  <text x="574" y="1215" font-size="13" font-style="italic" fill="#4a3f33">rough tavern</text>
+  <text x="404" y="1258" font-size="16" font-style="italic" letter-spacing="4" fill="#4a3f33">VIRGINIA SHORE</text>
+
+  <!-- ===================== ROADS ===================== -->
+
+  <!-- Braddock's Road: west from the ford, up through the Narrows, exits left -->
+  <path d="M 452 806 C 420 800 400 792 398 778 C 392 700 372 560 352 460 C 340 400 320 360 288 342 C 240 316 160 318 66 330"
+        fill="none" stroke="#3b3226" stroke-width="1.4" stroke-dasharray="10 5"/>
+  <text x="120" y="356" font-size="14" font-style="italic" fill="#3b3226">Braddock's Road</text>
+  <use href="#houseO" transform="translate(292,330)"/>
+  <text x="252" y="312" font-size="13" font-style="italic" fill="#3b3226">T  Toll House</text>
+  <text x="404" y="770" font-size="12" font-style="italic" fill="#4a3f33">ford</text>
+
+  <!-- quarry road: north from town along the creek's east bank -->
+  <path d="M 520 742 C 508 660 502 560 520 470 C 532 408 548 352 566 316" fill="none" stroke="#3b3226" stroke-width="1.2" stroke-dasharray="8 5"/>
+  <text x="524" y="560" font-size="13" font-style="italic" fill="#4a3f33" transform="rotate(-84 524 560)">quarry road</text>
+
+  <!-- east road -->
+  <path d="M 806 812 C 860 810 910 806 950 802" fill="none" stroke="#3b3226" stroke-width="1.4" stroke-dasharray="10 5"/>
+  <text x="830" y="798" font-size="13" font-style="italic" fill="#3b3226">east road to Oldtown</text>
+
+  <!-- north farm road -->
+  <path d="M 640 748 C 650 690 668 620 700 556 C 720 516 748 480 786 452" fill="none" stroke="#3b3226" stroke-width="1.1" stroke-dasharray="8 5"/>
+
+  <!-- ===================== NORTH FARMS ===================== -->
+  <use href="#house" transform="translate(452,548)"/>
+  <line x1="446" y1="556" x2="436" y2="566" stroke="#3b3226" stroke-width="1"/>
+  <text x="466" y="546" font-size="14" font-style="italic" fill="#3b3226">Q  Trent Mill</text>
+  <use href="#houseO" transform="translate(612,498)"/>
+  <text x="626" y="494" font-size="14" font-style="italic" fill="#3b3226">R  Brahm</text>
+  <path d="M 610 512 q 6 8 0 14 q -6 6 0 12" fill="none" stroke="#6b5f4b" stroke-width="0.9"/>
+  <!-- hex-sign farms: fields with small circle where the sign stands or stood -->
+  <g stroke="#6b5f4b" stroke-width="0.9" fill="none">
+    <rect x="700" y="420" width="52" height="34"/>
+    <rect x="784" y="452" width="58" height="36"/>
+    <rect x="726" y="520" width="54" height="34"/>
+    <rect x="812" y="560" width="56" height="36"/>
+  </g>
+  <circle cx="712" cy="432" r="4" fill="none" stroke="#3b3226" stroke-width="1.2"/>
+  <circle cx="798" cy="464" r="4" fill="none" stroke="#3b3226" stroke-width="1.2" stroke-dasharray="2 2"/>
+  <circle cx="740" cy="532" r="4" fill="none" stroke="#3b3226" stroke-width="1.2" stroke-dasharray="2 2"/>
+  <circle cx="826" cy="572" r="4" fill="none" stroke="#3b3226" stroke-width="1.2"/>
+  <text x="742" y="404" font-size="14" font-style="italic" fill="#4a3f33">hex sign farms</text>
+  <text x="742" y="612" font-size="11.5" font-style="italic" fill="#6b5f4b">broken circles want painting</text>
+
+  <!-- ===================== THE TOWN ===================== -->
+
+  <!-- street grid -->
+  <!-- Baltimore Street: east from the creek bridge -->
+  <line x1="470" y1="812" x2="806" y2="812" stroke="#3b3226" stroke-width="2.2"/>
+  <text x="600" y="800" font-size="14" letter-spacing="3" fill="#3b3226">BALTIMORE STREET</text>
+  <!-- Mechanic Street: north-south, one block west of the square -->
+  <line x1="560" y1="748" x2="560" y2="900" stroke="#3b3226" stroke-width="1.8"/>
+  <text x="548" y="884" font-size="12" letter-spacing="2" fill="#3b3226" transform="rotate(-90 548 884)">MECHANIC ST</text>
+  <!-- Greene Street: south toward the fort -->
+  <line x1="640" y1="812" x2="640" y2="960" stroke="#3b3226" stroke-width="1.8"/>
+  <line x1="640" y1="960" x2="520" y2="1000" stroke="#3b3226" stroke-width="1.4"/>
+  <text x="652" y="900" font-size="12" letter-spacing="2" fill="#3b3226" transform="rotate(90 652 900)">GREENE ST</text>
+  <!-- the creek bridge -->
+  <line x1="452" y1="806" x2="470" y2="818" stroke="#3b3226" stroke-width="4"/>
+  <text x="408" y="838" font-size="12" font-style="italic" fill="#4a3f33">bridge</text>
+
+  <!-- Market Square -->
+  <rect x="664" y="760" width="96" height="48" fill="none" stroke="#3b3226" stroke-width="1.4"/>
+  <text x="676" y="756" font-size="12.5" letter-spacing="2" fill="#3b3226">MARKET SQUARE</text>
+
+  <!-- civic buildings around the square -->
+  <use href="#house" transform="translate(692,742)"/>
+  <text x="702" y="738" font-size="13" fill="#3b3226">A</text>
+  <use href="#house" transform="translate(742,742)"/>
+  <text x="752" y="738" font-size="13" fill="#3b3226">B</text>
+  <use href="#house" transform="translate(676,830)"/>
+  <text x="666" y="846" font-size="13" fill="#3b3226">C</text>
+  <use href="#house" transform="translate(722,830)"/>
+  <text x="730" y="846" font-size="13" fill="#3b3226">D</text>
+  <use href="#house" transform="translate(766,830)"/>
+  <text x="774" y="846" font-size="13" fill="#3b3226">E</text>
+  <use href="#house" transform="translate(788,762)"/>
+  <text x="798" y="760" font-size="13" fill="#3b3226">F</text>
+  <use href="#house" transform="translate(646,774)"/>
+  <text x="630" y="772" font-size="13" fill="#3b3226">G</text>
+
+  <!-- Mechanic Street trades -->
+  <use href="#house" transform="translate(544,772)"/>
+  <text x="528" y="770" font-size="13" fill="#3b3226">H</text>
+  <use href="#house" transform="translate(576,790)"/>
+  <text x="586" y="788" font-size="13" fill="#3b3226">I</text>
+  <use href="#house" transform="translate(544,852)"/>
+  <text x="528" y="858" font-size="13" fill="#3b3226">J</text>
+
+  <!-- docks and shanty row on the creek -->
+  <use href="#house" transform="translate(498,872)"/>
+  <text x="508" y="878" font-size="13" fill="#3b3226">K</text>
+  <use href="#house" transform="translate(512,902)"/>
+  <text x="522" y="908" font-size="13" fill="#3b3226">L</text>
+  <line x1="480" y1="866" x2="466" y2="874" stroke="#3b3226" stroke-width="2.4"/>
+  <line x1="486" y1="892" x2="472" y2="900" stroke="#3b3226" stroke-width="2.4"/>
+  <text x="416" y="920" font-size="13" font-style="italic" fill="#4a3f33" text-anchor="end">Shanty Row</text>
+  <g stroke="#6b5f4b" stroke-width="1" fill="none">
+    <rect x="500" y="932" width="7" height="7"/>
+    <rect x="514" y="940" width="7" height="7"/>
+    <rect x="528" y="932" width="7" height="7"/>
+  </g>
+
+  <!-- Fort Hill -->
+  <path d="M 452 1002 l 20 -22 l 30 -4 l 22 16 l -8 24 l -34 10 z" fill="none" stroke="#3b3226" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <text x="410" y="972" font-size="14" font-style="italic" fill="#3b3226" text-anchor="end">N  Fort Ruins</text>
+  <use href="#houseO" transform="translate(500,1006)"/>
+  <text x="512" y="1012" font-size="12" font-style="italic" fill="#3b3226">P</text>
+  <!-- burying ground -->
+  <g stroke="#3b3226" stroke-width="1.1" fill="none">
+    <path d="M 560 986 v 10 M 556 990 h 8"/>
+    <path d="M 578 990 v 10 M 574 994 h 8"/>
+    <path d="M 568 1004 v 10 M 564 1008 h 8"/>
+  </g>
+  <text x="592" y="1000" font-size="12.5" font-style="italic" fill="#3b3226">O  burying ground</text>
+  <text x="470" y="1044" font-size="12" font-style="italic" fill="#6b5f4b">the glacis</text>
+
+  <!-- ferry -->
+  <line x1="504" y1="1088" x2="548" y2="1152" stroke="#3b3226" stroke-width="1" stroke-dasharray="3 4"/>
+  <use href="#house" transform="translate(500,1080)"/>
+  <text x="470" y="1076" font-size="13" font-style="italic" fill="#3b3226" text-anchor="end">M  Ferry</text>
+  <text x="528" y="1104" font-size="11" font-style="italic" fill="#6b5f4b" transform="rotate(52 528 1104)">to Virginia</text>
+
+  <!-- town name -->
+  <text x="590" y="742" font-size="30" letter-spacing="10" fill="#3b3226">CUMBERLAND</text>
+
+  <!-- ===================== FURNITURE ===================== -->
+
+  <!-- compass rose, upper right -->
+  <g transform="translate(858,196)">
+    <circle r="46" fill="none" stroke="#3b3226" stroke-width="1"/>
+    <circle r="34" fill="none" stroke="#3b3226" stroke-width="0.6"/>
+    <path d="M 0 -44 L 7 0 L 0 12 L -7 0 Z" fill="#3b3226"/>
+    <path d="M 0 44 L 5 4 L 0 -4 L -5 4 Z" fill="none" stroke="#3b3226" stroke-width="1"/>
+    <path d="M -40 0 L -4 5 L 4 0 L -4 -5 Z" fill="none" stroke="#3b3226" stroke-width="1" transform="rotate(0)"/>
+    <path d="M 40 0 L 4 5 L -4 0 L 4 -5 Z" fill="none" stroke="#3b3226" stroke-width="1"/>
+    <text y="-54" font-size="18" text-anchor="middle" fill="#3b3226">N</text>
+    <line x1="0" y1="-44" x2="-6" y2="-58" stroke="#9a4a32" stroke-width="1"/>
+    <text x="-64" y="-52" font-size="10.5" font-style="italic" fill="#9a4a32">var. 2 W</text>
+  </g>
+
+  <!-- scale of chains, bottom center -->
+  <g transform="translate(340,1318)">
+    <line x1="0" y1="0" x2="320" y2="0" stroke="#3b3226" stroke-width="1.4"/>
+    <g stroke="#3b3226" stroke-width="1.4">
+      <line x1="0" y1="-6" x2="0" y2="6"/><line x1="80" y1="-6" x2="80" y2="6"/>
+      <line x1="160" y1="-6" x2="160" y2="6"/><line x1="240" y1="-6" x2="240" y2="6"/>
+      <line x1="320" y1="-6" x2="320" y2="6"/>
+    </g>
+    <rect x="0" y="-4" width="80" height="8" fill="#3b3226"/>
+    <rect x="160" y="-4" width="80" height="8" fill="#3b3226"/>
+    <text x="0" y="24" font-size="12" fill="#3b3226">0</text>
+    <text x="72" y="24" font-size="12" fill="#3b3226">20</text>
+    <text x="152" y="24" font-size="12" fill="#3b3226">40</text>
+    <text x="232" y="24" font-size="12" fill="#3b3226">60</text>
+    <text x="306" y="24" font-size="12" fill="#3b3226">80</text>
+    <text x="160" y="-14" font-size="13" font-style="italic" text-anchor="middle" fill="#3b3226">Scale of Chains, 80 to the Mile</text>
+  </g>
+
+  <!-- title cartouche, lower left -->
+  <g transform="translate(72,1140)">
+    <rect x="0" y="0" width="248" height="180" fill="#e8dfc8" stroke="#3b3226" stroke-width="1.6"/>
+    <rect x="6" y="6" width="236" height="168" fill="none" stroke="#3b3226" stroke-width="0.7"/>
+    <text x="124" y="40" font-size="15" letter-spacing="3" text-anchor="middle" fill="#3b3226">A  P L A T</text>
+    <text x="124" y="62" font-size="12" font-style="italic" text-anchor="middle" fill="#3b3226">of the Town of</text>
+    <text x="124" y="88" font-size="19" letter-spacing="4" text-anchor="middle" fill="#3b3226">CUMBERLAND</text>
+    <text x="124" y="108" font-size="12" font-style="italic" text-anchor="middle" fill="#3b3226">and Environs, Allegany County</text>
+    <text x="124" y="126" font-size="12" font-style="italic" text-anchor="middle" fill="#3b3226">in the State of Maryland</text>
+    <text x="124" y="150" font-size="12" text-anchor="middle" fill="#3b3226">Anno Domini 1800</text>
+    <text x="124" y="168" font-size="10.5" font-style="italic" text-anchor="middle" fill="#6b5f4b">after the surveys of A. Crane, decd.</text>
+  </g>
+
+  <!-- references legend, lower right -->
+  <g transform="translate(636,1152)" font-size="12" fill="#3b3226">
+    <rect x="-16" y="-24" width="316" height="176" fill="#e8dfc8" stroke="#3b3226" stroke-width="1"/>
+    <text x="134" y="-6" font-size="13" letter-spacing="3" text-anchor="middle">R E F E R E N C E S</text>
+    <text x="0" y="16">A  Court House</text>
+    <text x="0" y="34">B  Gaol</text>
+    <text x="0" y="52">C  Blue Mule Tavern</text>
+    <text x="0" y="70">D  Surgery</text>
+    <text x="0" y="88">E  Survey Office</text>
+    <text x="0" y="106">F  The Kirk</text>
+    <text x="0" y="124">G  Store</text>
+    <text x="0" y="142">H  Smithy</text>
+    <text x="156" y="16">I  Cooperage</text>
+    <text x="156" y="34">J  Wagon Yard</text>
+    <text x="156" y="52">K  Warehouse</text>
+    <text x="156" y="70">L  Excise Office</text>
+    <text x="156" y="88">M  Ferry</text>
+    <text x="156" y="106">N  Fort Ruins</text>
+    <text x="156" y="124">O  Burying Ground</text>
+    <text x="156" y="142">P  Washington's Cabin</text>
+  </g>
+
+  <!-- marginal note, the mapmaker's hand -->
+  <text x="700" y="674" font-size="12" font-style="italic" fill="#6b5f4b">the mountain watches the town</text>
+</svg>

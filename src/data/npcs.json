@@ -1,0 +1,271 @@
+[
+  {
+    "id": "cresap",
+    "name": "Magistrate Ezekiel Cresap",
+    "district": "square",
+    "signature": {
+      "keyword": "LEDGER",
+      "gate": "flag",
+      "flag": "WARRANT"
+    },
+    "secret": "keeps a ledger of every bribe"
+  },
+  {
+    "id": "beall",
+    "name": "Constable Amos Beall",
+    "district": "square",
+    "signature": {
+      "keyword": "SEEN",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "saw something at the fort and drinks to forget"
+  },
+  {
+    "id": "doyle",
+    "name": "Peg Doyle",
+    "district": "square",
+    "signature": {
+      "keyword": "GENTLEMAN",
+      "gate": "reputation",
+      "faction": "road",
+      "min": 2
+    },
+    "secret": "runs the gossip network and sells it both ways"
+  },
+  {
+    "id": "shanks",
+    "name": "Old Toby Shanks",
+    "district": "point",
+    "signature": {
+      "keyword": "NIGHT",
+      "gate": "reputation",
+      "faction": "road",
+      "min": 2
+    },
+    "secret": "night crossings, no questions"
+  },
+  {
+    "id": "feig",
+    "name": "Gunther Feig",
+    "district": "mechanic",
+    "signature": {
+      "keyword": "IRON",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "forged cold iron once before, for a customer who died"
+  },
+  {
+    "id": "ward",
+    "name": "Dr. Silas Ward",
+    "district": "square",
+    "signature": {
+      "keyword": "WARD",
+      "gate": "sight",
+      "min": 2
+    },
+    "secret": "doses a patient to keep her blind"
+  },
+  {
+    "id": "lamar",
+    "name": "Mrs. Charity Lamar",
+    "district": "square",
+    "signature": {
+      "keyword": "WINONA",
+      "gate": "flag",
+      "flag": "TOKEN"
+    },
+    "secret": "involuntary SIGHT at Rank 3"
+  },
+  {
+    "id": "crane",
+    "name": "Brother Jubal Crane",
+    "district": "kirk",
+    "signature": {
+      "keyword": "SEEN",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "a fraud who has genuinely seen it"
+  },
+  {
+    "id": "oldkeys",
+    "name": "Old Keys",
+    "district": "hills",
+    "signature": {
+      "keyword": "KEYS",
+      "gate": "trust",
+      "min": 3
+    },
+    "secret": "his true name is a keyword under the mountain"
+  },
+  {
+    "id": "brahm",
+    "name": "Widow Adelheid Brahm",
+    "district": "farms",
+    "signature": {
+      "keyword": "RITUAL",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "the ritual is costing her memory of her husband"
+  },
+  {
+    "id": "gantt",
+    "name": "Prosper Gantt",
+    "district": "square",
+    "signature": {
+      "keyword": "PLAT",
+      "gate": "open"
+    },
+    "lies": true,
+    "secret": "falsified the plat and kills to keep it hidden"
+  },
+  {
+    "id": "fenwick",
+    "name": "Lyle Fenwick",
+    "district": "docks",
+    "signature": {
+      "keyword": "LIST",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "his list names a living man"
+  },
+  {
+    "id": "pyle",
+    "name": "Officer Nathaniel Pyle",
+    "district": "docks",
+    "signature": {
+      "keyword": "EXCISE",
+      "gate": "reputation",
+      "faction": "road",
+      "min": 1
+    },
+    "secret": "skims from seizures"
+  },
+  {
+    "id": "marsh",
+    "name": "Uncle Robey Marsh",
+    "district": "narrows",
+    "signature": {
+      "keyword": "STILL",
+      "gate": "reputation",
+      "faction": "road",
+      "min": 3
+    },
+    "secret": "knows the tunnels better than anyone living"
+  },
+  {
+    "id": "coombs",
+    "name": "Ezra Coombs",
+    "district": "forthill",
+    "signature": {
+      "keyword": "GRAVES",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "some graves are empty, and not because of Fenwick"
+  },
+  {
+    "id": "freeman",
+    "name": "Isaiah Freeman",
+    "district": "mechanic",
+    "signature": {
+      "keyword": "PAPERS",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "forges freedom papers for others"
+  },
+  {
+    "id": "mcteague",
+    "name": "Duncan McTeague",
+    "district": "quarry",
+    "signature": {
+      "keyword": "SINGING",
+      "gate": "trust",
+      "min": 1
+    },
+    "secret": "ordered digging past the line after the rock sang"
+  },
+  {
+    "id": "rood",
+    "name": "Pelham Rood",
+    "district": "square",
+    "signature": {
+      "keyword": "LEDGER",
+      "gate": "trust",
+      "min": 1
+    },
+    "secret": "finding deliberate erasures in the fort ledger"
+  },
+  {
+    "id": "jtrent",
+    "name": "Josiah Trent",
+    "district": "farms",
+    "signature": {
+      "keyword": "HEX",
+      "gate": "flag",
+      "flag": "SECOND_LOSS"
+    },
+    "secret": "painted over his hex sign; the losses started after"
+  },
+  {
+    "id": "ntrent",
+    "name": "Nan Trent",
+    "district": "farms",
+    "signature": {
+      "keyword": "MURMUR",
+      "gate": "sight",
+      "min": 2
+    },
+    "secret": "hears the murmurs and tells no one"
+  },
+  {
+    "id": "bright",
+    "name": "Captain Hosea Bright",
+    "district": "mechanic",
+    "signature": {
+      "keyword": "ROAD",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "lost a man on Braddock's Road and lied about how"
+  },
+  {
+    "id": "kent",
+    "name": "Judge Aurelius Kent",
+    "district": "square",
+    "signature": {
+      "keyword": "1755",
+      "gate": "flag",
+      "flag": "LEDGER"
+    },
+    "secret": "sealed an old inquest by his own hand"
+  },
+  {
+    "id": "vachon",
+    "name": "Marie-Louise Vachon",
+    "district": "hills",
+    "signature": {
+      "keyword": "TRAPS",
+      "gate": "trust",
+      "min": 2
+    },
+    "secret": "her traps are not sized for fur animals"
+  },
+  {
+    "id": "pryor",
+    "name": "Corporal Enoch Pryor",
+    "district": "seam",
+    "deceased": true,
+    "signature": {
+      "keyword": "GARRISON",
+      "gate": "sight",
+      "min": 3
+    },
+    "secret": "what the garrison buried in 1755"
+  }
+]
