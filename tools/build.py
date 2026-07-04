@@ -52,7 +52,7 @@ def main() -> int:
     stamp = DIST / "index.html"
     stamp.write_text(
         stamp.read_text(encoding="utf-8").replace(
-            "<!-- CAIUCTUCUC v0.4.0 -->", f"<!-- CAIUCTUCUC v{version} build -->"
+            "<!-- CAIUCTUCUC v0.4.2 -->", f"<!-- CAIUCTUCUC v{version} build -->"
         ),
         encoding="utf-8",
     )

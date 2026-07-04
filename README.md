@@ -4,7 +4,7 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.4.0** (pockets and workbenches: sixty items, satchel and stash, condition and repair, crafting, the counter)
+**Version: 0.4.2** (pockets and workbenches: sixty items, satchel and stash, condition and repair, crafting, the counter)
 
 ## Running it
 

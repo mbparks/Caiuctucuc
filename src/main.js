@@ -1,7 +1,7 @@
 // CAIUCTUCUC entry point: the vertical slice on Baltimore Street.
 import { VERSION } from './version.js';
 import { createLoop } from './engine/loop.js';
-import { createInput } from './engine/input.js';
+import { createInput, isEditable } from './engine/input.js';
 import { createCamera } from './engine/camera.js';
 import { loadMap } from './engine/tiledmap.js';
 import { newGame, storeLocal, loadLocal, serialize, deserialize } from './game/save.js';
@@ -13,6 +13,7 @@ import { nextCoat, effectiveLevel, COATS } from './game/disguise.js';
 import { spotFor, SCHEDULES } from './game/schedule.js';
 import { createAmbience } from './engine/ambience.js';
 import { loadArt, frameFor } from './engine/sprites.js';
+import { fitScale, fmtHour } from './engine/scale.js';
 import { acceptJob, workJob, JOBS } from './game/jobs.js';
 import { newRumor, knows } from './game/gossip.js';
 import { applyTrust } from './game/trust.js';
@@ -97,7 +98,7 @@ function refreshHud() {
   hudHeat.textContent = LEVELS[eff].toUpperCase();
   hudHeat.dataset.hot = eff >= 2 ? '1' : '';
   hudCoin.textContent = state.player.coin + ' silver';
-  hudClock.textContent = 'day ' + state.clock.day + ', ' + String(state.clock.hour).padStart(2, '0') + ':00';
+  hudClock.textContent = 'day ' + state.clock.day + ', ' + fmtHour(state.clock.hour);
   hudCoat.textContent = state.player.coat + ' coat';
 }
 
@@ -202,9 +203,10 @@ function renderJournal() {
     '<h3>STANDING</h3><p>town ' + rep.town + ', kirk ' + rep.kirk + ', hills ' + rep.hills + ', road ' + rep.road + '</p>' +
     '<h3>CONFIDENCES</h3><p>' + trustLines + '</p>' +
     '<h3>WORK</h3><p>' + jobLine + '</p>' +
-    '<h3>THE HOUR</h3><p>day ' + state.clock.day + ', ' + String(state.clock.hour).padStart(2, '0') + ':00, wearing the ' + state.player.coat + ' coat</p>';
+    '<h3>THE HOUR</h3><p>day ' + state.clock.day + ', ' + fmtHour(state.clock.hour) + ', wearing the ' + state.player.coat + ' coat</p>';
 }
 window.addEventListener('keydown', e => {
+  if (isEditable(e.target)) return;
   if (e.code === 'KeyJ' && !talking) {
     if (!journalEl.classList.contains('open')) renderJournal();
     journalEl.classList.toggle('open');
@@ -249,6 +251,23 @@ function row(body, label, note, buttons) {
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 canvas.focus();
+
+// pixel-perfect presentation: internal 480x320, scaled by whole integers
+const stage = document.getElementById('stage');
+function fitCanvas() {
+  const s = fitScale(stage.clientWidth, stage.clientHeight, canvas.width, canvas.height);
+  canvas.style.width = Math.floor(canvas.width * s) + 'px';
+  canvas.style.height = Math.floor(canvas.height * s) + 'px';
+}
+window.addEventListener('resize', fitCanvas);
+document.addEventListener('fullscreenchange', fitCanvas);
+fitCanvas();
+
+document.getElementById('fullBtn').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else stage.requestFullscreen().catch(() => {});
+  setTimeout(fitCanvas, 60);
+});
 const input = createInput(window);
 
 // Placeholder gid colors: grass, creek, treeline, ford, street, building, stall, door.
@@ -487,6 +506,7 @@ async function start() {
   }
 
   window.addEventListener('keydown', e => {
+    if (isEditable(e.target)) return;
     if (e.code === 'KeyE' && !talking) doInteract();
     if (e.code === 'KeyI' && !talking) {
       panelEl.classList.contains('open') ? panelEl.classList.remove('open') : openSatchel();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CAIUCTUCUC v0.4.0 -->
+<!-- CAIUCTUCUC v0.4.2 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -30,8 +30,9 @@
   button { background: var(--panel); color: var(--ink); border: 1px solid var(--dim);
     font: inherit; padding: .25rem .7rem; cursor: pointer; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  #stage { flex: 1; display: grid; place-items: center; min-height: 0; }
-  canvas { image-rendering: pixelated; background: #000; max-width: 100%; max-height: 100%; }
+  #stage { flex: 1; display: grid; place-items: center; min-height: 0; overflow: hidden; }
+  canvas { image-rendering: pixelated; background: #000; }
+  #stage:fullscreen { background: var(--paper); }
   #menu { position: absolute; top: 3rem; right: 1rem; background: var(--panel);
     border: 1px solid var(--dim); padding: .8rem 1rem; display: none; min-width: 14rem; }
   #menu.open { display: block; }
@@ -85,6 +86,7 @@
     <span class="ver" id="version"></span>
     <span id="hud"><span id="hudHeat">QUIET</span><span id="hudCoin"></span><span id="hudClock"></span><span id="hudCoat"></span></span>
     <span class="spacer"></span>
+    <button id="fullBtn" aria-label="Toggle fullscreen">Fullscreen</button>
     <button id="muteBtn" aria-pressed="false" aria-label="Mute audio">Sound: on</button>
     <button id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
   </header>

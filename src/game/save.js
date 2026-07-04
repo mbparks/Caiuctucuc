@@ -6,7 +6,7 @@ export const SAVE_FORMAT = 4;
 export function newGame() {
   return {
     format: SAVE_FORMAT,
-    version: '0.4.0',
+    version: '0.4.2',
     player: { x: 12, y: 10, marks: [], sight: 0, coin: 8, coat: 'drover', equip: {} },
     clock: { day: 1, hour: 18 },
     hueCry: { level: 0, heat: 0, witnessedCoat: null },

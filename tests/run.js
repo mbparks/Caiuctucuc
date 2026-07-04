@@ -466,5 +466,30 @@ test('the interiors hold the stations, the counter, and the chest', () => {
   }
 });
 
+console.log('input (v0.4.1)');
+const { isEditable } = await import('../src/engine/input.js');
+test('typing fields are recognized so movement never eats letters', () => {
+  assert(isEditable({ tagName: 'INPUT' }), 'input not editable');
+  assert(isEditable({ tagName: 'textarea' }), 'textarea not editable');
+  assert(isEditable({ tagName: 'DIV', isContentEditable: true }), 'contenteditable missed');
+  assert(!isEditable({ tagName: 'CANVAS' }), 'the canvas is not a typewriter');
+  assert(!isEditable(null), 'null crashed or lied');
+});
+
+console.log('presentation (v0.4.2)');
+const { fitScale, fmtHour } = await import('../src/engine/scale.js');
+test('the canvas scales by whole integers and never clips', () => {
+  assert(fitScale(1920, 1080, 480, 320) === 3, '1080p should be 3x: ' + fitScale(1920, 1080, 480, 320));
+  assert(fitScale(2560, 1440, 480, 320) === 4, '1440p should be 4x');
+  assert(fitScale(960, 640, 480, 320) === 2, 'exact double should be 2x');
+  assert(fitScale(500, 700, 480, 320) === 1, 'narrow stage floors to 1x');
+  const tiny = fitScale(240, 160, 480, 320);
+  assert(tiny === 0.5, 'small screens fit fractionally: ' + tiny);
+});
+test('the clock shows whole hours whatever the accumulator held', () => {
+  assert(fmtHour(18.5) === '18:00', 'fractional hour leaked: ' + fmtHour(18.5));
+  assert(fmtHour(4) === '04:00' && fmtHour(23.99) === '23:00', 'formatting wrong');
+});
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
