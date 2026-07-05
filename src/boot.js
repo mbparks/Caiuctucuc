@@ -74,6 +74,12 @@ setTimeout(() => {
 }, 4500);
 
 try {
+  await import('./render_integrity.js');
+} catch (err) {
+  console.warn('[caiuctucuc] Render integrity guard did not load:', describeError(err));
+}
+
+try {
   await import('./main.js');
   if (!window.__CAIUCTUCUC_BOOTED) throw new Error('main.js imported, but did not mark the game as booted.');
 } catch (err) {
