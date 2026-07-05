@@ -1,0 +1,13 @@
+{
+  "npcId": "patient_patron",
+  "displayName": "Patient",
+  "greeting": "The patient lies under a blanket that has been washed thin. A bottle on the shelf catches the light and gives it back amber.",
+  "shrug": "\"I cannot hold that thought.\"",
+  "deflect": "\"Ward said not to excite me.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"I had one before the bottle. It comes back some mornings.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"My work is getting well. It is slow work and poorly paid.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"I hear wagons all night. Or I dream them. Hard to say in this room.\"" },
+    { "keyword": "SIGHT", "gate": "open", "text": "\"There are things in the corners when the medicine thins. Ward tells me they are only curtains.\"" }
+  ]
+}
