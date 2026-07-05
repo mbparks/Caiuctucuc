@@ -42,9 +42,11 @@ test('one-overlay manager closes competing feature panels', () => {
   assert(center.includes('CAIUCTUCUC_CLOSE_OVERLAYS'), 'command center does not call overlay manager');
 });
 
-test('canvas command prompt is suppressed', () => {
-  assert(render.includes("E TALK  F ROB  I SATCHEL  J CASE"), 'duplicate canvas command text not suppressed');
-  assert(render.includes('patchedFillText'), 'fillText suppression patch missing');
+test('fullscreen restores the canvas keyboard legend', () => {
+  assert(render.includes('HUD_COMMAND_TEXT'), 'HUD command text constant missing');
+  assert(render.includes('fullscreenActive()'), 'fullscreen check missing');
+  assert(render.includes('!fullscreenActive()'), 'keyboard legend should only be suppressed outside fullscreen');
+  assert(render.includes('patchedFillText'), 'fillText patch missing');
 });
 
 test('overlay manager loads before command center', () => {
