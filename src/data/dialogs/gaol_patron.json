@@ -1,0 +1,13 @@
+{
+  "npcId": "gaol_patron",
+  "displayName": "Gaol Inmate",
+  "greeting": "The gaol inmate sits close to the wall, knees up, studying every bootstep as if one might be his release.",
+  "shrug": "\"Stone has no answer for that.\"",
+  "deflect": "\"Not in front of bars.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"A man without a hat and without witnesses. That is all the name I have left today.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"My job is waiting until Beall decides if I am useful, guilty, or merely convenient.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"This town hears what it wants and writes what it can prove. Mind the difference.\"" },
+    { "keyword": "BEALL", "gate": "open", "text": "\"The constable is fair when watched and tired when not. That makes him better than some.\"" }
+  ]
+}
