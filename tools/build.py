@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 CHECK_SUFFIXES = {".md", ".js", ".html", ".json", ".svg", ".py", ".yml"}
 DASHES = re.compile("[\u2014\u2013]")
+STAMP_RE = re.compile(r"<!-- CAIUCTUCUC v[\d.]+(?: build)? -->")
+COPY_ITEMS = ("index.html", "src", "assets", ".htaccess")
 
 
 def check_dashes() -> int:
@@ -36,6 +38,25 @@ def get_version() -> str:
     return re.search(r"'([\d.]+)'", text).group(1)
 
 
+def copy_item(item: str) -> None:
+    src = ROOT / item
+    if not src.exists():
+        return
+    if src.is_dir():
+        shutil.copytree(src, DIST / item)
+    else:
+        shutil.copy2(src, DIST / item)
+
+
+def stamp_index(version: str) -> None:
+    stamp = DIST / "index.html"
+    text = stamp.read_text(encoding="utf-8")
+    stamped = STAMP_RE.sub(f"<!-- CAIUCTUCUC v{version} build -->", text, count=1)
+    if stamped == text:
+        stamped = text.replace("<html", f"<!-- CAIUCTUCUC v{version} build -->\n<html", 1)
+    stamp.write_text(stamped, encoding="utf-8")
+
+
 def main() -> int:
     bad = check_dashes()
     if bad:
@@ -45,19 +66,9 @@ def main() -> int:
     if DIST.exists():
         shutil.rmtree(DIST)
     DIST.mkdir()
-    for item in ("index.html", "src", "assets"):
-        src = ROOT / item
-        if src.is_dir():
-            shutil.copytree(src, DIST / item)
-        else:
-            shutil.copy2(src, DIST / item)
-    stamp = DIST / "index.html"
-    stamp.write_text(
-        stamp.read_text(encoding="utf-8").replace(
-            "<!-- CAIUCTUCUC v0.21.2 -->", f"<!-- CAIUCTUCUC v{version} build -->"
-        ),
-        encoding="utf-8",
-    )
+    for item in COPY_ITEMS:
+        copy_item(item)
+    stamp_index(version)
     print(f"built v{version} into dist/")
     return 0
 
