@@ -102,4 +102,9 @@ if (window.__CAIUCTUCUC_BOOTED) {
   } catch (err) {
     console.warn('[caiuctucuc] UI cohesion did not load:', describeError(err));
   }
+  try {
+    await import('./command_center.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] Command center did not load:', describeError(err));
+  }
 }
