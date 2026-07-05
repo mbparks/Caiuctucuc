@@ -1,10 +1,16 @@
 # CAIUCTUCUC
 
-A single player, top down, open world supernatural mystery set in Cumberland, Maryland, in the year 1800. Ultima meets Grand Theft Auto, period appropriate: keyword conversation, hue and cry instead of a wanted meter, horses instead of cars, and a mountain that watches the town.
+A single player, top down, open world supernatural mystery set in Cumberland, Maryland, in the 1850s. Ultima meets Grand Theft Auto, period appropriate: keyword conversation, hue and cry instead of a wanted meter, horses instead of cars, and a mountain that watches the town.
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.21.2** (townsfolk are physically kept out of doorways, so a door is always reachable)
+**Version: 0.22.0** (live Trail guidance, clearer action feedback, and first-pass gameplay pressure)
+
+## What changed in v0.22.0
+
+This release is a gameplay-first cleanup pass. The game had many systems, but too much of the useful direction lived inside the journal or behind prior knowledge. v0.22.0 adds a live Trail strip, a collapsible Trail panel, a T shortcut, phase-based objective logic, pressure warnings, and action feedback so button presses feel acknowledged.
+
+The new Trail model is pure logic in `src/game/trail.js`, with tests in `tests/trail.js`. It derives the current lead from the existing save flags, so it does not require a save format bump. It also warns the player when health is low, when heat is dangerous, or when an active job is already in hand.
 
 ## Running it
 
@@ -20,9 +26,14 @@ The build stamps the version, copies src and assets, and fails if any em dash is
 
 ## Running tests
 
-    node tests/run.js
+    npm test
 
-Pure logic tests (save round trip, keyword gating, hue and cry decay) run in Node with no dependencies. The same modules load in the browser.
+or directly:
+
+    node tests/run.js
+    node tests/trail.js
+
+Pure logic tests (save round trip, keyword gating, hue and cry decay, trail objectives) run in Node with no dependencies. The same modules load in the browser.
 
 ## Repository layout
 
@@ -47,6 +58,17 @@ The complete paper design lives in docs/: design document, main quest beat sheet
 
 This project follows the standing MBPARKS web app standards: local first with full save export and import, night default theme, WCAG AA in all themes plus a High Contrast theme, fluid sizing, collapsible menus, mute button, visible version display, debug flagged console logging, per-release snapshots, and a blog post draft with each release.
 
+## Controls
+
+- Arrow keys or WASD: walk
+- E: interact, speak, enter, examine, or use the nearby object
+- T: open the Trail panel for the next useful objective
+- J: open the full case file
+- I: open the satchel
+- F: commit a direct crime against a nearby NPC, when possible
+- Q: surrender when cornered
+- Backtick: open the cheat terminal
+
 ## Cheat codes
 
 Press the backtick key (`` ` ``) to open the terminal, type a code, and press Enter.
@@ -62,37 +84,31 @@ The act skips are cumulative and grant every clue and flag the player would have
 ## Known Limitations
 
 - The test suite has two parts: `node tests/run.js` (pure logic and asset checks, no dependencies) and `node tools/boot_smoke.mjs` (a headless jsdom boot that catches render and camera regressions, requires `npm install jsdom`). CI runs both.
-
 - v0.0.2 renders placeholder colors keyed by gid; real tilesheets are not wired yet.
 - The art is generated, third generation (the overworld pass, NES-bold); the final art decision is still open (docs/art_decision.md) and any option drops into the documented slots.
 - Named NPCs share two generic sprites; per-character sheets follow the art decision.
 - Interiors are single rooms; the courthouse's three chambers and the Mule's upstairs arrive with final art.
 - NPCs walk only the town map; ducking indoors pauses pursuit, which players will exploit and which is acceptable for now.
 - Gossip changes greetings for Peg and Beall only; the other ten react in a later pass.
-- Trust rises through surrender and (soon) kept promises; most dialog trust gates are reachable only by save editing until quests land in v0.5.0.
+- Trust rises through surrender and kept promises, but several trust gates still need more obvious quest paths.
 - The constable still pursues by straight seek with wall sliding; buildings can be circled.
-- The ambience is procedural wind; real audio waits for the polish pass.
-- Consumables print flavor text; healing and hunger arrive with the difficulty sliders in v0.6.0.
+- Consumables print flavor text, and healing works. Hunger only matters on hard survival.
 - Wear accrues through the API and tests but no in-game action yet inflicts it; combat and hard use land later.
 - The coat rack and coat items coexist; the rack will retire once wearables fully replace it.
-- The drover's cur sits beside its owner and goes nowhere; the dog companion arrives in v0.8.0.
-- Act I closes with a banner; Act II content begins in v0.7.0.
-- SNAKEOIL now heals for real; health exists, damaged by deep water, wisp snares, and hunger on hard survival.
+- Act I closes with a banner; later act content is playable but still needs more presentation polish.
 - Marks are recorded and gossiped in Brahm's CROSSED response; their mechanical flavors (the slower sprint, the ringing ear) apply in a later pass.
-- The Brahm favor path replaces the trust gate from the keyword matrix until quest-driven trust arrives in v0.7.0.
+- The Brahm favor path replaces the trust gate from the keyword matrix until quest-driven trust is fully balanced.
 - Rank 2 murmurs exist at three placed sites; the general murmur field waits for Act IV.
 - The revival fires as a scripted beat; Crane's debunk/recruit choice is deferred to the polish pass.
-- Mrs. Lamar's house stands but she does not yet; the Winona thread opens in v0.8.0.
+- Mrs. Lamar's house stands but she does not yet; the Winona thread opens through prose for now.
 - Militia and bounty pursuers reuse the constable's sprite and seek; checkpoints as fixed posts come with final maps.
 - Benchmark, Sealed Record, Chainman's Widow, Beall's Bottle, Anatomy List, No Questions, Sign Painter, The Cabin Kept, The Collection Plate, and The Magistrate's Ledger are all in.
 - The character creator is in with all mechanical effects; cosmetic appearance options wait on final art.
 - All four Burden quests are in. The debt cannot yet be discovered as sold to Cresap; that fold arrives post-1.0.
 - Cave-Aged and The Excise Man's Arithmetic wait on Marsh and Pyle, who are post-1.0 NPCs; the caves carry their foreshadowing (the horseshoe, the casks).
 - Nan appears in the chamber as prose; her sprite and the Trent farm scenes come with final art.
-- Trust changes from conversation choices are not implemented; gates read state but nothing raises it in play yet.
-- Dialog, hue and cry, and SIGHT exist as tested logic modules but are not yet wired to the world.
-- No audio yet; the mute button is present and persistent but has nothing to silence.
-- Saves are localStorage plus JSON export; save format will break without migration until v0.1.0.
+- Dialog, hue and cry, SIGHT, and Trail exist as tested logic modules and are wired to the browser build.
+- Saves are localStorage plus JSON export. v0.22.0 does not change the save format.
 
 ## License
 
