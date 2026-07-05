@@ -48,7 +48,6 @@ function wh(map, pxFromRight = 0, pyFromBottom = 0) {
 export function physicalConnections(mapId, map) {
   const id = nextId(map, 7100);
   const midX = Math.floor(map.width * map.tileWidth / 2);
-  const midY = Math.floor(map.height * map.tileHeight / 2);
   const nearBottom = wh(map, 96, 72);
   const nearRight = wh(map, 64, 112);
   if (mapId !== 'town') return [];
@@ -173,7 +172,7 @@ export function setPieceObjects(mapId, map, state = savedStoryState()) {
   const out = [];
   if (mapId === 'town') {
     out.push(clue(id, 'courthouse records room', 180, 96, 'ledger_cut', 'The record leaf was razored from the binding. A clumsy thief tears. A careful one leaves a clean wound.', { teaches: 'LEDGER,HE MEASURES' }));
-    out.push(clue(id + 1, 'Coombs\'s open grave', 128, 244, 'coombs_dead', 'Coombs lies where Tam should have rested. No investigator, no thief. He opened the wrong coffin looking for stone rubbings.', { requires: 'act1Complete', sets: 'coombsDead', teaches: 'COOMBS,RUBBINGS' }));
+    out.push(clue(id + 1, 'Coombs\'s open grave', 128, 244, 'coombs_grave', 'Coombs lies where Tam should have rested. No investigator, no thief. He opened the wrong coffin looking for stone rubbings.', { requires: 'act1Complete', sets: 'coombsDead', teaches: 'COOMBS,RUBBINGS' }));
     out.push(obj(id + 2, 'bench trial', 'accuse', 248, 96, 16, 16, {}));
   }
   if (mapId === 'canal') {
