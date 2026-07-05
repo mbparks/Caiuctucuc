@@ -103,6 +103,11 @@ if (window.__CAIUCTUCUC_BOOTED) {
     console.warn('[caiuctucuc] UI cohesion did not load:', describeError(err));
   }
   try {
+    await import('./ui_overlay_manager.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] Overlay manager did not load:', describeError(err));
+  }
+  try {
     await import('./command_center.js');
   } catch (err) {
     console.warn('[caiuctucuc] Command center did not load:', describeError(err));
