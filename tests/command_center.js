@@ -10,6 +10,7 @@ function assert(cond, msg) { if (!cond) throw new Error(msg || 'assertion failed
 
 console.log('command center');
 const center = readFileSync('src/command_center.js', 'utf8');
+const trail = readFileSync('src/gameplay_boost.js', 'utf8');
 const boot = readFileSync('src/boot.js', 'utf8');
 const render = readFileSync('src/render_integrity.js', 'utf8');
 const overlay = readFileSync('src/ui_overlay_manager.js', 'utf8');
@@ -20,9 +21,16 @@ test('command center preserves immediate keyboard actions', () => {
 });
 
 test('command center moves existing feature buttons rather than duplicating them', () => {
-  for (const id of ['trailBtn', 'caseBtn', 'worldBtn', 'lawBtn', 'dreadPip', 'fullBtn', 'muteBtn', 'menuBtn']) {
+  for (const id of ['caseBtn', 'worldBtn', 'lawBtn', 'dreadPip', 'fullBtn', 'muteBtn', 'menuBtn']) {
     assert(center.includes("move('" + id + "')"), 'missing moved button ' + id);
   }
+});
+
+test('Trail has one visible opener: the objective strip', () => {
+  assert(!center.includes("move('trailBtn')"), 'Trail must not also live in Commands');
+  assert(!trail.includes('trailBtn'), 'legacy Trail header button should not be created');
+  assert(trail.includes('trailOpenBtn'), 'Trail strip opener missing');
+  assert(overlay.includes('#trailOpenBtn'), 'overlay manager must treat Trail strip as the only Trail trigger');
 });
 
 test('command drawer is temporary and does not push the HUD layout', () => {
