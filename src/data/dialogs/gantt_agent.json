@@ -1,0 +1,14 @@
+{
+  "npcId": "gantt_agent",
+  "displayName": "Gantt's Chainman",
+  "greeting": "The chainman stands too still for a working man. His eyes move from your face to your pockets and back again.",
+  "shrug": "\"Mr. Gantt does not pay me for guesses.\"",
+  "deflect": "\"That is not a safe question in a small town.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"A chainman. A man paid to hold one end of a line and not ask who profits from the other.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I carry chain for the surveyor. Lately I carry messages too. Some are heavier.\"" },
+    { "keyword": "GANTT", "gate": "open", "text": "\"Mr. Gantt says curiosity spoils clean work. He also says you are making mud where there was a line.\"" },
+    { "keyword": "QUARRY", "gate": "open", "text": "\"The quarry is private ground, however public the mountain looks from the road.\"" },
+    { "keyword": "BENCHMARK", "gate": "open", "text": "\"Brass pins are stubborn things. Men who lean on paper dislike brass pins.\"" }
+  ]
+}
