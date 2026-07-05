@@ -1,6 +1,10 @@
 // Unified command center. This replaces the scattered page buttons plus the
 // command text inside the canvas HUD with one coherent command structure.
 
+function closeAllOverlays() {
+  if (window.CAIUCTUCUC_CLOSE_OVERLAYS) window.CAIUCTUCUC_CLOSE_OVERLAYS();
+}
+
 function commandCenter() {
   return document.getElementById('commandCenter');
 }
@@ -13,6 +17,7 @@ function setOpen(open) {
   const center = commandCenter();
   const toggle = commandToggle();
   if (!center || !toggle) return;
+  if (open) closeAllOverlays();
   center.classList.toggle('open', open);
   document.documentElement.classList.toggle('commands-open', open);
   toggle.setAttribute('aria-expanded', String(open));
@@ -25,6 +30,7 @@ function closeCommands() {
 
 function press(code) {
   closeCommands();
+  closeAllOverlays();
   const key = code.replace(/^Key/, '').toLowerCase();
   const target = window;
   const down = new KeyboardEvent('keydown', { code, key, bubbles: true, cancelable: true });
@@ -59,7 +65,10 @@ function move(id) {
   const node = document.getElementById(id);
   if (!node) return null;
   node.classList.add('cc-action');
-  node.addEventListener('click', closeCommands, { capture: true });
+  node.addEventListener('click', () => {
+    closeCommands();
+    closeAllOverlays();
+  }, { capture: true });
   return node;
 }
 
@@ -216,7 +225,7 @@ function build() {
     makeButton('Surrender', 'KeyQ', 'Surrender when cornered')
   ]));
   center.appendChild(group('Story', [move('trailBtn'), move('caseBtn'), move('worldBtn'), move('lawBtn'), move('dreadPip')]));
-  center.appendChild(group('System', [move('fullBtn'), move('muteBtn'), move('menuBtn')])) ;
+  center.appendChild(group('System', [move('fullBtn'), move('muteBtn'), move('menuBtn')]));
 
   toggle.addEventListener('click', () => setOpen(!center.classList.contains('open')));
   window.addEventListener('keydown', e => {
