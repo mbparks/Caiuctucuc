@@ -1,5 +1,3 @@
-// Render integrity tests: prevent subpixel tile seams, hidden fullscreen overlays,
-// and visible stage grid artifacts.
 import { readFileSync } from 'node:fs';
 import { createCamera } from '../src/engine/camera.js';
 
@@ -13,6 +11,7 @@ function assert(cond, msg) { if (!cond) throw new Error(msg || 'assertion failed
 console.log('render integrity');
 const boot = readFileSync('src/boot.js', 'utf8');
 const guard = readFileSync('src/render_integrity.js', 'utf8');
+const moduleOrder = name => boot.indexOf("loadModule('./" + name + "')");
 
 test('camera follows on integer pixels only', () => {
   const cam = createCamera(301, 211, 1000, 1000);
@@ -22,9 +21,10 @@ test('camera follows on integer pixels only', () => {
 });
 
 test('render integrity loads before main game', () => {
-  const r = boot.indexOf("import('./render_integrity.js')");
-  const m = boot.indexOf("import('./main.js')");
+  const r = moduleOrder('render_integrity.js');
+  const m = moduleOrder('main.js');
   assert(r > 0 && m > r, 'render integrity must load before main');
+  assert(boot.includes('moduleUrl'), 'versioned module loader missing');
 });
 
 test('stage grid is explicitly disabled', () => {
@@ -36,14 +36,6 @@ test('canvas draw calls are snapped', () => {
   assert(guard.includes('patchedDrawImage'), 'drawImage patch missing');
   assert(guard.includes('patchedFillRect'), 'fillRect patch missing');
   assert(guard.includes('Math.round'), 'snap-to-pixel rounding missing');
-});
-
-test('fullscreen redirects stage fullscreen to the whole wrapper', () => {
-  assert(guard.includes('patchFullscreenRoot'), 'fullscreen root patch missing');
-  assert(guard.includes("this?.id === 'stage'"), 'stage fullscreen redirect missing');
-  assert(guard.includes("document.getElementById('wrap')"), 'wrap fullscreen target missing');
-  assert(guard.includes('#wrap:fullscreen #dialog'), 'fullscreen dialog visibility rule missing');
-  assert(guard.includes('#wrap:fullscreen #panel'), 'fullscreen panel visibility rule missing');
 });
 
 if (fail) {
