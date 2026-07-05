@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.35.1** (live NPC crowd separation)
+**Version: 0.36.0** (one command center, no duplicate canvas command menu)
+
+## What changed in v0.36.0
+
+This release consolidates the two competing menu structures into one command center. The page-level controls now live in a single collapsible Commands panel with Immediate, Story, and System groups. It preserves all functionality from both structures: Use / Talk, Rob / Crime, Satchel, Surrender, Trail, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and the existing system Menu.
+
+The canvas HUD no longer draws the duplicate command prompt text. The canvas is now treated as game-state display only: map, heat, coin, day, coat, SIGHT, and health. Commands live outside the canvas where they are clickable, consistent, and easier to use on mobile.
 
 ## What changed in v0.35.1
 
@@ -77,6 +83,7 @@ or directly:
     node tests/ui_cohesion.js
     node tests/render_integrity.js
     node tests/story_world.js
+    node tests/command_center.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -90,8 +97,9 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/ engine and game code (ES modules, no framework, Canvas 2D)
 - src/game/ gameplay logic including generated districts, case board, law, mountain attention, and story world decoration
 - src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
+- src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
-- src/render_integrity.js/ pixel-snapping and render artifact cleanup loaded before the renderer
+- src/render_integrity.js/ pixel-snapping, render artifact cleanup, and duplicate canvas command suppression
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -100,18 +108,19 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 
 ## Controls
 
-- Arrow keys or WASD: walk
-- E: interact, speak, enter, examine, or use the nearby object
-- T: open the Trail panel for the next useful objective
-- J: open the full case file
-- I: open the satchel
-- F: commit a direct crime against a nearby NPC, when possible
-- Q: surrender when cornered
-- Districts: travel to the expanded world maps
+- Commands: opens the unified command center
+- Use / Talk: interact with the nearest useful person or object
+- Rob / Crime: open crime actions for a nearby NPC
+- Satchel: open or close inventory
+- Surrender: surrender when cornered
+- Trail: open the next useful objective
 - Case Board: review contradictions, legal proof, supernatural truth, and open leads
+- Districts: travel to the expanded world maps
 - Law: manage heat, coat memory, and hiding actions
-- Mountain: click the Mountain status to review mountain attention, dog leads, and Gantt pressure
-- Backtick: open the cheat terminal
+- Mountain: review mountain attention, dog leads, and Gantt pressure
+- Fullscreen, Sound, and Menu: system controls
+- Arrow keys or WASD: walk
+- Keyboard shortcuts still work: E, F, I, Q, T, J, and Backtick
 
 ## Known limitations
 
@@ -119,7 +128,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.35.1 does not change the save format.
+- Saves are localStorage plus JSON export. v0.36.0 does not change the save format.
 
 ## License
 
