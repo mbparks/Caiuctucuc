@@ -2,6 +2,7 @@
 // on whole pixels, and late enough CSS cleanup removes decorative stage grids.
 
 const PATCH_FLAG = Symbol.for('caiuctucuc.renderIntegrity');
+const FULLSCREEN_FLAG = Symbol.for('caiuctucuc.fullscreenRoot');
 const HUD_COMMAND_TEXT = 'E TALK  F ROB  I SATCHEL  J CASE';
 
 function snap(v) {
@@ -10,6 +11,26 @@ function snap(v) {
 
 function fullscreenActive() {
   return Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+}
+
+function patchFullscreenRoot() {
+  if (typeof HTMLElement === 'undefined') return;
+  const proto = HTMLElement.prototype;
+  if (proto[FULLSCREEN_FLAG]) return;
+  proto[FULLSCREEN_FLAG] = true;
+
+  const request = proto.requestFullscreen;
+  if (!request) return;
+  proto.requestFullscreen = function patchedRequestFullscreen(...args) {
+    // main.js asks #stage to fullscreen. That hides dialog/panel/menu because
+    // they live beside #stage in #wrap. Redirect to #wrap so fullscreen keeps
+    // every gameplay overlay visible and interactive.
+    if (this?.id === 'stage') {
+      const wrap = document.getElementById('wrap');
+      if (wrap && wrap !== this) return request.apply(wrap, args);
+    }
+    return request.apply(this, args);
+  };
 }
 
 function patchCanvas() {
@@ -66,6 +87,32 @@ function injectCss() {
       background: #070706 !important;
       background-image: none !important;
     }
+    #wrap:fullscreen,
+    #wrap:-webkit-full-screen {
+      background: #070706 !important;
+      color: var(--ink);
+    }
+    #wrap:fullscreen #stage,
+    #wrap:-webkit-full-screen #stage {
+      min-height: 0;
+      flex: 1 1 auto;
+    }
+    #wrap:fullscreen #dialog,
+    #wrap:fullscreen #panel,
+    #wrap:fullscreen #menu,
+    #wrap:fullscreen #journal,
+    #wrap:fullscreen #term,
+    #wrap:fullscreen #trailDeck,
+    #wrap:fullscreen .world-modal,
+    #wrap:-webkit-full-screen #dialog,
+    #wrap:-webkit-full-screen #panel,
+    #wrap:-webkit-full-screen #menu,
+    #wrap:-webkit-full-screen #journal,
+    #wrap:-webkit-full-screen #term,
+    #wrap:-webkit-full-screen #trailDeck,
+    #wrap:-webkit-full-screen .world-modal {
+      z-index: 95 !important;
+    }
     canvas {
       display: block;
       image-rendering: pixelated;
@@ -76,6 +123,7 @@ function injectCss() {
   document.head.appendChild(style);
 }
 
+patchFullscreenRoot();
 patchCanvas();
 injectCss();
 setTimeout(injectCss, 0);
