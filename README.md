@@ -35,6 +35,11 @@ or directly:
 
 Pure logic tests (save round trip, keyword gating, hue and cry decay, trail objectives) run in Node with no dependencies. The same modules load in the browser.
 
+For a browser boot smoke test, install the optional jsdom dependency and run:
+
+    npm install
+    node tools/boot_smoke.mjs
+
 ## Repository layout
 
 - src/ engine and game code (ES modules, no framework, Canvas 2D)
@@ -83,7 +88,7 @@ The act skips are cumulative and grant every clue and flag the player would have
 
 ## Known Limitations
 
-- The test suite has two parts: `node tests/run.js` (pure logic and asset checks, no dependencies) and `node tools/boot_smoke.mjs` (a headless jsdom boot that catches render and camera regressions, requires `npm install jsdom`). CI runs both.
+- The default test suite is `npm test`, which runs `node tests/run.js` and `node tests/trail.js`. The optional browser boot smoke test is `node tools/boot_smoke.mjs` after `npm install`.
 - v0.0.2 renders placeholder colors keyed by gid; real tilesheets are not wired yet.
 - The art is generated, third generation (the overworld pass, NES-bold); the final art decision is still open (docs/art_decision.md) and any option drops into the documented slots.
 - Named NPCs share two generic sprites; per-character sheets follow the art decision.
