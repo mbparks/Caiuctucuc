@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.37.1** (fullscreen overlays remain interactive)
+**Version: 0.37.2** (doorway loop and map object placement polish)
+
+## What changed in v0.37.2
+
+This release fixes two map-polish problems from the street screenshot. Scheduled NPCs now use a wider street-side arrival zone and a more generous settle radius so they stop pacing in tiny correction loops near door targets. Live crowd separation still works, but scheduled townsfolk no longer keep taking one-frame steps back toward a doorway after door or crowd cleanup has nudged them.
+
+Map loading now also normalizes interactable placement. If an interactable prompt or icon is authored on a solid collision tile such as a roof, wall, or building mass, the loader moves it to the nearest reachable ground tile and records the original location. This keeps objects from visually rendering on top of buildings while preserving the interaction.
 
 ## What changed in v0.37.1
 
@@ -114,6 +120,7 @@ or directly:
     node tests/render_integrity.js
     node tests/story_world.js
     node tests/command_center.js
+    node tests/map_placement.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -131,6 +138,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
 - src/render_integrity.js/ pixel-snapping, render artifact cleanup, fullscreen keyboard legend handling, and fullscreen overlay root handling
+- src/engine/tiledmap.js/ map loading plus interactable placement normalization
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -160,7 +168,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.37.1 does not change the save format.
+- Saves are localStorage plus JSON export. v0.37.2 does not change the save format.
 
 ## License
 
