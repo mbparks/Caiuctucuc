@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.37.0** (UI architecture pass: one Trail entry, cleaner command model)
+**Version: 0.37.1** (fullscreen overlays remain interactive)
+
+## What changed in v0.37.1
+
+This release fixes the fullscreen freeze when pressing E to talk. The root cause was that fullscreen was applied to `#stage`, but conversation, satchel, menu, journal, Trail, and other overlays live beside `#stage` inside `#wrap`. In fullscreen, the browser only shows descendants of the fullscreen element, so the dialog opened but was outside the visible fullscreen tree. The game then focused the hidden dialog input, which felt like a freeze.
+
+`src/render_integrity.js` now redirects stage fullscreen requests to `#wrap`, keeping the canvas and every gameplay overlay inside the fullscreen element. Fullscreen dialog, satchel, menu, journal, Trail, terminal, and world modal overlays also receive explicit fullscreen z-index protection.
 
 ## What changed in v0.37.0
 
@@ -124,7 +130,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
-- src/render_integrity.js/ pixel-snapping, render artifact cleanup, and fullscreen keyboard legend handling
+- src/render_integrity.js/ pixel-snapping, render artifact cleanup, fullscreen keyboard legend handling, and fullscreen overlay root handling
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -146,7 +152,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Fullscreen, Sound, and Menu: system controls
 - Arrow keys or WASD: walk
 - Keyboard shortcuts still work: E, F, I, Q, T, J, and Backtick
-- In fullscreen, the canvas HUD shows the keyboard legend again
+- In fullscreen, the canvas HUD shows the keyboard legend and overlays remain visible
 
 ## Known limitations
 
@@ -154,7 +160,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.37.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.37.1 does not change the save format.
 
 ## License
 
