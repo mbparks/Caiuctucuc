@@ -1,13 +1,7 @@
-// Opening backstory screen. New games show postcard first, then this case
-// introduction, then the character creator. Existing saves skip it.
+// Opening backstory screen. When the postcard is shown, it is followed by
+// this case introduction before control returns to the creator or saved game.
 
-const SAVE_KEY = 'caiuctucuc-save';
 const STORY_FLAG = Symbol.for('caiuctucuc.openingStory');
-
-function hasSave() {
-  try { return Boolean(localStorage.getItem(SAVE_KEY)); }
-  catch { return false; }
-}
 
 function addStyle() {
   if (document.getElementById('openingStoryCss')) return;
@@ -158,11 +152,11 @@ function createOverlay() {
   const actions = document.createElement('div');
   actions.className = 'story-actions';
   const hint = document.createElement('small');
-  hint.textContent = 'Next: choose who walks into Cumberland. Keyboard: Enter continues, T opens Trail, J opens the case file once play begins.';
+  hint.textContent = 'Next: choose who walks into Cumberland, or resume the saved road already under your feet. Keyboard: Enter continues.';
   const button = document.createElement('button');
   button.type = 'button';
   button.id = 'openingStoryContinue';
-  button.textContent = 'Choose your stranger';
+  button.textContent = 'Continue into Cumberland';
   actions.appendChild(hint);
   actions.appendChild(button);
 
@@ -180,7 +174,7 @@ function createOverlay() {
 }
 
 function install() {
-  if (document.documentElement[STORY_FLAG] || hasSave()) return;
+  if (document.documentElement[STORY_FLAG]) return;
   document.documentElement[STORY_FLAG] = true;
   const overlay = createOverlay();
   const splash = document.getElementById('splash');
@@ -206,10 +200,11 @@ function install() {
   function showStory() {
     if (shown) return;
     shown = true;
-    hideCreatorIfNeeded();
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     window.__CAIUCTUCUC_OPENING_STORY_OPEN = true;
+    hideCreatorIfNeeded();
+    game?.blur();
     setTimeout(() => document.getElementById('openingStoryContinue')?.focus(), 0);
   }
 
@@ -218,9 +213,7 @@ function install() {
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
     window.__CAIUCTUCUC_OPENING_STORY_OPEN = false;
-    if (deferredCreator || panelTitle.textContent === 'WHO WALKS INTO CUMBERLAND') {
-      panel.classList.add('open');
-    }
+    if (deferredCreator) panel.classList.add('open');
     game?.focus();
   }
 
@@ -238,12 +231,18 @@ function install() {
   const panelObserver = new MutationObserver(hideCreatorIfNeeded);
   panelObserver.observe(panel, { attributes: true, attributeFilter: ['class'] });
 
-  const splashObserver = new MutationObserver(() => {
-    if (splash.classList.contains('gone') || splash.style.display === 'none') {
-      setTimeout(showStory, 680);
-    }
-  });
+  function postcardIsGone() {
+    return splash.classList.contains('gone') || splash.style.display === 'none' || getComputedStyle(splash).display === 'none';
+  }
+
+  function maybeShowStory() {
+    if (postcardIsGone()) setTimeout(showStory, 520);
+  }
+
+  const splashObserver = new MutationObserver(maybeShowStory);
   splashObserver.observe(splash, { attributes: true, attributeFilter: ['class', 'style'] });
+  setTimeout(maybeShowStory, 0);
+  setTimeout(maybeShowStory, 900);
 }
 
 install();
