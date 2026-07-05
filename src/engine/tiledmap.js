@@ -1,6 +1,7 @@
 // Loader for Tiled JSON map exports (orthogonal, finite, CSV-encoded).
 // Pure functions: runs identically in the browser and in Node tests.
 import { staticInteriorNpcObjects } from '../game/interior_life.js';
+import { generatedMapJson } from '../game/generated_maps.js';
 
 // Tiled stores flip state in the top three bits of each gid.
 const FLIP_MASK = 0x1fffffff;
@@ -68,11 +69,18 @@ function mapIdFromUrl(url) {
   return file.replace(/\.json(?:\?.*)?$/, '');
 }
 
-export async function loadMap(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('map fetch failed: ' + res.status + ' ' + url);
-  const map = parseMap(await res.json());
-  const extraNpcs = staticInteriorNpcObjects(mapIdFromUrl(url), map);
+function finishMap(mapId, map) {
+  const extraNpcs = staticInteriorNpcObjects(mapId, map);
   if (extraNpcs.length) map.objects.spawns = [...(map.objects.spawns || []), ...extraNpcs];
   return map;
+}
+
+export async function loadMap(url) {
+  const mapId = mapIdFromUrl(url);
+  const generated = generatedMapJson(mapId);
+  if (generated) return finishMap(mapId, parseMap(generated));
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('map fetch failed: ' + res.status + ' ' + url);
+  return finishMap(mapId, parseMap(await res.json()));
 }
