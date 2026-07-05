@@ -6,7 +6,7 @@ export const SAVE_FORMAT = 7;
 export function newGame() {
   return {
     format: SAVE_FORMAT,
-    version: '0.36.2',
+    version: '0.36.3',
     player: { x: 12, y: 10, marks: [], sight: 0, coin: 8, coat: 'drover', equip: {}, health: 10, maxHealth: 10, fedAbs: 0 },
     difficulty: { combat: 'frontier', survival: 'buffs', huecry: 'standard' },
     wards: [],
