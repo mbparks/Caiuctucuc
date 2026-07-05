@@ -1,0 +1,13 @@
+{
+  "npcId": "rail_patron",
+  "displayName": "Rail Worker",
+  "greeting": "The rail worker sits with shoulders hunched from coal dust and noise. He watches the door every time it opens.",
+  "shrug": "\"Track talk will not help you there.\"",
+  "deflect": "\"Company men dislike loose mouths.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Rail man. That is enough to get blamed for delays and not enough to get paid for them.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Coal line, cars, couplings, brakemen yelling in the dark. The yard will kill a careless man faster than whiskey.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"Cumberland is not a town now, not only. It is a machine that learned to eat mountains.\"" },
+    { "keyword": "QUARRY", "gate": "open", "text": "\"Stone comes down strange lately. Men from the cut drink hard and leave early. That is not usual.\"" }
+  ]
+}
