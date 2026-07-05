@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.40.0** (unified Case File)
+**Version: 0.40.1** (postcard intro flow fix)
+
+## What changed in v0.40.1
+
+This release fixes the backstory screen being skipped after the postcard when a browser already had a local save. The intro is now tied to the postcard flow itself instead of localStorage. If the postcard appears and is dismissed, the backstory screen appears before control returns to the character creator or saved game.
+
+The screen also catches cases where the postcard was already hidden before the observer saw the class change, so it no longer depends on a single timing window.
 
 ## What changed in v0.40.0
 
@@ -22,7 +28,7 @@ New games now have a three-step opening flow:
 2. A new backstory screen explaining Cumberland, Tam Hollis, Constable Beall, the human murder case, and the older haunting under the mountain.
 3. The character creator, where the player chooses who walks into town.
 
-The backstory screen appears only for new games, after the postcard fades and before the character creator becomes playable. Existing saves skip it. The screen is implemented in `src/opening_story.js`, loaded before `src/main.js` so it can observe the splash flow and defer the creator panel until the player continues.
+The backstory screen appears after the postcard fades and before the character creator becomes playable. The screen is implemented in `src/opening_story.js`, loaded before `src/main.js` so it can observe the splash flow and defer the creator panel until the player continues.
 
 ## What changed in v0.38.0
 
@@ -115,7 +121,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/game/ gameplay logic including generated districts, case board, law, mountain attention, and story world decoration
 - src/game/generated_maps.js/ generated playable districts with real Cumberland place naming in visible labels and text
 - src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
-- src/opening_story.js/ new-game backstory screen between postcard and character creator
+- src/opening_story.js/ backstory screen between postcard and character creator or saved game
 - src/case_file_unified.js/ adds the Board tab and retires the separate Case Board modal
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
@@ -151,7 +157,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Real place names are now used for the quarry and final cave locations, but the mystery events themselves remain fictionalized.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.40.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.40.1 does not change the save format.
 
 ## License
 
