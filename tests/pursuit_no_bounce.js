@@ -54,6 +54,13 @@ test('scheduled townsfolk settle instead of taking tiny corrective doorway steps
   assert(dist(next, alreadyNearLane) < 0.01, 'nearby scheduled NPC should settle, not pace: ' + JSON.stringify({ next, alreadyNearLane }));
 });
 
+test('door cleaner nudge does not get pulled back next frame', () => {
+  const doorTarget = { x: 320, y: 160 };
+  const cleanedOffDoorway = { name: 'doyle', x: 336, y: 176, home: { x: 320, y: 160 }, props: { npcId: 'doyle' } };
+  const next = seekStep(cleanedOffDoorway, doorTarget, 40, 0.16, open);
+  assert(dist(next, cleanedOffDoorway) < 0.01, 'schedule pulled NPC back toward doorway after cleanup: ' + JSON.stringify({ next, cleanedOffDoorway }));
+});
+
 test('separation respects collision and does not shove into walls', () => {
   const wall = (px, py) => px < 90 || py < 90;
   const target = { x: 120, y: 120 };
