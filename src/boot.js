@@ -91,4 +91,9 @@ if (window.__CAIUCTUCUC_BOOTED) {
   } catch (err) {
     console.warn('[caiuctucuc] World expansion did not load:', describeError(err));
   }
+  try {
+    await import('./ui_cohesion.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] UI cohesion did not load:', describeError(err));
+  }
 }
