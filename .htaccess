@@ -1,0 +1,6 @@
+# Static hosting hints for Apache/cPanel/x10hosting deployments.
+# ES modules and map JSON must not be served as HTML or plain text.
+AddType application/javascript .js .mjs
+AddType application/json .json
+AddType image/png .png
+AddType image/svg+xml .svg
