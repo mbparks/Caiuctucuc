@@ -1,0 +1,13 @@
+{
+  "npcId": "clerk_patron",
+  "displayName": "Court Clerk",
+  "greeting": "The clerk keeps one finger in the ledger and one eye on you. Ink freckles both cuffs.",
+  "shrug": "\"No index under that heading.\"",
+  "deflect": "\"The court answers better questions than that.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Clerk to the court. The name matters less than the hand that copies it.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I copy, file, misfile, and pretend every missing page was missing before I arrived.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"Cumberland keeps records because nobody trusts memory. Then men change the records.\"" },
+    { "keyword": "LEDGER", "gate": "open", "text": "\"A razored page has a louder voice than a written one, if you know how to listen.\"" }
+  ]
+}
