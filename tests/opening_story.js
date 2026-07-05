@@ -11,11 +11,12 @@ function assert(cond, msg) { if (!cond) throw new Error(msg || 'assertion failed
 console.log('opening story');
 const boot = readFileSync('src/boot.js', 'utf8');
 const story = readFileSync('src/opening_story.js', 'utf8');
+const moduleOrder = name => boot.indexOf("loadModule('./" + name + "')");
 
 test('opening story loads between render guard and main game', () => {
-  const render = boot.indexOf("import('./render_integrity.js')");
-  const opening = boot.indexOf("import('./opening_story.js')");
-  const main = boot.indexOf("import('./main.js')");
+  const render = moduleOrder('render_integrity.js');
+  const opening = moduleOrder('opening_story.js');
+  const main = moduleOrder('main.js');
   assert(render > 0 && opening > render && main > opening, 'opening story must load before main to observe the splash flow');
 });
 
