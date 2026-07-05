@@ -2,6 +2,7 @@
 // on whole pixels, and late enough CSS cleanup removes decorative stage grids.
 
 const PATCH_FLAG = Symbol.for('caiuctucuc.renderIntegrity');
+const SUPPRESSED_HUD_TEXT = new Set(['E TALK  F ROB  I SATCHEL  J CASE']);
 
 function snap(v) {
   return Number.isFinite(v) ? Math.round(v) : v;
@@ -41,6 +42,12 @@ function patchCanvas() {
   const strokeRect = proto.strokeRect;
   proto.strokeRect = function patchedStrokeRect(x, y, w, h) {
     return strokeRect.call(this, snap(x), snap(y), snap(w), snap(h));
+  };
+
+  const fillText = proto.fillText;
+  proto.fillText = function patchedFillText(text, x, y, ...rest) {
+    if (SUPPRESSED_HUD_TEXT.has(String(text))) return;
+    return fillText.call(this, text, snap(x), snap(y), ...rest);
   };
 }
 
