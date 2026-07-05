@@ -6,7 +6,9 @@ AddType image/png .png
 AddType image/svg+xml .svg
 
 <IfModule mod_headers.c>
-  <FilesMatch "\.(js|mjs|json)$">
-    Header set Cache-Control "no-cache, must-revalidate"
+  <FilesMatch "\.(html|js|mjs|json)$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
   </FilesMatch>
 </IfModule>
