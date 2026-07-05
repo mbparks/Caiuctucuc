@@ -2,10 +2,14 @@
 // on whole pixels, and late enough CSS cleanup removes decorative stage grids.
 
 const PATCH_FLAG = Symbol.for('caiuctucuc.renderIntegrity');
-const SUPPRESSED_HUD_TEXT = new Set(['E TALK  F ROB  I SATCHEL  J CASE']);
+const HUD_COMMAND_TEXT = 'E TALK  F ROB  I SATCHEL  J CASE';
 
 function snap(v) {
   return Number.isFinite(v) ? Math.round(v) : v;
+}
+
+function fullscreenActive() {
+  return Boolean(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
 }
 
 function patchCanvas() {
@@ -46,7 +50,7 @@ function patchCanvas() {
 
   const fillText = proto.fillText;
   proto.fillText = function patchedFillText(text, x, y, ...rest) {
-    if (SUPPRESSED_HUD_TEXT.has(String(text))) return;
+    if (String(text) === HUD_COMMAND_TEXT && !fullscreenActive()) return;
     return fillText.call(this, text, snap(x), snap(y), ...rest);
   };
 }
