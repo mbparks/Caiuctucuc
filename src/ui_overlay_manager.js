@@ -7,19 +7,9 @@ const OVERLAY_SELECTORS = [
 ];
 
 const TRIGGER_SELECTORS = [
-  '#trailBtn', '#caseBtn', '#worldBtn', '#lawBtn', '#dreadPip', '#menuBtn',
-  '#trailPulse button', '#commandCenter .cc-action'
+  '#trailOpenBtn', '#caseBtn', '#worldBtn', '#lawBtn', '#dreadPip', '#menuBtn',
+  '#commandCenter .cc-action'
 ];
-
-function matchesAny(node, selectors) {
-  return selectors.some(sel => node?.matches?.(sel));
-}
-
-function overlayId(node) {
-  if (!node) return '';
-  if (node.id) return '#' + node.id;
-  return node.classList?.contains('world-modal') ? '.world-modal' : '';
-}
 
 function setExpanded(id, expanded) {
   const btn = document.getElementById(id);
@@ -33,7 +23,7 @@ export function closeOverlays(except = null) {
     node.classList.remove('open');
     node.setAttribute('aria-hidden', 'true');
   }
-  setExpanded('trailBtn', false);
+  setExpanded('trailOpenBtn', false);
   const commandCenter = document.getElementById('commandCenter');
   const commandToggle = document.getElementById('commandToggle');
   if (commandCenter && commandCenter !== exceptNode && !commandCenter.contains(exceptNode)) {
@@ -68,12 +58,12 @@ document.addEventListener('click', e => {
   // Let close buttons only close their own panel; they should not unexpectedly
   // clear the entire HUD state.
   if (target.classList.contains('world-close') || target.classList.contains('close')) return;
-  closeOverlays();
+  closeOverlays(target.id === 'trailOpenBtn' ? '#trailDeck' : null);
 }, true);
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeOverlays();
-  if (['KeyT', 'KeyI', 'KeyJ'].includes(e.code)) closeOverlays();
+  if (['KeyT', 'KeyI', 'KeyJ'].includes(e.code)) closeOverlays(e.code === 'KeyT' ? '#trailDeck' : null);
 }, true);
 
 // Defensive cleanup for any already-stacked page after hot reload or cached UI.
