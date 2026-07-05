@@ -118,4 +118,9 @@ if (window.__CAIUCTUCUC_BOOTED) {
   } catch (err) {
     console.warn('[caiuctucuc] Command center did not load:', describeError(err));
   }
+  try {
+    await import('./case_file_unified.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] Unified Case File did not load:', describeError(err));
+  }
 }
