@@ -1,0 +1,13 @@
+{
+  "npcId": "canal_patron",
+  "displayName": "Canal Hand",
+  "greeting": "The canal hand cups both hands around a mug as if warming them over a stove. Mud dries in stripes on his trousers.",
+  "shrug": "\"The canal has words for that, maybe. I do not.\"",
+  "deflect": "\"Not where ears are drinking.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Call me a canal hand. If you know the locks, you know the man.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Lines, locks, mule teams, freight. Honest work until night, then men ask no questions and pay in advance.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"This town thinks the road made it. The basin knows better. Everything heavy comes to water first.\"" },
+    { "keyword": "CREEK", "gate": "open", "text": "\"A creek can hide a thing for half a day. It cannot keep boots dry for a drowned man.\"" }
+  ]
+}
