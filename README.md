@@ -4,91 +4,50 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.37.2** (doorway loop and map object placement polish)
+**Version: 0.38.0** (real Cumberland place naming)
+
+## What changed in v0.38.0
+
+This release replaces invented district labels with real Cumberland-area place names where the game has enough geographic grounding.
+
+- The former quarry district is now **Cumberland Quarry** in the Places panel and map text.
+- The quarry clue language now refers to the **Wills Creek Formation**.
+- The final cave district is now **Cumberland Bone Cave**.
+- The cave approach refers to **Keyser limestone**.
+- The Districts button is now **Places**, and the travel modal is titled **Cumberland Places**.
+
+Internal map ids are unchanged for save compatibility. For example, `quarry` and `cathedral` still exist as internal map keys, but visible player-facing labels now use real place names.
+
+## What changed in v0.37.3
+
+This release removes the remaining scheduled-NPC doorway feedback loop. Scheduled NPCs near their authored destination now settle instead of correcting back toward the exact door coordinate after doorway cleanup nudges them away.
 
 ## What changed in v0.37.2
 
-This release fixes two map-polish problems from the street screenshot. Scheduled NPCs now use a wider street-side arrival zone and a more generous settle radius so they stop pacing in tiny correction loops near door targets. Live crowd separation still works, but scheduled townsfolk no longer keep taking one-frame steps back toward a doorway after door or crowd cleanup has nudged them.
-
-Map loading now also normalizes interactable placement. If an interactable prompt or icon is authored on a solid collision tile such as a roof, wall, or building mass, the loader moves it to the nearest reachable ground tile and records the original location. This keeps objects from visually rendering on top of buildings while preserving the interaction.
+This release fixes two map-polish problems from the street screenshot. Scheduled NPCs use a wider street-side arrival zone and a more generous settle radius so they stop pacing in tiny correction loops near door targets. Map loading also normalizes interactable placement. If an interactable prompt or icon is authored on a solid collision tile such as a roof, wall, or building mass, the loader moves it to the nearest reachable ground tile and records the original location.
 
 ## What changed in v0.37.1
 
-This release fixes the fullscreen freeze when pressing E to talk. The root cause was that fullscreen was applied to `#stage`, but conversation, satchel, menu, journal, Trail, and other overlays live beside `#stage` inside `#wrap`. In fullscreen, the browser only shows descendants of the fullscreen element, so the dialog opened but was outside the visible fullscreen tree. The game then focused the hidden dialog input, which felt like a freeze.
-
-`src/render_integrity.js` now redirects stage fullscreen requests to `#wrap`, keeping the canvas and every gameplay overlay inside the fullscreen element. Fullscreen dialog, satchel, menu, journal, Trail, terminal, and world modal overlays also receive explicit fullscreen z-index protection.
+This release fixes the fullscreen freeze when pressing E to talk. Fullscreen requests for `#stage` redirect to `#wrap`, keeping the canvas and every gameplay overlay inside the fullscreen element.
 
 ## What changed in v0.37.0
 
-This release replaces the piecemeal Trail/Commands behavior with a clearer UI rule set. The Trail strip is now the only visible Trail opener and remains the current objective surface. Commands no longer contains a second Trail button. Keyboard T still opens Trail, and fullscreen still shows the canvas keyboard legend.
+This release replaces the piecemeal Trail/Commands behavior with a clearer UI rule set. The Trail strip is now the only visible Trail opener and remains the current objective surface. Commands focuses on immediate actions and system/story panels.
 
-Commands now focuses on immediate actions and system/story panels: Use / Talk, Rob / Crime, Satchel, Surrender, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and Menu. Trail is no longer treated as just another button inside the command drawer, because it is the player's active objective rail.
+## What changed in v0.36
 
-## What changed in v0.36.3
-
-This release corrects the fullscreen regression from the command consolidation work. Keyboard shortcuts were still wired in code, but the in-canvas command legend had been suppressed everywhere. In fullscreen mode the page-level Commands drawer may not be visible, so the canvas needs to show the keyboard reference again.
-
-The canvas command legend is now suppressed only outside fullscreen. When fullscreen is active, the in-canvas legend returns so players can see E Talk, F Rob, I Satchel, and J Case while the game occupies the screen.
-
-## What changed in v0.36.2
-
-This release fixes the stacked-panel problem shown when Commands, Law, Districts, Trail, and Satchel could all remain open at once. A new `src/ui_overlay_manager.js` coordinates the independent UI modules and enforces one active major overlay at a time. Opening Trail, Case Board, Districts, Law, Mountain, Menu, Satchel, Journal, or Commands now closes the other major overlays first.
-
-The overlay manager handles mouse/touch triggers, Escape, and the main keyboard shortcuts for Trail, Satchel, and Journal. The command center now calls the same shared overlay manager before launching actions, so panels should no longer pile up on top of the game or each other.
-
-## What changed in v0.36.1
-
-This release cleans up the HUD overlap introduced by the first command consolidation pass. The Commands panel is now a temporary drawer instead of a layout-expanding header section. It stays compact until opened, overlays as a bounded scrollable drawer, closes on Escape, closes when clicking outside it, and closes automatically before launching actions such as Satchel, Trail, Case Board, Districts, Law, Mountain, Fullscreen, Sound, or Menu.
-
-The result is one command structure without the command drawer remaining stacked above gameplay panels. Satchel and other panels should no longer appear underneath an expanded command grid.
-
-## What changed in v0.36.0
-
-This release consolidates the two competing menu structures into one command center. The page-level controls now live in a single collapsible Commands panel with Immediate, Story, and System groups. It preserves Use / Talk, Rob / Crime, Satchel, Surrender, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and the existing system Menu.
-
-The canvas HUD no longer draws the duplicate command prompt text outside fullscreen. The canvas is otherwise treated as game-state display only: map, heat, coin, day, coat, SIGHT, and health. Commands live outside the canvas where they are clickable, consistent, and easier to use on mobile. In fullscreen, the canvas keeps its keyboard legend because the page-level command drawer may not be available.
-
-## What changed in v0.35.1
-
-This release fixes the reintroduced NPC crowding bug around tavern doors and busy sidewalk targets. The earlier fix gave scheduled NPCs separate target offsets, but several NPCs could still converge into the same interaction space during live movement. `src/game/pursuit.js` now keeps a lightweight crowd registry inside `seekStep()` and pushes each NPC's next position away from recent NPC positions before returning it, while still respecting collision.
-
-The existing no-bounce regression suite now includes a multi-frame tavern-door clump test and a collision-respect test so future story, schedule, or NPC-density changes do not bring this bug back.
+The v0.36 series consolidated the command UI, restored fullscreen keyboard help, and added one-active-overlay behavior so panels do not stack on top of each other.
 
 ## What changed from v0.30 to v0.35
 
-This release deepens the systems added in v0.23 through v0.29 and makes them work together as story experience.
+This release deepened the systems added in v0.23 through v0.29 and made them work together as story experience.
 
-- v0.30 World Connections: town now receives physical road exits to the canal, rail yard, quarry, and Wills Mountain. The Districts panel remains as a fast travel ledger, but the maps are no longer only menu destinations.
-- v0.31 Time-Based Interiors and Eavesdropping: key interiors gain hour-sensitive overheard conversations. The Blue Mule, courthouse, survey office, and surgery now reveal different story fragments by time of day.
-- v0.32 Case Board 2.0: the Case Board separates contradictions, legal proof, supernatural truth, accusation logic, evidence threads, and open leads. It makes the difference between true and provable explicit.
-- v0.33 Gantt Pressure: Prosper Gantt now reacts to evidence weight. As the file grows, his chainman appears, quarry pressure rises, moved powder appears, and burned notes can surface in the survey office.
-- v0.34 Dog and Mountain Systems: the dog now points toward the next investigative place, while Mountain Attention gains readable world effects in the Mountain panel and map objects.
-- v0.35 Story Set Pieces: the records room, Coombs's grave, Tam's dry boots, the true survey line, Nan's ribbon, and trial access are now physical interactables tied to the existing clue and trial systems.
-
-Most of the pass lives in `src/game/story_world.js`, which decorates loaded maps with story objects. The map loader preserves object ids and applies the decorator after generated maps and interior occupants are loaded.
-
-## What changed in v0.29.2
-
-This release fixes visible grid-line artifacts and screen tearing while walking. The camera now snaps to whole pixels instead of fractional positions, which prevents tile edges from being drawn between pixels. A new `src/render_integrity.js` guard loads before the main game renderer, snaps canvas draw calls to whole pixels, keeps image smoothing off, and removes the decorative stage grid introduced during the UI cohesion pass.
-
-## What changed in v0.29.1
-
-This release cleans up the interface so it feels like one game instead of several feature layers bolted together. A new `src/ui_cohesion.js` module loads after the main game, Trail helper, and world expansion UI. It normalizes the header, buttons, Trail strip, Trail deck, Districts, Case Board, Law panel, Mountain status, toast messages, journal, dialog, menu, action panel, terminal, canvas frame, and footer under one frontier-ledger visual language.
-
-## What changed from v0.24 to v0.29
-
-This release built the planned gameplay expansion as real playable systems.
-
-- v0.24 Cumberland Expansion: the map loader now supports generated Tiled-compatible districts. New playable districts include Canal Basin and Wills Creek, B&O Rail Yard, Quarry Deep Cut, Wills Mountain, Marked Caves, and the Cold Cathedral.
-- v0.25 Investigation Upgrade: the Case Board groups evidence cards by thread, lists open leads, and reports trial readiness from the actual evidence score.
-- v0.26 Crime and Law Upgrade: the Law panel explains the current heat stage, witness coat memory, and offers real actions such as paying a runner, changing coats, and hiding on the towpath.
-- v0.27 Quarry and Gantt Pressure: the quarry map now contains the singing stone, calm bootprints, gentleman boot nail, sealed seam murmur, benchmark, and Gantt presence.
-- v0.28 Supernatural Systems: Mountain Attention reacts to SIGHT, night, sealed maps, benchmark progress, Nan, and the chamber.
-- v0.29 Final Act Expansion: Wills Mountain, cave chain, and Cold Cathedral maps provide the marked path to Nan and the ending chamber.
-
-## What changed in v0.23.0
-
-This release started the Interior Life milestone. Building interiors are no longer empty rooms. The map loader decorates interiors with named NPCs and ambient occupants when the player enters them. Ambient occupants have simple keyword dialog.
+- v0.30 World Connections: town receives physical road exits to the canal, rail yard, Cumberland Quarry, and Wills Mountain.
+- v0.31 Time-Based Interiors and Eavesdropping: key interiors gain hour-sensitive overheard conversations.
+- v0.32 Case Board 2.0: the Case Board separates contradictions, legal proof, supernatural truth, accusation logic, evidence threads, and open leads.
+- v0.33 Gantt Pressure: Prosper Gantt reacts to evidence weight.
+- v0.34 Dog and Mountain Systems: the dog points toward the next investigative place, while Mountain Attention gains readable world effects.
+- v0.35 Story Set Pieces: the records room, Coombs's grave, Tam's dry boots, the true survey line, Nan's ribbon, and trial access became physical interactables.
 
 ## Running it
 
@@ -121,6 +80,7 @@ or directly:
     node tests/story_world.js
     node tests/command_center.js
     node tests/map_placement.js
+    node tests/real_places.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -131,8 +91,9 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 
 ## Repository layout
 
-- src/ engine and game code (ES modules, no framework, Canvas 2D)
+- src/ engine and game code, ES modules, no framework, Canvas 2D
 - src/game/ gameplay logic including generated districts, case board, law, mountain attention, and story world decoration
+- src/game/generated_maps.js/ generated playable districts with real Cumberland place naming in visible labels and text
 - src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
@@ -154,7 +115,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Satchel: open or close inventory
 - Surrender: surrender when cornered
 - Case Board: review contradictions, legal proof, supernatural truth, and open leads
-- Districts: travel to the expanded world maps
+- Places: travel to the expanded world maps
 - Law: manage heat, coat memory, and hiding actions
 - Mountain: review mountain attention, dog leads, and Gantt pressure
 - Fullscreen, Sound, and Menu: system controls
@@ -165,10 +126,10 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 ## Known limitations
 
 - The generated districts are real playable maps, but hand-authored art layouts can still make them prettier.
-- Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
+- Real place names are now used for the quarry and final cave locations, but the mystery events themselves remain fictionalized.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.37.2 does not change the save format.
+- Saves are localStorage plus JSON export. v0.38.0 does not change the save format.
 
 ## License
 
