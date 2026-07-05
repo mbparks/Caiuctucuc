@@ -1,4 +1,4 @@
-// Opening story tests: new games must see postcard, then backstory, then creator.
+// Opening story tests: postcard must be followed by backstory before control returns.
 import { readFileSync } from 'node:fs';
 
 let pass = 0, fail = 0;
@@ -19,18 +19,19 @@ test('opening story loads between render guard and main game', () => {
   assert(render > 0 && opening > render && main > opening, 'opening story must load before main to observe the splash flow');
 });
 
-test('opening story is new-game only and follows the postcard', () => {
-  assert(story.includes("localStorage.getItem(SAVE_KEY)"), 'opening story must skip existing saves');
+test('opening story follows the postcard even when a save exists', () => {
+  assert(!story.includes('localStorage.getItem(SAVE_KEY)'), 'opening story must not skip just because localStorage has a save');
   assert(story.includes("document.getElementById('splash')"), 'opening story must attach to postcard splash');
   assert(story.includes("splash.classList.contains('gone')"), 'opening story must wait for postcard dismissal');
-  assert(story.includes('setTimeout(showStory, 680)'), 'opening story should appear after the postcard fade');
+  assert(story.includes('getComputedStyle(splash).display'), 'opening story should catch already-hidden splash state');
+  assert(story.includes('setTimeout(maybeShowStory, 900)'), 'opening story should retry after main has manipulated the splash');
 });
 
 test('opening story defers creator until story is continued', () => {
   assert(story.includes("WHO WALKS INTO CUMBERLAND"), 'creator panel detection missing');
   assert(story.includes('deferredCreator'), 'creator deferral flag missing');
   assert(story.includes("panel.classList.remove('open')"), 'creator should be hidden while story is open');
-  assert(story.includes("panel.classList.add('open')"), 'creator should reopen after story continues');
+  assert(story.includes("if (deferredCreator) panel.classList.add('open')"), 'creator should reopen only if it was deferred');
 });
 
 test('opening story explains the game thesis', () => {
