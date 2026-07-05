@@ -76,7 +76,14 @@ setTimeout(() => {
 try {
   await import('./main.js');
   if (!window.__CAIUCTUCUC_BOOTED) throw new Error('main.js imported, but did not mark the game as booted.');
-  await import('./gameplay_boost.js');
 } catch (err) {
   showBootFailure('The main game module could not be imported.', err);
+}
+
+if (window.__CAIUCTUCUC_BOOTED) {
+  try {
+    await import('./gameplay_boost.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] Trail helper did not load:', describeError(err));
+  }
 }
