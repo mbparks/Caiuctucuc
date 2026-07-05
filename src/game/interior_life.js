@@ -57,7 +57,7 @@ const INTERIOR_CROWDS = {
     { id: 'shopper_patron', name: 'shopper', hours: [9, 18] }
   ],
   int_gaol: [
-    { id: 'prisoner_patron', name: 'prisoner', hours: [0, 24] }
+    { id: 'gaol_patron', name: 'gaol inmate', hours: [0, 24] }
   ],
   int_surgery: [
     { id: 'patient_patron', name: 'patient', hours: [8, 20] }
@@ -65,6 +65,35 @@ const INTERIOR_CROWDS = {
   int_survey: [
     { id: 'chainman_patron', name: 'chainman', hours: [8, 18] }
   ]
+};
+
+const STATIC_INTERIORS = {
+  int_bluemule: ['doyle', 'drover_patron', 'canal_patron', 'rail_patron'],
+  int_courthouse: ['beall', 'rood', 'fenwick', 'clerk_patron'],
+  int_store: ['shopper_patron'],
+  int_survey: ['gantt', 'chainman_patron'],
+  int_surgery: ['ward', 'patient_patron'],
+  int_gaol: ['beall', 'gaol_patron'],
+  int_smithy: ['feig'],
+  int_cresap: ['cresap'],
+  int_school: ['rood'],
+  int_shack: ['mcteague'],
+  int_fenwick: ['fenwick'],
+  int_shanty: ['coombs'],
+  int_ferry: ['shanks'],
+  int_stable: ['bright'],
+  int_brahm: ['brahm'],
+  int_lockhouse: ['pyle']
+};
+
+const DISPLAY_NAMES = {
+  doyle: 'Peg Doyle', beall: 'Beall', rood: 'Pelham Rood', fenwick: 'Fenwick',
+  gantt: 'Prosper Gantt', ward: 'Ward', feig: 'Feig', cresap: 'Cresap',
+  mcteague: 'McTeague', coombs: 'Coombs', shanks: 'Shanks', bright: 'Bright',
+  brahm: 'Brahm', pyle: 'Pyle',
+  drover_patron: 'drover', canal_patron: 'canal hand', rail_patron: 'rail worker',
+  clerk_patron: 'court clerk', shopper_patron: 'shopper', gaol_patron: 'gaol inmate',
+  patient_patron: 'patient', chainman_patron: 'chainman'
 };
 
 function inHours(hour, range) {
@@ -117,4 +146,20 @@ export function interiorStandPosition(mapWidth, mapHeight, index) {
   const xTile = left + (index * 3) % cols;
   const yTile = top + Math.floor((index * 3) / cols) % usableRows;
   return { x: xTile * 16, y: yTile * 16 };
+}
+
+export function staticInteriorNpcObjects(mapId, map) {
+  const ids = STATIC_INTERIORS[mapId] || [];
+  return ids.map((npcId, index) => {
+    const pos = interiorStandPosition(map.width, map.height, index);
+    return {
+      name: DISPLAY_NAMES[npcId] || npcId,
+      type: 'npc',
+      x: pos.x,
+      y: pos.y,
+      width: 16,
+      height: 16,
+      props: { npcId, interior: true }
+    };
+  });
 }
