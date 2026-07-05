@@ -1,5 +1,6 @@
-// Unified command center. This replaces the scattered page buttons plus the
-// command text inside the canvas HUD with one coherent command structure.
+// Unified command center. This replaces scattered page buttons with one
+// coherent action/system drawer. Trail is intentionally not in this drawer:
+// the Trail strip is the single visible objective surface and Trail entry.
 
 function closeAllOverlays() {
   if (window.CAIUCTUCUC_CLOSE_OVERLAYS) window.CAIUCTUCUC_CLOSE_OVERLAYS();
@@ -224,7 +225,7 @@ function build() {
     makeButton('Satchel', 'KeyI', 'Open or close the satchel'),
     makeButton('Surrender', 'KeyQ', 'Surrender when cornered')
   ]));
-  center.appendChild(group('Story', [move('trailBtn'), move('caseBtn'), move('worldBtn'), move('lawBtn'), move('dreadPip')]));
+  center.appendChild(group('Story', [move('caseBtn'), move('worldBtn'), move('lawBtn'), move('dreadPip')]));
   center.appendChild(group('System', [move('fullBtn'), move('muteBtn'), move('menuBtn')]));
 
   toggle.addEventListener('click', () => setOpen(!center.classList.contains('open')));
