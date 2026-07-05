@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.22.1** (scheduled NPCs no longer bounce against doorway safety zones)
+**Version: 0.22.2** (shared-hosting boot diagnostics and deployment hardening)
+
+## What changed in v0.22.2
+
+This release fixes the confusing hosted-site failure where the page shell loaded but the game reported only that the main script never ran. The browser now starts through `src/boot.js`, which dynamically imports the game and catches module-loading failures. On shared hosting, that means the page should now report the exact missing or blocked module instead of `unknown error`.
+
+The Trail helper now loads only after the main game module boots successfully, so a broken deployment no longer shows a half-working Trail strip on a dead canvas. The build script now stamps the current version with a regex instead of looking for one old hard-coded comment. It also copies `.htaccess`, which adds Apache MIME hints for `.js`, `.mjs`, `.json`, `.png`, and `.svg` files on x10hosting-style deployments.
 
 ## What changed in v0.22.1
 
@@ -28,7 +34,9 @@ Then visit http://localhost:8000. The build script produces a deployable snapsho
 
     python3 tools/build.py
 
-The build stamps the version, copies src and assets, and fails if any em dash is found anywhere in the tree.
+Upload the contents of `dist/` to the public web folder on x10hosting, including `.htaccess`, `src/`, and `assets/`. Do not upload only `index.html`; the module files and map JSON must remain in their folders.
+
+The build stamps the version, copies src and assets, copies `.htaccess` when present, and fails if any em dash or en dash is found anywhere in the tree.
 
 ## Running tests
 
@@ -120,7 +128,7 @@ The act skips are cumulative and grant every clue and flag the player would have
 - Cave-Aged and The Excise Man's Arithmetic wait on Marsh and Pyle, who are post-1.0 NPCs; the caves carry their foreshadowing (the horseshoe, the casks).
 - Nan appears in the chamber as prose; her sprite and the Trent farm scenes come with final art.
 - Dialog, hue and cry, SIGHT, and Trail exist as tested logic modules and are wired to the browser build.
-- Saves are localStorage plus JSON export. v0.22.1 does not change the save format.
+- Saves are localStorage plus JSON export. v0.22.2 does not change the save format.
 
 ## License
 
