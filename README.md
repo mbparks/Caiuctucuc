@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.36.3** (fullscreen keyboard legend restored)
+**Version: 0.37.0** (UI architecture pass: one Trail entry, cleaner command model)
+
+## What changed in v0.37.0
+
+This release replaces the piecemeal Trail/Commands behavior with a clearer UI rule set. The Trail strip is now the only visible Trail opener and remains the current objective surface. Commands no longer contains a second Trail button. Keyboard T still opens Trail, and fullscreen still shows the canvas keyboard legend.
+
+Commands now focuses on immediate actions and system/story panels: Use / Talk, Rob / Crime, Satchel, Surrender, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and Menu. Trail is no longer treated as just another button inside the command drawer, because it is the player's active objective rail.
 
 ## What changed in v0.36.3
 
@@ -26,7 +32,7 @@ The result is one command structure without the command drawer remaining stacked
 
 ## What changed in v0.36.0
 
-This release consolidates the two competing menu structures into one command center. The page-level controls now live in a single collapsible Commands panel with Immediate, Story, and System groups. It preserves all functionality from both structures: Use / Talk, Rob / Crime, Satchel, Surrender, Trail, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and the existing system Menu.
+This release consolidates the two competing menu structures into one command center. The page-level controls now live in a single collapsible Commands panel with Immediate, Story, and System groups. It preserves Use / Talk, Rob / Crime, Satchel, Surrender, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and the existing system Menu.
 
 The canvas HUD no longer draws the duplicate command prompt text outside fullscreen. The canvas is otherwise treated as game-state display only: map, heat, coin, day, coat, SIGHT, and health. Commands live outside the canvas where they are clickable, consistent, and easier to use on mobile. In fullscreen, the canvas keeps its keyboard legend because the page-level command drawer may not be available.
 
@@ -127,12 +133,12 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 
 ## Controls
 
+- Trail strip: shows the current lead and opens the Trail deck with View Trail
 - Commands: opens the unified command center outside fullscreen
 - Use / Talk: interact with the nearest useful person or object
 - Rob / Crime: open crime actions for a nearby NPC
 - Satchel: open or close inventory
 - Surrender: surrender when cornered
-- Trail: open the next useful objective
 - Case Board: review contradictions, legal proof, supernatural truth, and open leads
 - Districts: travel to the expanded world maps
 - Law: manage heat, coat memory, and hiding actions
@@ -148,7 +154,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.36.3 does not change the save format.
+- Saves are localStorage plus JSON export. v0.37.0 does not change the save format.
 
 ## License
 
