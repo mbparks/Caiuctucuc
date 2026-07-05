@@ -4,19 +4,24 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.23.0** (Interior Life: buildings now load with occupants)
+**Version: 0.29.0** (world expansion, case board, law actions, quarry pressure, mountain attention, and final-act maps)
+
+## What changed from v0.24 to v0.29
+
+This release builds the planned gameplay expansion as real playable systems.
+
+- v0.24 Cumberland Expansion: the map loader now supports generated Tiled-compatible districts. New playable districts include Canal Basin and Wills Creek, B&O Rail Yard, Quarry Deep Cut, Wills Mountain, Marked Caves, and the Cold Cathedral.
+- v0.25 Investigation Upgrade: the Case Board groups evidence cards by thread, lists open leads, and reports trial readiness from the actual evidence score.
+- v0.26 Crime and Law Upgrade: the Law panel explains the current heat stage, witness coat memory, and offers real actions such as paying a runner, changing coats, and hiding on the towpath.
+- v0.27 Quarry and Gantt Pressure: the quarry map now contains the singing stone, calm bootprints, gentleman boot nail, sealed seam murmur, benchmark, and Gantt presence.
+- v0.28 Supernatural Systems: Mountain Attention reacts to SIGHT, night, sealed maps, benchmark progress, Nan, and the chamber.
+- v0.29 Final Act Expansion: Wills Mountain, cave chain, and Cold Cathedral maps provide the marked path to Nan and the ending chamber.
+
+The expansion UI loads after the main game and adds Districts, Case Board, Law, and Mountain status controls to the header. The normal map loader, object parser, dialog system, clue system, job system, benchmark system, wisp system, and chamber ending are used for the new districts.
 
 ## What changed in v0.23.0
 
-This release starts the Interior Life milestone. Building interiors are no longer empty rooms. The map loader now decorates interiors with named NPCs and ambient occupants when the player enters them. The Blue Mule has Peg and working patrons, the courthouse has civic occupants, the survey office has Gantt and a chainman, the surgery has Ward and a patient, and other key interiors now have their expected people.
-
-Ambient occupants also have simple keyword dialog. They give local flavor about roads, canal work, rail work, ledgers, the survey office, and everyday life in Cumberland.
-
-The new logic lives in `src/game/interior_life.js`, is applied by `src/engine/tiledmap.js`, and is covered by `tests/interior_life.js`.
-
-## Earlier v0.22 fixes
-
-v0.22.5 moved scheduled NPCs into street-side standing lanes near doors. v0.22.4 added separate scheduled standing spots for shared targets. v0.22.3 added module contract tests and cache-control hints for shared hosting. v0.22.2 added the catchable browser boot loader.
+This release started the Interior Life milestone. Building interiors are no longer empty rooms. The map loader decorates interiors with named NPCs and ambient occupants when the player enters them. Ambient occupants have simple keyword dialog.
 
 ## Running it
 
@@ -43,6 +48,7 @@ or directly:
     node tests/pursuit_no_bounce.js
     node tests/module_contracts.js
     node tests/interior_life.js
+    node tests/world_expansion.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -54,6 +60,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 ## Repository layout
 
 - src/ engine and game code (ES modules, no framework, Canvas 2D)
+- src/game/ gameplay logic including generated districts, case board, law, and mountain attention
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -69,15 +76,18 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - I: open the satchel
 - F: commit a direct crime against a nearby NPC, when possible
 - Q: surrender when cornered
+- Districts: travel to the expanded world maps
+- Case Board: review evidence and open leads
+- Law: manage heat, coat memory, and hiding actions
 - Backtick: open the cheat terminal
 
 ## Known limitations
 
-- v0.23.0 gives interiors occupants, but the deeper hourly interior schedule and room-specific patrol logic still need a later pass.
-- Interiors are still single-room maps. Multi-room courthouse, Mule upstairs, private office, and back-door routes are future map work.
+- The generated districts are real playable maps, but hand-authored art layouts can still make them prettier.
+- District travel is header-driven for now. Later map art should add physical town exits that point to these districts.
+- Interior life has occupants, but deep room-specific hourly patrols still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- NPCs walk only the town map. Ducking indoors pauses pursuit for now.
-- Saves are localStorage plus JSON export. v0.23.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.29.0 does not change the save format.
 
 ## License
 
