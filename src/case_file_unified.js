@@ -152,11 +152,15 @@ function ensureBoardTab() {
   });
 }
 
+function boardBodyAlreadyRendered(journal) {
+  return Boolean(journal?.querySelector('.jbody .case-board-summary'));
+}
+
 function enhanceJournal() {
   if (renderingBoard) return;
   ensureBoardTab();
   const journal = document.getElementById('journal');
-  if (journal?.dataset.unifiedTab === 'board') renderBoard();
+  if (journal?.dataset.unifiedTab === 'board' && !boardBodyAlreadyRendered(journal)) renderBoard();
 }
 
 function openCaseFile(tab = 'board') {
