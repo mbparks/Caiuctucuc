@@ -1,4 +1,4 @@
-// Regression tests for doorway bounce behavior.
+// Regression tests for doorway bounce and NPC stacking behavior.
 import { seekStep } from '../src/game/pursuit.js';
 
 let pass = 0, fail = 0;
@@ -7,18 +7,28 @@ function test(name, fn) {
   catch (err) { fail++; console.error(' FAIL ' + name + ': ' + err.message); }
 }
 function assert(cond, msg) { if (!cond) throw new Error(msg || 'assertion failed'); }
+function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 
 console.log('pursuit no-bounce');
 const open = () => false;
 
-test('scheduled townsfolk stop near their target instead of standing exactly on it', () => {
-  const n = seekStep({ x: 0, y: 0 }, { x: 12, y: 0 }, 40, 1, open);
-  assert(n.x === 0 && n.y === 0, 'slow schedule movement kept chasing a nearby target');
+test('scheduled townsfolk move off exact doorway targets', () => {
+  const target = { x: 12, y: 0 };
+  const n = seekStep({ name: 'doyle', x: 12, y: 0, props: { npcId: 'doyle' } }, target, 40, 1, open);
+  assert(dist(n, target) > 1, 'slow schedule movement remained on the exact target');
 });
 
-test('scheduled townsfolk approach but settle short of a far target', () => {
-  const n = seekStep({ x: 0, y: 0 }, { x: 100, y: 0 }, 40, 10, open);
-  assert(n.x === 82 && n.y === 0, 'slow schedule movement did not settle 18 pixels short: ' + JSON.stringify(n));
+test('scheduled townsfolk sharing a target choose separate standing spots', () => {
+  const target = { x: 100, y: 100 };
+  const a = seekStep({ name: 'doyle', x: 100, y: 100, props: { npcId: 'doyle' } }, target, 40, 10, open);
+  const b = seekStep({ name: 'beall', x: 100, y: 100, props: { npcId: 'beall' } }, target, 40, 10, open);
+  assert(dist(a, b) > 14, 'shared scheduled target collapsed into a stack: ' + JSON.stringify({ a, b }));
+});
+
+test('scheduled townsfolk do not require exact-pixel arrival', () => {
+  const target = { x: 100, y: 0 };
+  const n = seekStep({ name: 'ward', x: 0, y: 0, props: { npcId: 'ward' } }, target, 40, 10, open);
+  assert(dist(n, target) > 2, 'scheduled movement still tried to occupy the original target exactly');
 });
 
 test('pursuers still close all the way', () => {
