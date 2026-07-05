@@ -1,8 +1,6 @@
 import { loadLocal } from './game/save.js';
 import { trailFor } from './game/trail.js';
 
-const header = document.querySelector('header');
-const menuBtn = document.getElementById('menuBtn');
 const panel = document.getElementById('panel');
 const journal = document.getElementById('journal');
 const dialog = document.getElementById('dialog');
@@ -10,22 +8,22 @@ const wrap = document.getElementById('wrap');
 
 const style = document.createElement('style');
 style.textContent = `
-  #trailBtn { border-color: var(--accent); }
   #trailPulse {
     margin: 0 .9rem .35rem;
-    padding: .35rem .65rem;
+    padding: .45rem .7rem;
     border: 1px solid rgba(154, 74, 50, .55);
     background: linear-gradient(90deg, rgba(154, 74, 50, .22), rgba(29, 26, 20, .74));
     color: var(--ink);
     font-size: .78rem;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: .65rem;
     align-items: center;
-    justify-content: space-between;
   }
   #trailPulse b { color: var(--accent); letter-spacing: .12em; font-weight: normal; }
   #trailPulse span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  #trailPulse button { padding: .15rem .45rem; font-size: .75rem; white-space: nowrap; }
+  #trailPulse button { padding: .2rem .55rem; font-size: .72rem; white-space: nowrap; text-transform: uppercase; letter-spacing: .12em; }
+  #trailPulse .trail-target { color: var(--dim); }
   #trailDeck {
     position: absolute;
     right: 1rem;
@@ -97,8 +95,8 @@ style.textContent = `
   #boostToast.show { opacity: 1; }
   #panel.action-ack { box-shadow: 0 0 0 2px rgba(154,74,50,.7), 0 8px 30px rgba(0,0,0,.55); }
   @media (max-width: 640px) {
-    header { flex-wrap: wrap; gap: .45rem; }
-    #trailPulse { margin: 0 .5rem .25rem; align-items: flex-start; }
+    #trailPulse { margin: 0 .5rem .25rem; grid-template-columns: 1fr; align-items: stretch; }
+    #trailPulse span { white-space: normal; }
     #trailDeck { right: .5rem; left: .5rem; width: auto; top: 5.8rem; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -107,17 +105,11 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-const trailBtn = document.createElement('button');
-trailBtn.id = 'trailBtn';
-trailBtn.type = 'button';
-trailBtn.textContent = 'Trail';
-trailBtn.setAttribute('aria-expanded', 'false');
-if (header && menuBtn) header.insertBefore(trailBtn, menuBtn);
-
 const pulse = document.createElement('div');
 pulse.id = 'trailPulse';
-pulse.innerHTML = '<span><b>TRAIL</b> Loading the next lead...</span><button type="button">Open</button>';
+pulse.innerHTML = '<span><b>TRAIL</b> Loading the next lead...</span><button id="trailOpenBtn" type="button" aria-expanded="false">View Trail</button>';
 if (wrap) wrap.insertBefore(pulse, document.getElementById('stage'));
+const trailOpenBtn = pulse.querySelector('#trailOpenBtn');
 
 const deck = document.createElement('div');
 deck.id = 'trailDeck';
@@ -158,7 +150,7 @@ function currentTrail() {
 
 function renderPulse() {
   const t = currentTrail();
-  pulse.querySelector('span').innerHTML = '<b>TRAIL</b> ' + esc(t.objective) + ' <span style="color:var(--dim)">Target: ' + esc(t.target) + '</span>';
+  pulse.querySelector('span').innerHTML = '<b>TRAIL</b> ' + esc(t.objective) + ' <span class="trail-target">Target: ' + esc(t.target) + '</span>';
 }
 
 function renderDeck() {
@@ -180,23 +172,27 @@ function renderDeck() {
   deck.querySelector('.close').addEventListener('click', closeDeck);
 }
 
+function closeOtherOverlays() {
+  if (window.CAIUCTUCUC_CLOSE_OVERLAYS) window.CAIUCTUCUC_CLOSE_OVERLAYS('#trailDeck');
+}
+
 function openDeck() {
+  closeOtherOverlays();
   renderDeck();
   deck.classList.add('open');
   deck.setAttribute('aria-hidden', 'false');
-  trailBtn.setAttribute('aria-expanded', 'true');
+  trailOpenBtn.setAttribute('aria-expanded', 'true');
 }
 
 function closeDeck() {
   deck.classList.remove('open');
   deck.setAttribute('aria-hidden', 'true');
-  trailBtn.setAttribute('aria-expanded', 'false');
+  trailOpenBtn.setAttribute('aria-expanded', 'false');
 }
 
 function toggleDeck() { deck.classList.contains('open') ? closeDeck() : openDeck(); }
 
-trailBtn.addEventListener('click', toggleDeck);
-pulse.querySelector('button').addEventListener('click', openDeck);
+trailOpenBtn.addEventListener('click', openDeck);
 
 document.addEventListener('keydown', e => {
   const tag = (e.target && e.target.tagName || '').toLowerCase();
