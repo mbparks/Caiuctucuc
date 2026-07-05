@@ -4,11 +4,17 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.29.0** (world expansion, case board, law actions, quarry pressure, mountain attention, and final-act maps)
+**Version: 0.29.1** (cohesive UI skin and HUD cleanup)
+
+## What changed in v0.29.1
+
+This release cleans up the interface so it feels like one game instead of several feature layers bolted together. A new `src/ui_cohesion.js` module loads after the main game, Trail helper, and world expansion UI. It normalizes the header, buttons, Trail strip, Trail deck, Districts, Case Board, Law panel, Mountain status, toast messages, journal, dialog, menu, action panel, terminal, canvas frame, and footer under one frontier-ledger visual language.
+
+The design keeps two intentional surfaces: dark brass-and-wood chrome for HUD, menus, law, travel, dialog, and action panels, and parchment paper for the journal and Trail deck. Spacing, borders, shadows, typography, button hierarchy, modal positions, and mobile wrapping now follow the same rules.
 
 ## What changed from v0.24 to v0.29
 
-This release builds the planned gameplay expansion as real playable systems.
+This release built the planned gameplay expansion as real playable systems.
 
 - v0.24 Cumberland Expansion: the map loader now supports generated Tiled-compatible districts. New playable districts include Canal Basin and Wills Creek, B&O Rail Yard, Quarry Deep Cut, Wills Mountain, Marked Caves, and the Cold Cathedral.
 - v0.25 Investigation Upgrade: the Case Board groups evidence cards by thread, lists open leads, and reports trial readiness from the actual evidence score.
@@ -49,6 +55,7 @@ or directly:
     node tests/module_contracts.js
     node tests/interior_life.js
     node tests/world_expansion.js
+    node tests/ui_cohesion.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -61,6 +68,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 
 - src/ engine and game code (ES modules, no framework, Canvas 2D)
 - src/game/ gameplay logic including generated districts, case board, law, and mountain attention
+- src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -87,7 +95,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - District travel is header-driven for now. Later map art should add physical town exits that point to these districts.
 - Interior life has occupants, but deep room-specific hourly patrols still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.29.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.29.1 does not change the save format.
 
 ## License
 
