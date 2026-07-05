@@ -1,7 +1,6 @@
-// World expansion UI: district travel, case board, law actions, mountain attention, and story pressure.
+// World expansion UI: places, law actions, mountain attention, and story pressure.
 import { SAVE_KEY, deserialize, storeLocal } from './game/save.js';
 import { GENERATED_MAP_IDS } from './game/generated_maps.js';
-import { boardThreads, openLeads, trialReadiness, contradictions, supernaturalTruths, legalProof } from './game/case_board.js';
 import { lawStage, witnessMemory, bribeRunner, changeCoatAction, hideOnTowpath } from './game/law.js';
 import { mountainAttention, attentionBand, mountainEvent } from './game/mountain_attention.js';
 import { dogLead, mountainWorldEffects, pressureStage } from './game/story_world.js';
@@ -109,25 +108,8 @@ function showWorld() {
   box.classList.add('open');
 }
 
-function showCase() {
-  const state = readState();
-  const box = modal('caseModal', 'CASE BOARD');
-  if (!state) { box.appendChild(el('p', '', 'No save loaded.')); box.classList.add('open'); return; }
-  const ready = trialReadiness(state);
-  box.appendChild(el('p', '', 'Evidence score: ' + ready.score + '. ' + ready.advice));
-  section(box, 'Contradictions', contradictions(state), 'No contradictions established yet. Find facts that cannot all be true.');
-  section(box, 'Legal proof', legalProof(state), 'No hard proof yet. The town will believe fear before it believes you.');
-  section(box, 'True but not proof', supernaturalTruths(state), 'No supernatural file yet, or nothing you can separate from rumor.');
-  const preview = ready.preview;
-  section(box, 'Accusation logic', [preview.cleanText, preview.supernaturalText], 'No accusation can be tested yet.');
-  for (const thread of boardThreads(state)) {
-    const div = el('div', 'world-thread');
-    div.appendChild(el('b', '', thread.label));
-    for (const c of thread.cards) div.appendChild(el('p', '', c.name + ': ' + c.text));
-    box.appendChild(div);
-  }
-  section(box, 'Open leads', openLeads(state), 'No obvious leads remain. Lay the case or follow the mountain.');
-  box.classList.add('open');
+function openUnifiedCaseFile() {
+  window.dispatchEvent(new CustomEvent('caiuctucuc:open-case-file', { detail: { tab: 'board' } }));
 }
 
 function applyLawAction(action) {
@@ -212,7 +194,7 @@ function init() {
   const menuBtn = document.getElementById('menuBtn');
   if (!header || document.getElementById('worldBtn')) return;
   const worldBtn = el('button', '', 'Places'); worldBtn.id = 'worldBtn'; worldBtn.addEventListener('click', showWorld);
-  const caseBtn = el('button', '', 'Case Board'); caseBtn.id = 'caseBtn'; caseBtn.addEventListener('click', showCase);
+  const caseBtn = el('button', '', 'Case File'); caseBtn.id = 'caseBtn'; caseBtn.addEventListener('click', openUnifiedCaseFile);
   const lawBtn = el('button', '', 'Law'); lawBtn.id = 'lawBtn'; lawBtn.addEventListener('click', showLaw);
   const dread = el('span', '', 'Mountain'); dread.id = 'dreadPip'; dread.addEventListener('click', showMountain);
   header.insertBefore(worldBtn, menuBtn);
