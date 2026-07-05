@@ -4,7 +4,15 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.39.0** (opening backstory screen)
+**Version: 0.40.0** (unified Case File)
+
+## What changed in v0.40.0
+
+This release removes the split between **Case Board** and **Case File**. There is now one investigation surface: **Case File**.
+
+Keyboard **J** still opens the Case File. The Commands entry is now **Case File**, not Case Board. The old standalone Case Board modal is retired. Its deduction content now lives inside the Case File as a **Board** tab with contradictions, legal proof, true-but-not-proof supernatural material, accusation logic, evidence threads, and open leads.
+
+This keeps notes, suspects, words, standing, and deduction in the same place, which better matches how a player thinks about the investigation.
 
 ## What changed in v0.39.0
 
@@ -54,7 +62,7 @@ This release deepened the systems added in v0.23 through v0.29 and made them wor
 
 - v0.30 World Connections: town receives physical road exits to the canal, rail yard, Cumberland Quarry, and Wills Mountain.
 - v0.31 Time-Based Interiors and Eavesdropping: key interiors gain hour-sensitive overheard conversations.
-- v0.32 Case Board 2.0: the Case Board separates contradictions, legal proof, supernatural truth, accusation logic, evidence threads, and open leads.
+- v0.32 Case Board 2.0: the Board tab separates contradictions, legal proof, supernatural truth, accusation logic, evidence threads, and open leads inside the unified Case File.
 - v0.33 Gantt Pressure: Prosper Gantt reacts to evidence weight.
 - v0.34 Dog and Mountain Systems: the dog points toward the next investigative place, while Mountain Attention gains readable world effects.
 - v0.35 Story Set Pieces: the records room, Coombs's grave, Tam's dry boots, the true survey line, Nan's ribbon, and trial access became physical interactables.
@@ -92,6 +100,7 @@ or directly:
     node tests/map_placement.js
     node tests/real_places.js
     node tests/opening_story.js
+    node tests/case_file_unified.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -107,6 +116,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/game/generated_maps.js/ generated playable districts with real Cumberland place naming in visible labels and text
 - src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
 - src/opening_story.js/ new-game backstory screen between postcard and character creator
+- src/case_file_unified.js/ adds the Board tab and retires the separate Case Board modal
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
@@ -126,7 +136,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Rob / Crime: open crime actions for a nearby NPC
 - Satchel: open or close inventory
 - Surrender: surrender when cornered
-- Case Board: review contradictions, legal proof, supernatural truth, and open leads
+- Case File: one investigation file with evidence, suspects, words, standing, and Board tabs
 - Places: travel to the expanded world maps
 - Law: manage heat, coat memory, and hiding actions
 - Mountain: review mountain attention, dog leads, and Gantt pressure
@@ -141,7 +151,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Real place names are now used for the quarry and final cave locations, but the mystery events themselves remain fictionalized.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.39.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.40.0 does not change the save format.
 
 ## License
 
