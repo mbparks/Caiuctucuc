@@ -47,6 +47,13 @@ test('live crowd separation breaks a tavern doorway clump', () => {
   assert(closestPair(positions) > 17, 'NPCs still form an interaction-blocking clump: ' + JSON.stringify(positions));
 });
 
+test('scheduled townsfolk settle instead of taking tiny corrective doorway steps', () => {
+  const target = { x: 160, y: 80 };
+  const alreadyNearLane = { name: 'beall', x: 128, y: 152, home: { x: 160, y: 120 }, props: { npcId: 'beall' } };
+  const next = seekStep(alreadyNearLane, target, 40, 0.2, open);
+  assert(dist(next, alreadyNearLane) < 0.01, 'nearby scheduled NPC should settle, not pace: ' + JSON.stringify({ next, alreadyNearLane }));
+});
+
 test('separation respects collision and does not shove into walls', () => {
   const wall = (px, py) => px < 90 || py < 90;
   const target = { x: 120, y: 120 };
