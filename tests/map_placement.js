@@ -2,11 +2,9 @@
 import { loadMap } from '../src/engine/tiledmap.js';
 
 let pass = 0, fail = 0;
-function test(name, fn) {
-  try { awaitMaybe(fn); } catch (err) { fail++; console.error(' FAIL ' + name + ': ' + err.message); }
-}
-async function awaitMaybe(fn) {
-  await fn(); pass++;
+async function test(name, fn) {
+  try { await fn(); pass++; console.log('  ok  ' + name); }
+  catch (err) { fail++; console.error(' FAIL ' + name + ': ' + err.message); }
 }
 function assert(cond, msg) { if (!cond) throw new Error(msg || 'assertion failed'); }
 
