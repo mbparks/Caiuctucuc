@@ -1,0 +1,13 @@
+{
+  "npcId": "shopper_patron",
+  "displayName": "Shopper",
+  "greeting": "The shopper turns a tin cup over in both hands, testing the rim for dents and the price for lies.",
+  "shrug": "\"I only came for salt and lamp oil.\"",
+  "deflect": "\"Ask the counter. I am only looking.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"No name worth writing down. I keep a house upriver and a list longer than my purse.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Buying what the road forgot to bring and what the canal soaked getting here.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"Prices rise whenever the mountain road is bad. Lately they rise even on clear days.\"" },
+    { "keyword": "QUARRY", "gate": "open", "text": "\"Quarry men buy lamp oil now more than powder. That seems backward to me.\"" }
+  ]
+}
