@@ -14,21 +14,27 @@ function hashMover(mover) {
 }
 
 function scheduledTargetFor(mover, target, solidAtPx, size) {
-  // Scheduled spots are often door thresholds. Give every named NPC a stable
-  // nearby standing place so they do not fight the doorway cleaner or stack on
-  // top of another actor who shares the same shop, tavern, court, or home spot.
-  const ring = [
-    [0, 22], [22, 0], [-22, 0], [0, -22],
-    [18, 18], [-18, 18], [18, -18], [-18, -18],
-    [0, 32], [32, 0], [-32, 0], [0, -32],
-    [28, 28], [-28, 28], [28, -28], [-28, -28]
+  // Scheduled spots are often placed on the door approach tile. The old logic
+  // allowed same-row offsets, then the doorway cleaner shoved everyone into the
+  // same legal tile. Scheduled townsfolk now prefer a street-side standing lane
+  // below the destination, with stable per-NPC horizontal offsets.
+  const h = hashMover(mover);
+  const lane = ((h % 7) - 3) * 16;
+  const side = h % 2 === 0 ? 1 : -1;
+  const candidates = [
+    [lane, 42], [lane, 58], [lane, 74],
+    [lane + side * 18, 42], [lane - side * 18, 42],
+    [lane + side * 18, 58], [lane - side * 18, 58],
+    [side * 34, 42], [-side * 34, 42],
+    [side * 50, 58], [-side * 50, 58],
+    [0, 42], [0, 58], [0, 74]
   ];
-  const start = hashMover(mover) % ring.length;
-  for (let i = 0; i < ring.length; i++) {
-    const [ox, oy] = ring[(start + i) % ring.length];
+  for (const [ox, oy] of candidates) {
     const candidate = { x: target.x + ox, y: target.y + oy };
     if (clearAt(candidate.x, candidate.y, solidAtPx, size)) return candidate;
   }
+  // Last resort: stay where you are rather than walk back onto a threshold.
+  if (clearAt(mover.x, mover.y, solidAtPx, size)) return { x: mover.x, y: mover.y };
   return target;
 }
 
