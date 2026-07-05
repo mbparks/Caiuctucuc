@@ -1,0 +1,13 @@
+{
+  "npcId": "drover_patron",
+  "displayName": "Drover",
+  "greeting": "The drover smells of wet wool, road dust, and cider. He gives you half a nod without giving up his corner of the room.",
+  "shrug": "\"That word is above my rate.\"",
+  "deflect": "\"Ask somebody with a cleaner coat.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Names change on the road. Drover is enough in this room.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"I move stock west when the road is kind and east when it is not. Bright pays better than most, if you can stand his counting.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"Cumberland is a funnel. Road, canal, rail, all of it pours through here and leaves mud on the floor.\"" },
+    { "keyword": "CREEK", "gate": "open", "text": "\"Wills Creek rises fast. I have seen a mule refuse a ford ten minutes before the water spoke plain.\"" }
+  ]
+}
