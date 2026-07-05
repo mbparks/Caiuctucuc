@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.29.1** (cohesive UI skin and HUD cleanup)
+**Version: 0.29.2** (render integrity: no stage grid, no subpixel tile seams)
+
+## What changed in v0.29.2
+
+This release fixes visible grid-line artifacts and screen tearing while walking. The camera now snaps to whole pixels instead of fractional positions, which prevents tile edges from being drawn between pixels. A new `src/render_integrity.js` guard loads before the main game renderer, snaps canvas draw calls to whole pixels, keeps image smoothing off, and removes the decorative stage grid introduced during the UI cohesion pass.
+
+The render integrity test verifies that the camera returns integer coordinates, the guard loads before `main.js`, the stage grid is explicitly disabled, and canvas draw calls are snapped.
 
 ## What changed in v0.29.1
 
@@ -56,6 +62,7 @@ or directly:
     node tests/interior_life.js
     node tests/world_expansion.js
     node tests/ui_cohesion.js
+    node tests/render_integrity.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -69,6 +76,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/ engine and game code (ES modules, no framework, Canvas 2D)
 - src/game/ gameplay logic including generated districts, case board, law, and mountain attention
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
+- src/render_integrity.js/ pixel-snapping and render artifact cleanup loaded before the renderer
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -95,7 +103,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - District travel is header-driven for now. Later map art should add physical town exits that point to these districts.
 - Interior life has occupants, but deep room-specific hourly patrols still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.29.1 does not change the save format.
+- Saves are localStorage plus JSON export. v0.29.2 does not change the save format.
 
 ## License
 
