@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.22.0** (live Trail guidance, clearer action feedback, and first-pass gameplay pressure)
+**Version: 0.22.1** (scheduled NPCs no longer bounce against doorway safety zones)
+
+## What changed in v0.22.1
+
+This release fixes a regression caused by the doorway-blocking protection. Some scheduled NPCs had destination spots placed on the same approach tiles used by building doors. The doorway safety code correctly pushed them away, but the schedule code immediately sent them back, which made them bounce in place.
+
+The fix changes slow scheduled movement so townsfolk settle near their destination instead of trying to stand on the exact doorway pixel. Faster movement, including pursuit and fleeing, still closes all the way. A new regression test in `tests/pursuit_no_bounce.js` protects that behavior.
 
 ## What changed in v0.22.0
 
@@ -32,8 +38,9 @@ or directly:
 
     node tests/run.js
     node tests/trail.js
+    node tests/pursuit_no_bounce.js
 
-Pure logic tests (save round trip, keyword gating, hue and cry decay, trail objectives) run in Node with no dependencies. The same modules load in the browser.
+Pure logic tests (save round trip, keyword gating, hue and cry decay, trail objectives, no-bounce movement) run in Node with no dependencies. The same modules load in the browser.
 
 For a browser boot smoke test, install the optional jsdom dependency and run:
 
@@ -88,7 +95,7 @@ The act skips are cumulative and grant every clue and flag the player would have
 
 ## Known Limitations
 
-- The default test suite is `npm test`, which runs `node tests/run.js` and `node tests/trail.js`. The optional browser boot smoke test is `node tools/boot_smoke.mjs` after `npm install`.
+- The default test suite is `npm test`, which runs `node tests/run.js`, `node tests/trail.js`, and `node tests/pursuit_no_bounce.js`. The optional browser boot smoke test is `node tools/boot_smoke.mjs` after `npm install`.
 - v0.0.2 renders placeholder colors keyed by gid; real tilesheets are not wired yet.
 - The art is generated, third generation (the overworld pass, NES-bold); the final art decision is still open (docs/art_decision.md) and any option drops into the documented slots.
 - Named NPCs share two generic sprites; per-character sheets follow the art decision.
@@ -113,7 +120,7 @@ The act skips are cumulative and grant every clue and flag the player would have
 - Cave-Aged and The Excise Man's Arithmetic wait on Marsh and Pyle, who are post-1.0 NPCs; the caves carry their foreshadowing (the horseshoe, the casks).
 - Nan appears in the chamber as prose; her sprite and the Trent farm scenes come with final art.
 - Dialog, hue and cry, SIGHT, and Trail exist as tested logic modules and are wired to the browser build.
-- Saves are localStorage plus JSON export. v0.22.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.22.1 does not change the save format.
 
 ## License
 
