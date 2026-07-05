@@ -1,6 +1,11 @@
 // Browser boot loader. Keep this file small and dependency-free so deployment
 // failures report a useful message instead of a black screen or "unknown error".
 
+const BOOT_VERSION = '0.40.3';
+const CACHE_TOKEN = new URL(import.meta.url).searchParams.get('v') || BOOT_VERSION;
+const moduleUrl = path => path + '?v=' + encodeURIComponent(CACHE_TOKEN);
+const loadModule = path => import(moduleUrl(path));
+
 function esc(text) {
   return String(text || '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -74,19 +79,19 @@ setTimeout(() => {
 }, 4500);
 
 try {
-  await import('./render_integrity.js');
+  await loadModule('./render_integrity.js');
 } catch (err) {
   console.warn('[caiuctucuc] Render integrity guard did not load:', describeError(err));
 }
 
 try {
-  await import('./opening_story.js');
+  await loadModule('./opening_story.js');
 } catch (err) {
   console.warn('[caiuctucuc] Opening story did not load:', describeError(err));
 }
 
 try {
-  await import('./main.js');
+  await loadModule('./main.js');
   if (!window.__CAIUCTUCUC_BOOTED) throw new Error('main.js imported, but did not mark the game as booted.');
 } catch (err) {
   showBootFailure('The main game module could not be imported.', err);
@@ -94,37 +99,37 @@ try {
 
 if (window.__CAIUCTUCUC_BOOTED) {
   try {
-    await import('./gameplay_boost.js');
+    await loadModule('./gameplay_boost.js');
   } catch (err) {
     console.warn('[caiuctucuc] Trail helper did not load:', describeError(err));
   }
   try {
-    await import('./world_expansion.js');
+    await loadModule('./world_expansion.js');
   } catch (err) {
     console.warn('[caiuctucuc] World expansion did not load:', describeError(err));
   }
   try {
-    await import('./ui_cohesion.js');
+    await loadModule('./ui_cohesion.js');
   } catch (err) {
     console.warn('[caiuctucuc] UI cohesion did not load:', describeError(err));
   }
   try {
-    await import('./ui_overlay_manager.js');
+    await loadModule('./ui_overlay_manager.js');
   } catch (err) {
     console.warn('[caiuctucuc] Overlay manager did not load:', describeError(err));
   }
   try {
-    await import('./command_center.js');
+    await loadModule('./command_center.js');
   } catch (err) {
     console.warn('[caiuctucuc] Command center did not load:', describeError(err));
   }
   try {
-    await import('./case_file_unified.js');
+    await loadModule('./case_file_unified.js');
   } catch (err) {
     console.warn('[caiuctucuc] Unified Case File did not load:', describeError(err));
   }
   try {
-    await import('./storage_control.js');
+    await loadModule('./storage_control.js');
   } catch (err) {
     console.warn('[caiuctucuc] Storage control did not load:', describeError(err));
   }
