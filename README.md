@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.35.0** (story world pass: connected travel, eavesdropping, stronger case board, Gantt pressure, dog and mountain, set pieces)
+**Version: 0.35.1** (live NPC crowd separation)
+
+## What changed in v0.35.1
+
+This release fixes the reintroduced NPC crowding bug around tavern doors and busy sidewalk targets. The earlier fix gave scheduled NPCs separate target offsets, but several NPCs could still converge into the same interaction space during live movement. `src/game/pursuit.js` now keeps a lightweight crowd registry inside `seekStep()` and pushes each NPC's next position away from recent NPC positions before returning it, while still respecting collision.
+
+The existing no-bounce regression suite now includes a multi-frame tavern-door clump test and a collision-respect test so future story, schedule, or NPC-density changes do not bring this bug back.
 
 ## What changed from v0.30 to v0.35
 
@@ -113,7 +119,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.35.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.35.1 does not change the save format.
 
 ## License
 
