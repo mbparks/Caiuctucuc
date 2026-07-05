@@ -123,4 +123,9 @@ if (window.__CAIUCTUCUC_BOOTED) {
   } catch (err) {
     console.warn('[caiuctucuc] Unified Case File did not load:', describeError(err));
   }
+  try {
+    await import('./storage_control.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] Storage control did not load:', describeError(err));
+  }
 }
