@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.36.0** (one command center, no duplicate canvas command menu)
+**Version: 0.36.1** (HUD polish: temporary Commands drawer, fewer overlapping layers)
+
+## What changed in v0.36.1
+
+This release cleans up the HUD overlap introduced by the first command consolidation pass. The Commands panel is now a temporary drawer instead of a layout-expanding header section. It stays compact until opened, overlays as a bounded scrollable drawer, closes on Escape, closes when clicking outside it, and closes automatically before launching actions such as Satchel, Trail, Case Board, Districts, Law, Mountain, Fullscreen, Sound, or Menu.
+
+The result is one command structure without the command drawer remaining stacked above gameplay panels. Satchel and other panels should no longer appear underneath an expanded command grid.
 
 ## What changed in v0.36.0
 
@@ -128,7 +134,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.36.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.36.1 does not change the save format.
 
 ## License
 
