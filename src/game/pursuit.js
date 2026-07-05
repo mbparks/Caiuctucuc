@@ -109,6 +109,16 @@ function scheduledTargetFor(mover, target, solidAtPx, size) {
 
 export function seekStep(from, target, speed, dt, solidAtPx, size = 12) {
   const scheduled = speed <= 40;
+  const originalDistance = Math.hypot(target.x - from.x, target.y - from.y);
+
+  // Door schedules are authored at or near the door itself. If a scheduled NPC
+  // is already near that authored destination, stop treating the door coordinate
+  // as an exact waypoint. The doorway cleaner may still nudge them one tile out,
+  // but this prevents the schedule loop from immediately pulling them back.
+  if (scheduled && originalDistance > size && originalDistance <= 96 && clearAt(from.x, from.y, solidAtPx, size)) {
+    return applySeparation(from, from, solidAtPx, size, Math.max(size + 5, 18));
+  }
+
   const goal = scheduled ? scheduledTargetFor(from, target, solidAtPx, size) : target;
   const dx = goal.x - from.x, dy = goal.y - from.y;
   const dist = Math.hypot(dx, dy) || 1;
