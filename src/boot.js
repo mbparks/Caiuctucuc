@@ -86,4 +86,9 @@ if (window.__CAIUCTUCUC_BOOTED) {
   } catch (err) {
     console.warn('[caiuctucuc] Trail helper did not load:', describeError(err));
   }
+  try {
+    await import('./world_expansion.js');
+  } catch (err) {
+    console.warn('[caiuctucuc] World expansion did not load:', describeError(err));
+  }
 }
