@@ -1,4 +1,5 @@
-// Render integrity tests: prevent subpixel tile seams and visible stage grid artifacts.
+// Render integrity tests: prevent subpixel tile seams, hidden fullscreen overlays,
+// and visible stage grid artifacts.
 import { readFileSync } from 'node:fs';
 import { createCamera } from '../src/engine/camera.js';
 
@@ -35,6 +36,14 @@ test('canvas draw calls are snapped', () => {
   assert(guard.includes('patchedDrawImage'), 'drawImage patch missing');
   assert(guard.includes('patchedFillRect'), 'fillRect patch missing');
   assert(guard.includes('Math.round'), 'snap-to-pixel rounding missing');
+});
+
+test('fullscreen redirects stage fullscreen to the whole wrapper', () => {
+  assert(guard.includes('patchFullscreenRoot'), 'fullscreen root patch missing');
+  assert(guard.includes("this?.id === 'stage'"), 'stage fullscreen redirect missing');
+  assert(guard.includes("document.getElementById('wrap')"), 'wrap fullscreen target missing');
+  assert(guard.includes('#wrap:fullscreen #dialog'), 'fullscreen dialog visibility rule missing');
+  assert(guard.includes('#wrap:fullscreen #panel'), 'fullscreen panel visibility rule missing');
 });
 
 if (fail) {
