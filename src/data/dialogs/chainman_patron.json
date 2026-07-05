@@ -1,0 +1,13 @@
+{
+  "npcId": "chainman_patron",
+  "displayName": "Chainman",
+  "greeting": "The chainman has brass dust on his fingers and a measuring chain coiled neatly by his boot.",
+  "shrug": "\"Measure twice and ask once. I cannot help you there.\"",
+  "deflect": "\"Gantt dislikes idle talk in a working room.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Chainman. I hold the line while better coats decide where the line ought to be.\"" },
+    { "keyword": "JOB", "gate": "open", "text": "\"Poles, chain, notes, angles. A survey is just truth with numbers until a man pays to change it.\"" },
+    { "keyword": "TOWN", "gate": "open", "text": "\"Every deed in Cumberland depends on a mark some tired man scratched into stone. Remember that.\"" },
+    { "keyword": "BENCHMARK", "gate": "open", "text": "\"Brass does not flatter. Find enough benchmarks and the land will tell you who lied.\"" }
+  ]
+}
