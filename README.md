@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.36.2** (one active overlay at a time)
+**Version: 0.36.3** (fullscreen keyboard legend restored)
+
+## What changed in v0.36.3
+
+This release corrects the fullscreen regression from the command consolidation work. Keyboard shortcuts were still wired in code, but the in-canvas command legend had been suppressed everywhere. In fullscreen mode the page-level Commands drawer may not be visible, so the canvas needs to show the keyboard reference again.
+
+The canvas command legend is now suppressed only outside fullscreen. When fullscreen is active, the in-canvas legend returns so players can see E Talk, F Rob, I Satchel, and J Case while the game occupies the screen.
 
 ## What changed in v0.36.2
 
@@ -22,7 +28,7 @@ The result is one command structure without the command drawer remaining stacked
 
 This release consolidates the two competing menu structures into one command center. The page-level controls now live in a single collapsible Commands panel with Immediate, Story, and System groups. It preserves all functionality from both structures: Use / Talk, Rob / Crime, Satchel, Surrender, Trail, Case Board, Districts, Law, Mountain, Fullscreen, Sound, and the existing system Menu.
 
-The canvas HUD no longer draws the duplicate command prompt text. The canvas is now treated as game-state display only: map, heat, coin, day, coat, SIGHT, and health. Commands live outside the canvas where they are clickable, consistent, and easier to use on mobile.
+The canvas HUD no longer draws the duplicate command prompt text outside fullscreen. The canvas is otherwise treated as game-state display only: map, heat, coin, day, coat, SIGHT, and health. Commands live outside the canvas where they are clickable, consistent, and easier to use on mobile. In fullscreen, the canvas keeps its keyboard legend because the page-level command drawer may not be available.
 
 ## What changed in v0.35.1
 
@@ -112,7 +118,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
-- src/render_integrity.js/ pixel-snapping, render artifact cleanup, and duplicate canvas command suppression
+- src/render_integrity.js/ pixel-snapping, render artifact cleanup, and fullscreen keyboard legend handling
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
 - assets/ art and audio
 - docs/ design documents
@@ -121,7 +127,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 
 ## Controls
 
-- Commands: opens the unified command center
+- Commands: opens the unified command center outside fullscreen
 - Use / Talk: interact with the nearest useful person or object
 - Rob / Crime: open crime actions for a nearby NPC
 - Satchel: open or close inventory
@@ -134,6 +140,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Fullscreen, Sound, and Menu: system controls
 - Arrow keys or WASD: walk
 - Keyboard shortcuts still work: E, F, I, Q, T, J, and Backtick
+- In fullscreen, the canvas HUD shows the keyboard legend again
 
 ## Known limitations
 
@@ -141,7 +148,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.36.2 does not change the save format.
+- Saves are localStorage plus JSON export. v0.36.3 does not change the save format.
 
 ## License
 
