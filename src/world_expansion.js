@@ -8,18 +8,18 @@ import { dogLead, mountainWorldEffects, pressureStage } from './game/story_world
 
 const MAP_LABELS = {
   town: 'Baltimore Street', canal: 'Canal Basin and Wills Creek', rail_yard: 'B&O Rail Yard',
-  quarry: 'Quarry Deep Cut', wills_mountain: 'Wills Mountain', cave_chain: 'Marked Caves',
-  cathedral: 'Cold Cathedral'
+  quarry: 'Cumberland Quarry', wills_mountain: 'Wills Mountain', cave_chain: 'Cumberland Bone Cave Approach',
+  cathedral: 'Cumberland Bone Cave'
 };
 
 const MAP_TEXT = {
   town: 'Market, courthouse, tavern, jobs, law, gossip, and physical roads outward.',
   canal: 'Waterfront freight, Tam Hollis, towpath work, and escape across water.',
   rail_yard: 'Coal cars, depot scale, manifest clues, and industrial danger.',
-  quarry: 'Singing stone, bootprints, Gantt pressure, seam clues, and benchmarks.',
-  wills_mountain: 'Animal signs, lights, folk wards, SIGHT tests, and the cave mouth.',
-  cave_chain: 'The sealed way under the mountain, echoes, water, and old fort stone.',
-  cathedral: 'Nan Trent and the final choice.'
+  quarry: 'The Wills Creek Formation quarry: singing stone, bootprints, Gantt pressure, seam clues, and benchmarks.',
+  wills_mountain: 'Animal signs, lights, folk wards, SIGHT tests, and the cave path.',
+  cave_chain: 'The marked way toward the real Bone Cave: echoes, water, old fort stone, and sealed limestone.',
+  cathedral: 'The Cumberland Bone Cave, reimagined as Nan Trent and the final choice.'
 };
 
 function readState() {
@@ -93,8 +93,8 @@ function reloadTo(mapId) {
 
 function showWorld() {
   const state = readState();
-  const box = modal('worldModal', 'CUMBERLAND DISTRICTS');
-  box.appendChild(el('p', '', 'The primary route is now physical: road signs and map-edge exits connect town, canal, rail, quarry, mountain, caves, and cathedral. This panel remains a fast travel ledger for testing, accessibility, and recovery.'));
+  const box = modal('worldModal', 'CUMBERLAND PLACES');
+  box.appendChild(el('p', '', 'The primary route is physical: road signs and map-edge exits connect Baltimore Street, the canal, rail yard, Cumberland Quarry, Wills Mountain, and Cumberland Bone Cave. The names here now favor real Cumberland-area places over invented district titles.'));
   const grid = el('div', 'world-grid');
   for (const mapId of ['town', ...GENERATED_MAP_IDS]) {
     const c = card(MAP_LABELS[mapId] || mapId, MAP_TEXT[mapId] || 'A road not yet written down.');
@@ -211,7 +211,7 @@ function init() {
   const header = document.querySelector('header');
   const menuBtn = document.getElementById('menuBtn');
   if (!header || document.getElementById('worldBtn')) return;
-  const worldBtn = el('button', '', 'Districts'); worldBtn.id = 'worldBtn'; worldBtn.addEventListener('click', showWorld);
+  const worldBtn = el('button', '', 'Places'); worldBtn.id = 'worldBtn'; worldBtn.addEventListener('click', showWorld);
   const caseBtn = el('button', '', 'Case Board'); caseBtn.id = 'caseBtn'; caseBtn.addEventListener('click', showCase);
   const lawBtn = el('button', '', 'Law'); lawBtn.id = 'lawBtn'; lawBtn.addEventListener('click', showLaw);
   const dread = el('span', '', 'Mountain'); dread.id = 'dreadPip'; dread.addEventListener('click', showMountain);
