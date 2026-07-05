@@ -83,7 +83,7 @@ test('case board separates contradictions, legal proof, and supernatural truth',
 });
 
 test('decorated maps contain story additions in normal object layers', () => {
-  const m = decorateStoryWorld('quarry', map('quarry'), { ...baseState, clues: ['plat_mismatch', 'boots_matched'], pet: 'dog' });
+  const m = decorateStoryWorld('quarry', map('quarry'), { ...baseState, clues: ['tam_drowned', 'boots_matched'], pet: 'dog' });
   assert((m.objects.spawns || []).some(o => o.props?.npcId === 'gantt_agent'), 'decorated quarry missing agent');
   assert((m.objects.interact || []).some(o => o.name === 'dog scent trail'), 'decorated quarry missing dog trail');
   assert(evidenceScore({ ...baseState, clues: ['dry_boots', 'ledger_cut'] }) === 2, 'new evidence not scored');
