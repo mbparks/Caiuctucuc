@@ -4,3 +4,9 @@ AddType application/javascript .js .mjs
 AddType application/json .json
 AddType image/png .png
 AddType image/svg+xml .svg
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|mjs|json)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
