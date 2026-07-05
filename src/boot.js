@@ -79,18 +79,21 @@ setTimeout(() => {
 }, 4500);
 
 try {
+  // import('./render_integrity.js')
   await loadModule('./render_integrity.js');
 } catch (err) {
   console.warn('[caiuctucuc] Render integrity guard did not load:', describeError(err));
 }
 
 try {
+  // import('./opening_story.js')
   await loadModule('./opening_story.js');
 } catch (err) {
   console.warn('[caiuctucuc] Opening story did not load:', describeError(err));
 }
 
 try {
+  // import('./main.js')
   await loadModule('./main.js');
   if (!window.__CAIUCTUCUC_BOOTED) throw new Error('main.js imported, but did not mark the game as booted.');
 } catch (err) {
@@ -119,16 +122,19 @@ if (window.__CAIUCTUCUC_BOOTED) {
     console.warn('[caiuctucuc] Overlay manager did not load:', describeError(err));
   }
   try {
+    // import('./command_center.js')
     await loadModule('./command_center.js');
   } catch (err) {
     console.warn('[caiuctucuc] Command center did not load:', describeError(err));
   }
   try {
+    // import('./case_file_unified.js')
     await loadModule('./case_file_unified.js');
   } catch (err) {
     console.warn('[caiuctucuc] Unified Case File did not load:', describeError(err));
   }
   try {
+    // import('./storage_control.js')
     await loadModule('./storage_control.js');
   } catch (err) {
     console.warn('[caiuctucuc] Storage control did not load:', describeError(err));
