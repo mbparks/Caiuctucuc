@@ -1,10 +1,10 @@
 {
   "name": "caiuctucuc",
-  "version": "0.22.5",
+  "version": "0.23.0",
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node tests/run.js && node tests/trail.js && node tests/pursuit_no_bounce.js && node tests/module_contracts.js"
+    "test": "node tests/run.js && node tests/trail.js && node tests/pursuit_no_bounce.js && node tests/module_contracts.js && node tests/interior_life.js"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
