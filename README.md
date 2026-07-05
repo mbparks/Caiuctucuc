@@ -4,7 +4,13 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.40.1** (postcard intro flow fix)
+**Version: 0.40.2** (local storage clear control)
+
+## What changed in v0.40.2
+
+This release adds a visible **Clear local storage** control to the game menu. It clears this game's namespaced browser storage, including the local save, settings, scale preference, and session toasts, then reloads the page cleanly.
+
+The control uses a two-press confirmation. The first press arms the action and changes the button to **Clear everything?**. The second press within the confirmation window clears the app's stored browser data. The implementation intentionally removes only keys that begin with `caiuctucuc`, so it does not erase unrelated localStorage data from other apps on the same site.
 
 ## What changed in v0.40.1
 
@@ -107,6 +113,7 @@ or directly:
     node tests/real_places.js
     node tests/opening_story.js
     node tests/case_file_unified.js
+    node tests/storage_control.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -123,6 +130,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
 - src/opening_story.js/ backstory screen between postcard and character creator or saved game
 - src/case_file_unified.js/ adds the Board tab and retires the separate Case Board modal
+- src/storage_control.js/ visible menu control for clearing this game's local browser storage
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
@@ -147,6 +155,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Law: manage heat, coat memory, and hiding actions
 - Mountain: review mountain attention, dog leads, and Gantt pressure
 - Fullscreen, Sound, and Menu: system controls
+- Clear local storage: menu control for clearing this game's browser-stored save and preferences
 - Arrow keys or WASD: walk
 - Keyboard shortcuts still work: E, F, I, Q, T, J, and Backtick
 - In fullscreen, the canvas HUD shows the keyboard legend and overlays remain visible
@@ -157,7 +166,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Real place names are now used for the quarry and final cave locations, but the mystery events themselves remain fictionalized.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.40.1 does not change the save format.
+- Saves are localStorage plus JSON export. v0.40.2 does not change the save format.
 
 ## License
 
