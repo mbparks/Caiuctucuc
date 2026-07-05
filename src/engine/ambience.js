@@ -28,6 +28,38 @@ export function createAmbience() {
 
   // the mill wheel: a slow wooden thump, until the night it stops
   let millTimer = null, millGain = null;
+  let dreadGain = null, dreadOsc = null, dreadOsc2 = null;
+  function ensureDread() {
+    if (!ctx || dreadGain) return;
+    dreadGain = ctx.createGain(); dreadGain.gain.value = 0; dreadGain.connect(ctx.destination);
+    dreadOsc = ctx.createOscillator(); dreadOsc.type = 'sine'; dreadOsc.frequency.value = 55;
+    dreadOsc2 = ctx.createOscillator(); dreadOsc2.type = 'sine'; dreadOsc2.frequency.value = 55.7;  // slow beating
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 180;
+    dreadOsc.connect(f); dreadOsc2.connect(f); f.connect(dreadGain);
+    dreadOsc.start(); dreadOsc2.start();
+  }
+  function setDread(level) {
+    if (muted) { if (dreadGain) dreadGain.gain.value = 0; return; }
+    ensureDread();
+    if (dreadGain) dreadGain.gain.value = Math.max(0, Math.min(0.06, level * 0.06));
+  }
+
+  function chime(kind) {
+    if (!ctx || muted) return;
+    const now = ctx.currentTime;
+    const notes = kind === 'sight' ? [523.25, 783.99, 1046.5] : [659.25, 987.77];
+    notes.forEach((f, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      o.connect(g); g.connect(ctx.destination);
+      const t = now + i * 0.09;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+      o.start(t); o.stop(t + 0.55);
+    });
+  }
+
   function millThump() {
     if (!ctx || muted || !millGain) return;
     const osc = ctx.createOscillator();
@@ -53,6 +85,8 @@ export function createAmbience() {
       }
     },
     setMuted(m) { muted = m; if (gain) gain.gain.value = m ? 0 : 0.05; },
+    chime(kind) { chime(kind); },
+    setDread(level) { setDread(level); },
     // scenes: outdoor periods, indoors, and the caves each have a voice
     setScene(period, place = 'town') {
       if (!filter) return;

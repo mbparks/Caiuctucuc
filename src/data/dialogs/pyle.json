@@ -1,0 +1,26 @@
+{
+  "npcId": "pyle",
+  "displayName": "Ansel Pyle, lockkeeper",
+  "greeting": "He is watching the water do nothing, which is most of what water does between boats. \"Lock's empty till the four o'clock packet. You're not a boatman. Lost, or curious?\"",
+  "shrug": "\"Can't help you there. I keep a lock, not a confessional.\"",
+  "deflect": "\"Ask me when I know you better. The canal taught me patience and not much else.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Ansel Pyle. Twenty years a canawler, now I keep the last lock before the basin. The canal came up from Georgetown and stopped at Cumberland, and so did I.\"" },
+    { "keyword": "CANAL", "gate": "open", "text": "\"One hundred eighty-four miles of ditch and I've walked most of it twice. She was going to reach the Ohio, they said. Then the railroad beat her here by eight years and the money lost its nerve.\" He shrugs at the water. \"So the C&O ends here. Cumberland is where the canal gave up and the mountains won.\"" },
+    { "keyword": "RAILS", "gate": "open", "text": "\"The B&O.\" He says it the way you'd name a dog that bit you. \"Coal to Baltimore in a day where my boats took a week. They'll bury the canal inside a generation, and me not long after. But the coal has to come down off the mountain first, and lately the mountain does not want to give it up.\"" },
+    {
+      "keyword": "CARGO", "gate": "open",
+      "text": "\"You want honest work? I've a load wants walking from the basin to the depot, and my knees are done walking towpath.\" He looks you over. \"Five silver, and I'll tell the towpath men you carry fair. Take it or leave it at the BOARD like everyone else.\"",
+      "sets": { "pyleKnowsYou": true }
+    },
+    {
+      "keyword": "MOUNTAIN", "gate": "flag", "flag": "sawLight",
+      "text": "He goes quiet, and the water goes quiet with him. \"You saw the light. Good. Then I'm not the only one.\" He lowers his voice though there is no one for a quarter mile. \"The coal boats that load after dark come back with the crews gone strange. Won't speak of what sings in the deep cut. I've stopped asking. But you're asking, aren't you.\"",
+      "sets": { "pyleConfides": true }
+    },
+    {
+      "keyword": "COAL", "gate": "open",
+      "text": "\"Comes down from the quarry seam by the wagonload, and there's more wrong with that seam than a surveyor's arithmetic. The mules balk at the deep cut. Mules are honest that way. They know a bad place when they're stood in one.\""
+    }
+  ]
+}

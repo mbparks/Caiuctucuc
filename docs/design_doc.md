@@ -1,4 +1,7 @@
 # CAIUCTUCUC
+
+**Era note (v0.14.0):** the setting is deliberately vague mid-1850s Cumberland, not a hard 1800. The C&O Canal has reached the town (1850) and the B&O Railroad has run through for a decade (1842), so canal boats, a lock, rail sidings, and coal sit alongside the older fort-and-quarry history in living memory. Keep player-facing dates soft; the fort backstory (1755) and other historical anchors remain fixed.
+
 ## A Cumberland Supernatural Mystery
 
 **Design Document v0.3.0**
@@ -33,7 +36,7 @@ Unlike the interactive paintings elsewhere in the ARCADE, this is a real game wi
 
 ## 2. Setting and Tone
 
-Cumberland, 1800. Fort Cumberland is a decaying ruin. The National Road does not exist yet. The town is a rough gateway of taverns, traders, and wagon trains. The Whiskey Rebellion is six years past and its memories are raw. Fog rolls off the Potomac. German and Scots-Irish folk beliefs collide with Shawnee legends the settlers half remember and fully misunderstand.
+Cumberland, the 1850s. Fort Cumberland is long gone, its logs scavenged, only Washington's old headquarters cabin still standing on the rise. The town is the great gateway west: Braddock's Road (1755) and after it the National Road (reaching Cumberland in 1818) both begin here, the C&O Canal ends here at its basin (1850), and the B&O Railroad has run coal to Baltimore for a decade. Wagons, canal boats, and coal cars all meet in one valley. German and Scots-Irish folk beliefs collide with Shawnee legends the settlers half remember and fully misunderstand. Fog rolls off the Potomac, and something older than any road stirs under the mountain.
 
 Supernatural register: theatrical and uncanny in the Melies tradition. Hand tinted, lantern lit, strange rather than gory.
 
@@ -421,3 +424,175 @@ Suggested MVP scope for v1.0: town proper plus the fort ruins and the Narrows, t
 ## License
 
 GPL-3.0
+
+## v0.15.0 addendum: the canal town grows and the roads remembered
+
+Added Ansel Pyle, lockkeeper of the last C&O lock, who works the basin by day,
+drinks at the Blue Mule, and sleeps in the lock house. He offers canal cargo
+as honest towpath work (five silver, a point of Road standing) and seeds the
+supernatural thread: the coal crews that load after dark come back strange,
+and the mules balk at the deep cut. Two new enterable interiors: the B&O
+Depot and the Lock House, both furnished. The jobs board now presents a choice
+of available work rather than a fixed order.
+
+The roads that made Cumberland are now present and remembered. National Road
+milestones (cast-iron mile markers) stand at the west gate (mile zero, where
+the great pike west begins) and along the main street. Braddock's Road climbs
+northwest toward the fort hill, its marker recalling that Washington buried
+General Braddock in the roadbed in 1755 so the wagons would hide the grave.
+Both roads, and Washington himself, are learnable conversation subjects
+(Bright the wagoner on ROADS and the NATIONAL road, Doyle on WASHINGTON).
+Washington's headquarters cabin, already a safe-rest vigil site, is now a
+furnished landmark with his campaign table and a French musket ball in the
+sill, both examinable, both quietly uncanny. Era anchors: Braddock's Road
+1755, National Road reaching Cumberland 1818, canal 1850, railroad 1842.
+
+## v0.16.0 addendum: atmosphere and the case file
+
+Two pillars, one visual and one gameplay, plus the beat that joins them.
+
+Atmosphere: a new engine (src/engine/atmosphere.js) adds a motion layer the
+static world lacked. Drifting river fog (denser and bluer at night), chimney
+smoke rising from every lit building, floating motes (dust by day, faint
+spirits by night), and a soft radial vignette that frames the scene like aged
+glass. The fog answers the design doc's old promise that fog rolls off the
+Potomac. All of it is a few dozen particles, cheap to run.
+
+The case file: the plain journal became a tabbed detective's notebook on aged
+paper. EVIDENCE shows every clue as a pinned, slightly-askew card grouped by
+thread. SUSPECTS is a board that fills in fact by fact as you learn about
+Gantt, Cresap, Beall, and Ward, showing how many things you still do not know
+about each. WORDS is your growing vocabulary with the newest highlighted.
+STANDING keeps reputation, confidences, work, and the hour.
+
+The discovery beat: finding a new clue triggers a gold flash and a soft
+two-note chime; waking the Glimmer triggers a green flash and a brighter
+three-note chime. Investigation now feels like something happens when you
+succeed.
+
+## v0.17.0 addendum: deduction, reactive townsfolk, quest markers
+
+The trial is no longer a submit button. Before the verdict math runs, the
+player assembles the accusation across three panels: WHO (the culprit), WHY
+(the motive), and PROOF (drawn only from clues actually held). scoreDeduction
+(src/game/deduction.js) grades it: naming Gantt, the quarry seam, and the
+re-inked plat is a clean case worth +3 conviction weight; the right man with
+loose framing still helps but less; blaming the curse, the town's favorite
+escape, actively collapses the case. A clean deduction is remembered
+(deductionClean) for the ending.
+
+Reactive townsfolk (src/game/remarks.js): NPCs may open a conversation with an
+aside about the hour (dawn mist, the four o'clock packet, lamps wanting
+lighting), the weather (rain off the Potomac, fog that gets into the head),
+your standing (mistrust when low, welcome when high), or your coat (a
+gentleman's frock worn like it is borrowed). Deterministic per npc and hour so
+it does not flicker, and silent about two conversations in three.
+
+Quest markers: the in-canvas minimap now draws every building door as a faint
+mark and pulses an amber target at the door of wherever the current lead
+points (hintTarget in hints.js maps each story phase to a building). The open
+world is navigable at a glance without breaking immersion.
+
+## v0.18.0 addendum: a city of stone, brick, and timber
+
+Buildings were identical brick with doors rendering mid-facade. Rebuilt. Seven
+wall materials now exist (three bricks in different reds and browns, two cut
+stones in gray and blue-gray, two timber clapboards), each generated with its
+own pattern (brick courses, irregular ashlar, horizontal siding) and its own
+roof color, and each with a matching window and door tile. Buildings are
+assigned materials by function: civic halls (courthouse, chambers, kirk, gaol)
+in cut stone, trades in brick, dwellings in timber. The door bug is fixed at
+the source: doors are now always placed on the building's bottom row, never a
+middle course, and the generator forces this regardless of the authored door
+coordinate.
+
+Canal boats now float ON the basin water (forced onto water tiles) with canal
+mules standing on the towpath bank beside each, the way the C&O actually
+worked, mule hauls boat. A new mule tile joins the decor set.
+
+Massive landscape features give the valley scale: four large solid terrain
+tiles (mossy boulder, dense pine, craggy rock face, giant cut stump) placed in
+clusters, two pine stands (northeast corner and south edge), a boulder field
+on the west slope, and a cliff formation at the northwest fort-hill toes.
+These are solid: the player walks around them, so they shape the space as well
+as fill it. The material index is exported from genart to materials.json and
+read by genmaps, so tile-order changes never desync the two.
+
+## v0.19.0 addendum: roofed buildings and big furniture
+
+The door-in-the-middle bug is finally solved at its true cause. Buildings were
+drawn as a solid block of one wall tile, and each wall tile carried a roof band
+on top, so a tall building looked like stacked horizontal strips with the door
+graphic floating partway up. Rebuilt: each material now has five tiles (roof
+body, roof ridge/peak, plain facade, window facade, door facade). Buildings
+render a peak ridge on the top row, roof body on the middle rows, and the
+facade (with door and windows) only on the bottom row. The door now sits
+unmistakably on the ground floor with grass or street directly below it. A test
+walks every building door and confirms a roof sits above it and open ground
+below.
+
+Big furniture: interiors were furnished with small single-tile props. Added
+seven substantial two-tile pieces (bed, desk, shop counter, kitchen range,
+armoire, couch, dining table), each drawn as abutting left and right halves,
+and rewrote every interior's furnishing to build rooms around them: the
+magistrate's chambers get a desk, an armoire, and a settle; the inn gets a
+counter and two tables; the surgery a bed; the widow's cottage a cast kitchen.
+Each big piece carries its own examinable oddity line. The furniture index is
+exported to bigfurn.json so tile-order changes never desync placement.
+
+## v0.21.0 addendum: the ambient haunting
+
+The supernatural was gated behind story unlocks and delivered as toast text, so
+during normal play the world felt mundane despite being a supernatural mystery.
+Fixed with a new engine (src/engine/haunting.js) that makes the uncanny ambient
+and always present. Spectral wisps drift against the wind, cold spots shimmer as
+wrong-colored air, and a Watcher, a tall still silhouette with pale eyes, may
+cross the far treeline on a dark night. Intensity (dread, 0..1) scales with the
+player's SIGHT rank, the hour (night), and proximity to charged ground: the
+churchyard, the north edge under the mountain, and the caves. It is never wholly
+absent (baseline ~0.12), so even the unawakened catch things at the edge of
+vision, brighter and more legible as SIGHT opens.
+
+Dread also drives audio: a detuned low drone (55 / 55.7 Hz, slow beating,
+lowpass) in ambience.js whose gain follows the dread level, so charged places
+are heard as well as seen. The Watcher carries one light, non-punishing hook, a
+soft chime and, the first time only, a murmured first-sighting line (different
+for the seeing and the unawakened). True to the project's north star, this is
+atmosphere, not challenge: the haunting never damages or chases, it unsettles.
+
+## v0.21.1 addendum: the cave mouth and full-size canal boats
+
+Two fixes from playtest. The cave entrance (the Act Four descent, gated behind
+nanMissing) existed only as an invisible door hotspot on bare grass at tile
+(31, 7), so players could not find it. Now it is a clear landmark: a solid rock
+bluff rises behind it, a dark two-tile cave mouth opens on the door row (drawn
+on the decor layer so the door tile stays walkable), and a nailed horseshoe and
+a marker post flag it. The nanMissing hint was rewritten to guide the player up
+the north road to the bluff, and the minimap objective marker now points at the
+cave door during Act Four.
+
+Canal boats were single 16px tiles, no bigger than the player. Replaced with
+proper multi-tile vessels: a new "big scenery" tile group holds a four-tile
+vertical canal boat (pointed bow, cargo hold, after-cabin with stovepipe,
+blunt stern with tiller) that runs the length of the north-south river, roughly
+2.7x the player's height and the full width of the channel. Two boats are
+moored on the water with mules hauling from the towpath. The big-scenery tile
+index is exported to bigscene.json and read by genmaps, consistent with the
+materials and big-furniture pipelines.
+
+## v0.21.2 addendum: doorways always clear
+
+Townsfolk kept blocking doors. The interaction-priority fix (a door under the
+player wins over a nearby NPC) was not enough on its own, because most NPC home
+and work spots sit on the very tile in front of a building's door, so a
+townsperson would physically park in the threshold and the player could not
+reach the door tile past them.
+
+Fixed at the position level: on map load, the game computes doorwayTiles, the
+set of every door tile plus the walkable approach tile directly in front of it.
+A keepOffDoorways helper slides any NPC resting on one of those tiles to the
+nearest open, non-doorway tile. It runs after each NPC's scheduled move, at
+spawn time, and as a per-frame safety net over all non-pursuers, so a doorway
+is always clear no matter how an NPC arrived there. Pursuers are exempt (they
+are supposed to close on the player). The result: every door is always
+reachable.

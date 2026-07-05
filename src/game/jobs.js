@@ -14,6 +14,11 @@ export const JOBS = {
     name: 'A night delivery', honest: false, pay: 8,
     stages: ['pickup', 'dropoff'], nightOnly: true, dayHeat: 20,
     offer: 'A cask from Shanty Row to the ferry, after dark, no questions. Eight silver.'
+  },
+  canalcargo: {
+    name: 'Canal cargo', honest: true, pay: 5,
+    stages: ['pickup', 'dropoff'],
+    offer: 'Walk the towpath: shoulder a load from the canal basin to the depot for the lockkeeper. Five silver, and the Road notes an honest carrier.'
   }
 };
 
@@ -37,7 +42,10 @@ export function workJob(state, jobId, stage, hour) {
   if (next.job.stage >= def.stages.length) {
     next = { ...next, job: null, player: { ...next.player, coin: next.player.coin + def.pay } };
     if (!def.honest) next = { ...next, reputation: { ...next.reputation, road: next.reputation.road + 2 } };
-    text = 'Done and paid: ' + def.pay + ' silver.' + (!def.honest ? ' The Road remembers who carries without asking.' : '');
+    else if (jobId === 'canalcargo') next = { ...next, reputation: { ...next.reputation, road: next.reputation.road + 1 } };
+    text = 'Done and paid: ' + def.pay + ' silver.'
+      + (!def.honest ? ' The Road remembers who carries without asking.'
+        : jobId === 'canalcargo' ? ' The towpath men nod as you pass now.' : '');
     if (def.nightOnly && hour >= 6 && hour < 20) {
       heat = def.dayHeat;
       text += ' Done in daylight, though, and daylight has eyes.';

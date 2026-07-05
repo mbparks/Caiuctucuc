@@ -1,6 +1,6 @@
 # CAIUCTUCUC Roadmap
 
-Current: **v0.11.0**, the overworld pass. Vivid fields, clump trees on black, brick-red Cumberland, and a proper black band across the top of the screen: the county in gray, you in green, your silver by a gold coin, and HALE in red hearts.
+Current: **v0.19.0**. Buildings finally read as buildings: a shingled roof with a ridge line on top, a facade with the door and windows on the ground floor, no more door floating mid-wall. Interiors are furnished with substantial two-tile pieces: rope beds under pieced quilts, writing desks, shop counters with scales, cast kitchen ranges, walnut armoires, horsehair settles, and set dining tables.
 
 ## Now, next, later
 

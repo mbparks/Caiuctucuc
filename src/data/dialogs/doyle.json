@@ -1,50 +1,57 @@
 {
-  "npcId": "doyle",
-  "displayName": "Peg Doyle",
-  "greeting": "Peg Doyle looks up from the taps without stopping her hands. \"Evening. You will be the one off Bright's train. Sit or ask, either suits me.\"",
-  "shrug": "\"Words are my trade, friend, and that one has no price on it tonight.\"",
-  "deflect": "\"That is a question with a door on it, and you have not knocked right yet.\"",
-  "entries": [
-    {
-      "keyword": "NAME",
-      "gate": "open",
-      "text": "\"Peg Doyle, and the Blue Mule is mine, floor to rafters. Whatever you heard about the name, the mule was real and he was worse.\""
-    },
-    {
-      "keyword": "JOB",
-      "gate": "open",
-      "text": "\"I pour, I feed, I let rooms. And I listen, which pays better than all three. If you need work, the board by the door has honest jobs and the QUARRY is hiring, though the men come back quiet lately.\""
-    },
-    {
-      "keyword": "TOWN",
-      "gate": "open",
-      "text": "\"Cumberland is a doorway, friend. Everything bound for the Ohio country squeezes through here, and some of it sticks. Mind the FORT after dark, not that anything is up there. And mind the CREEK fords when it rains.\""
-    },
-    {
-      "keyword": "FORT",
-      "gate": "open",
-      "text": "\"Ruins and rubbish, and Washington's old cabin that nobody keeps and nobody robs. Men sleep rough up there to save my room rates, which I take personally. Ask the constable about the fort sometime, and watch his hands.\""
-    },
-    {
-      "keyword": "CREEK",
-      "gate": "open",
-      "text": "\"Wills Creek, down from the Narrows. Fordable at the shallows if you must, and the bridge if you are dry minded. It has taken its share of drunks over the years. It gives most of them back.\""
-    },
-    {
-      "keyword": "QUARRY",
-      "gate": "open",
-      "text": "\"McTeague's workings, up the mountain road. Good wages and lately bad faces. Third man this week drank here without a word in him. Stone does not usually make men quiet. It makes them deaf.\""
-    },
-    {
-      "keyword": "GENTLEMAN",
-      "gate": "reputation",
-      "faction": "road",
-      "min": 1,
-      "cost": 2,
-      "deflect": "\"Now that is a word with weight on it. But I do not know you from the road yet, and I sell to customers, not strangers.\"",
-      "broke": "\"Two silver. Information keeps better than beer, so the price does not come down at closing.\"",
-      "text": "\"Two silver, and here is your gentleman. A fine coat took a room here twice this spring, paid true, signed nothing. Asked after survey work, and who did the measuring hereabouts. I never sold him a thing, which ought to tell you what I thought of him.\"",
-      "sets": { "askedGentleman": true }
-    }
-  ]
+ "npcId": "doyle",
+ "displayName": "Peg Doyle",
+ "greeting": "Peg Doyle looks up from the taps without stopping her hands. \"Evening. You will be the one off Bright's train. Sit or ask, either suits me.\"",
+ "shrug": "\"Words are my trade, friend, and that one has no price on it tonight.\"",
+ "deflect": "\"That is a question with a door on it, and you have not knocked right yet.\"",
+ "entries": [
+  {
+   "keyword": "NAME",
+   "gate": "open",
+   "text": "\"Peg Doyle, and the Blue Mule is mine, floor to rafters. Whatever you heard about the name, the mule was real and he was worse.\""
+  },
+  {
+   "keyword": "JOB",
+   "gate": "open",
+   "text": "\"I pour, I feed, I let rooms. And I listen, which pays better than all three. If you need work, the board by the door has honest jobs and the QUARRY is hiring, though the men come back quiet lately.\""
+  },
+  {
+   "keyword": "TOWN",
+   "gate": "open",
+   "text": "\"Cumberland is a doorway, friend. Everything bound for the Ohio country squeezes through here, and some of it sticks. Mind the FORT after dark, not that anything is up there. And mind the CREEK fords when it rains.\""
+  },
+  {
+   "keyword": "FORT",
+   "gate": "open",
+   "text": "\"Ruins and rubbish, and Washington's old cabin that nobody keeps and nobody robs. Men sleep rough up there to save my room rates, which I take personally. Ask the constable about the fort sometime, and watch his hands.\""
+  },
+  {
+   "keyword": "CREEK",
+   "gate": "open",
+   "text": "\"Wills Creek, down from the Narrows. Fordable at the shallows if you must, and the bridge if you are dry minded. It has taken its share of drunks over the years. It gives most of them back.\""
+  },
+  {
+   "keyword": "QUARRY",
+   "gate": "open",
+   "text": "\"McTeague's workings, up the mountain road. Good wages and lately bad faces. Third man this week drank here without a word in him. Stone does not usually make men quiet. It makes them deaf.\""
+  },
+  {
+   "keyword": "GENTLEMAN",
+   "gate": "reputation",
+   "faction": "road",
+   "min": 1,
+   "cost": 2,
+   "deflect": "\"Now that is a word with weight on it. But I do not know you from the road yet, and I sell to customers, not strangers.\"",
+   "broke": "\"Two silver. Information keeps better than beer, so the price does not come down at closing.\"",
+   "text": "\"Two silver, and here is your gentleman. A fine coat took a room here twice this spring, paid true, signed nothing. Asked after survey work, and who did the measuring hereabouts. I never sold him a thing, which ought to tell you what I thought of him.\"",
+   "sets": {
+    "askedGentleman": true
+   }
+  },
+  {
+   "keyword": "WASHINGTON",
+   "gate": "open",
+   "text": "\"The Colonel? Kept his headquarters here in the fifty-five, in the log cabin on the rise, back when he was young and the fort was new and neither had done the things they would do.\" He wipes the bar. \"The cabin still stands when everything else has fallen. Nobody keeps it and it stays swept. Nobody guards it and nobody robs it. Go up and see, if you have the nerve for a quiet that answers back.\""
+  }
+ ]
 }

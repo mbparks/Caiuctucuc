@@ -4,7 +4,7 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.11.0** (the overworld pass: NES-bold palette, Zelda-grammar tiles, the in-canvas band with minimap and hearts)
+**Version: 0.21.2** (townsfolk are physically kept out of doorways, so a door is always reachable)
 
 ## Running it
 
@@ -47,7 +47,21 @@ The complete paper design lives in docs/: design document, main quest beat sheet
 
 This project follows the standing MBPARKS web app standards: local first with full save export and import, night default theme, WCAG AA in all themes plus a High Contrast theme, fluid sizing, collapsible menus, mute button, visible version display, debug flagged console logging, per-release snapshots, and a blog post draft with each release.
 
+## Cheat codes
+
+Press the backtick key (`` ` ``) to open the terminal, type a code, and press Enter.
+
+- SNAKEOIL: restore health to full
+- SPECIE: gain 25 silver
+- PARDON: clear all heat and pursuit
+- LANTERNS: banish the darkness permanently
+- ACT1 / ACT2 / ACT3 / ACT4: skip to the start of that act with a coherent case file (aliases ACTONE, ACTTWO, ACTTHREE, ACTFOUR also work)
+
+The act skips are cumulative and grant every clue and flag the player would have gathered, so the case file and the next-step hint read correctly on arrival. Intended for playtesting the later acts without replaying the whole story.
+
 ## Known Limitations
+
+- The test suite has two parts: `node tests/run.js` (pure logic and asset checks, no dependencies) and `node tools/boot_smoke.mjs` (a headless jsdom boot that catches render and camera regressions, requires `npm install jsdom`). CI runs both.
 
 - v0.0.2 renders placeholder colors keyed by gid; real tilesheets are not wired yet.
 - The art is generated, third generation (the overworld pass, NES-bold); the final art decision is still open (docs/art_decision.md) and any option drops into the documented slots.

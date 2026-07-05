@@ -325,6 +325,154 @@
    ]
   },
   {
+   "type": "tilelayer",
+   "name": "decor",
+   "width": 14,
+   "height": 10,
+   "data": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    25,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    17,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    94,
+    95,
+    0,
+    0,
+    0,
+    0,
+    0,
+    106,
+    107,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
    "type": "objectgroup",
    "name": "spawns",
    "objects": [
@@ -352,6 +500,118 @@
      "width": 16,
      "height": 16,
      "properties": []
+    },
+    {
+     "id": 623,
+     "name": "the campaign table",
+     "type": "oddity",
+     "x": 48,
+     "y": 48,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The table where a young Colonel Washington kept his headquarters in 1755, when this cabin stood inside Fort Cumberland and the fort still had a reason. The wood is scarred where a map was pinned and repinned. Someone keeps it dusted. Someone always has."
+      }
+     ]
+    },
+    {
+     "id": 624,
+     "name": "a musket ball in the sill",
+     "type": "oddity",
+     "x": 176,
+     "y": 96,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A lead ball buried in the window sill, French by its cast, left where it struck a hundred years ago. Children dare each other to touch it. The oldest say it is still warm, and the oldest are not always lying."
+      }
+     ]
+    },
+    {
+     "id": 700,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 32,
+     "y": 112,
+     "width": 32,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A rope bed strung tight under a pieced quilt, the batting flat where the same body has lain for years."
+      }
+     ]
+    },
+    {
+     "id": 701,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 144,
+     "y": 112,
+     "width": 32,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A plank table set for a meal that never quite happens, a candle guttered to a stub."
+      }
+     ]
+    },
+    {
+     "id": 702,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 176,
+     "y": 48,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A fieldstone hearth, the mortar packed with river clay and, if you look, one child's marble set in for luck."
+      }
+     ]
+    },
+    {
+     "id": 703,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 32,
+     "y": 48,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A writing desk gone amber with lamp smoke, the blotter a palimpsest of every letter this town confessed to paper."
+      }
+     ]
+    },
+    {
+     "id": 704,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 112,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A tin lantern on a chain, its punched holes throwing a constellation on the ceiling that is almost, not quite, ours."
+      }
+     ]
     }
    ]
   },

@@ -8,7 +8,7 @@ from pathlib import Path
 W, H = 960, 640
 BORDER = 34
 rng = random.Random(1800)
-img = Image.new("RGB", (W, H), (238, 231, 210))   # cream card stock
+img = Image.new("RGB", (W, H), (214, 202, 176))   # aged, tea-stained card stock
 d = ImageDraw.Draw(img)
 
 SX0, SY0, SX1, SY1 = BORDER, BORDER + 26, W - BORDER, H - BORDER - 30
@@ -17,9 +17,9 @@ SW, SH = SX1 - SX0, SY1 - SY0
 # sky: peach horizon rising into powder blue
 for y in range(SY0, SY0 + int(SH * 0.62)):
     t = (y - SY0) / (SH * 0.62)
-    r = int(150 + (238 - 150) * t)
-    g = int(190 + (215 - 190) * t)
-    b = int(214 + (180 - 214) * t)
+    r = int(120 + (196 - 120) * t)
+    g = int(140 + (170 - 140) * t)
+    b = int(150 + (150 - 150) * t)
     d.line([(SX0, y), (SX1, y)], fill=(r, g, b))
 
 # clouds: soft tinted masses
@@ -70,7 +70,7 @@ for _ in range(1400):
 WATER_Y = SY0 + int(SH * 0.62)
 for y in range(WATER_Y, SY1):
     t = (y - WATER_Y) / max(1, (SY1 - WATER_Y))
-    d.line([(SX0, y), (SX1, y)], fill=(int(96 + 30 * t), int(140 + 18 * t), int(150 + 12 * t)))
+    d.line([(SX0, y), (SX1, y)], fill=(int(70 + 22 * t), int(96 + 16 * t), int(112 + 12 * t)))
 for _ in range(240):
     wx = rng.randint(SX0, SX1 - 60)
     wy = rng.randint(WATER_Y + 6, SY1 - 6)
@@ -135,10 +135,10 @@ title = "C A I U C T U C U C"
 tw = d.textlength(title, font=serif_b)
 d.text(((W - tw) / 2 + 1, 21), title, font=serif_b, fill=(120, 100, 80))
 d.text(((W - tw) / 2, 20), title, font=serif_b, fill=RED)
-cap = "A SUPERNATURAL MYSTERY ON THE OLD STONE BRIDGE ROAD"
+cap = "A SUPERNATURAL MYSTERY WHERE THE TOWPATH MEETS THE RAILS"
 cw = d.textlength(cap, font=serif_t)
 d.text(((W - cw) / 2, SY0 + 8), cap, font=serif_t, fill=(88, 70, 56))
-foot = 'IN "THE NARROWS", CUMBERLAND, MD.  ANNO 1800'
+foot = 'IN "THE NARROWS", CUMBERLAND, MD.  WHERE CANAL MEETS RAIL'
 d.text((SX0 + 4, SY1 + 7), foot, font=serif_s, fill=RED)
 press = "PRESS ANY KEY"
 pw = d.textlength(press, font=serif_s)

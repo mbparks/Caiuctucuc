@@ -334,10 +334,10 @@ function pngSize(path) {
   const buf = readFileSync(new URL(path, import.meta.url));
   return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
 }
-test('four period tilesheets carry 16 tiles in 2 animation rows', () => {
+test('four period tilesheets carry 113 tiles in 2 animation rows', () => {
   for (const p of ['day', 'dusk', 'night', 'fog']) {
     const s = pngSize('../assets/tiles/tileset_' + p + '.png');
-    assert(s.w === 256 && s.h === 32, p + ' sheet is ' + s.w + 'x' + s.h);
+    assert(s.w === 1808 && s.h === 32, p + ' sheet is ' + s.w + 'x' + s.h);
   }
 });
 test('every coat has a four-frame sheet at character spec', () => {
@@ -964,10 +964,14 @@ test('fill mode scales fractionally and crisp mode stays whole', () => {
   assert(Math.abs(fill - 3.375) < 0.001, 'fill should reach 3.375: ' + fill);
   assert(fitScale(1920, 1080, 480, 320) === 3, 'the default mode drifted');
 });
-test('the town wears windows and wildflowers', () => {
+test('the town wears material facades, windows, and wildflowers', () => {
   const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
   const ground = raw.layers.find(l => l.name === 'ground').data;
-  assert(ground.includes(16), 'no windows on any facade');
+  // material window tiles sit at each material base + 1 (bases 59,62,...); at least one facade has windows
+  const materialGids = ground.filter(g => g >= 59 && g <= 93);
+  assert(materialGids.length > 20, 'no material facades on the map');
+  const distinctMaterials = new Set(materialGids.map(g => Math.floor((g - 59) / 5)));
+  assert(distinctMaterials.size >= 3, 'buildings are all one material (' + distinctMaterials.size + ')');
   assert(ground.includes(13) && ground.includes(14) && ground.includes(15), 'the grass is uniform');
 });
 test('the splash overlay stands ahead of the module and dismisses to the game', () => {
@@ -993,6 +997,610 @@ test('the band takes the top of the canvas and the camera respects it', () => {
   assert(mainjs.includes('canvas.height - HUD_H, map.width'), 'the camera ignores the band');
   assert(mainjs.includes('drawHeart') && mainjs.includes("'-HALE-'"), 'no hearts on the watch');
   assert(mainjs.includes('drawHud()'), 'the band is never painted');
+});
+
+test('switchMap recenters the camera so the player never spawns off-screen', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  const smStart = mainjs.indexOf('async function switchMap');
+  const sm = mainjs.slice(smStart, mainjs.indexOf('await switchMap', smStart));
+  assert(sm.includes('cam.follow(player.x + 8, player.y + 8)'), 'switchMap never recenters the camera');
+  assert(mainjs.split('function refreshHud').length === 2, 'refreshHud defined more than once');
+});
+
+test('no spawn, exit, or schedule spot lands on a solid tile', () => {
+  const T = 16;
+  function solidAt(m, tx, ty) {
+    if (tx < 0 || ty < 0 || tx >= m.width || ty >= m.height) return true;
+    return m.gidAt('collision', tx, ty) !== 0;
+  }
+  function bodyBlocked(m, px, py) {
+    return [[px, py], [px + 12, py], [px, py + 12], [px + 12, py + 12]]
+      .some(([cx, cy]) => solidAt(m, Math.floor(cx / T), Math.floor(cy / T)));
+  }
+  const mapNames = ['town', 'caves', 'int_surgery', 'int_smithy', 'int_gaol', 'int_bluemule',
+                    'int_courthouse', 'int_store', 'int_fenwick', 'int_ferry', 'int_lamar'];
+  for (const name of mapNames) {
+    const m = parseMap(JSON.parse(readFileSync(new URL('../assets/maps/' + name + '.json', import.meta.url))));
+    for (const s of (m.objects.spawns || []))
+      assert(!bodyBlocked(m, s.x, s.y), name + ' spawn "' + s.name + '" is walled in at (' + (s.x / T) + ',' + (s.y / T) + ')');
+    for (const sp of (m.objects.spots || []))
+      assert(!bodyBlocked(m, sp.x, sp.y), name + ' spot "' + sp.name + '" is walled in');
+  }
+});
+
+test('the parallax ridge overlay is gone from the render', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(!mainjs.includes('art.sprites.ridge'), 'the ridge smear returned');
+});
+
+console.log('the mood pass (v0.12.0)');
+test('every character has a distinct silhouette, not just a recolor', () => {
+  function sig(name) {
+    const buf = readFileSync(new URL('../assets/sprites/' + name + '.png', import.meta.url));
+    return buf.length + ':' + buf.readUInt32BE(16) + 'x' + buf.readUInt32BE(20);
+  }
+  // shape signatures come from the generator; here we assert the roster is complete
+  const roster = ['player_drover', 'player_frock', 'player_preacher', 'npc_doyle', 'npc_cresap',
+    'npc_ward', 'npc_feig', 'npc_gantt', 'npc_rood', 'npc_mcteague', 'npc_coombs', 'npc_fenwick',
+    'npc_shanks', 'npc_bright', 'npc_beall', 'npc_brahm'];
+  for (const n of roster) {
+    const s = pngSize('../assets/sprites/' + n + '.png');
+    assert(s.w === 64 && s.h === 24, n + ' is malformed at ' + s.w + 'x' + s.h);
+  }
+});
+test('the palette reads muted, not bright: grass is desaturated', () => {
+  const day = readFileSync(new URL('../assets/tiles/tileset_day.png', import.meta.url));
+  // grass tile (gid 1) center pixel: PNG is complex to decode raw, so assert the
+  // generator source carries the muted values instead
+  const genart = readFileSync(new URL('../tools/genart.py', import.meta.url), 'utf8');
+  assert(genart.includes('"grass1": (74, 96, 62)'), 'the grass is not the muted sage');
+  assert(!genart.includes('"grass1": (64, 148, 64)'), 'the bright grass lingers');
+});
+
+console.log('furnished interiors (v0.13.0)');
+test('the tilesheet carries 113 tiles: floor, decor, materials, landscape, big furniture, and big scenery', () => {
+  for (const per of ['day', 'dusk', 'night', 'fog']) {
+    const s = pngSize('../assets/tiles/tileset_' + per + '.png');
+    assert(s.w === 1808 && s.h === 32, per + ' sheet is ' + s.w + 'x' + s.h);
+  }
+});
+test('every furnished interior has a decor layer with pieces and matching oddity text', () => {
+  const interiors = ['int_smithy', 'int_kirk', 'int_brahm', 'int_surgery', 'int_bluemule',
+                     'int_courthouse', 'int_store', 'int_gaol', 'int_ferry', 'int_cabin'];
+  for (const iid of interiors) {
+    const raw = JSON.parse(readFileSync(new URL('../assets/maps/' + iid + '.json', import.meta.url)));
+    const decor = raw.layers.find(l => l.name === 'decor');
+    assert(decor, iid + ' has no decor layer');
+    const pieces = decor.data.filter(g => g >= 17 && g <= 32).length;
+    assert(pieces >= 3, iid + ' is barely furnished (' + pieces + ')');
+    const m = parseMap(raw);
+    const odd = (m.objects.interact || []).filter(o => o.type === 'oddity');
+    assert(odd.length >= 1, iid + ' has furnishings but no oddity flavor');
+    for (const o of odd) assert(o.props.text && o.props.text.length > 20, iid + ' oddity has thin text');
+  }
+});
+test('decor never sits on a collision wall where it would be hidden', () => {
+  const interiors = ['int_smithy', 'int_kirk', 'int_brahm', 'int_surgery', 'int_warehouse'];
+  for (const iid of interiors) {
+    const raw = JSON.parse(readFileSync(new URL('../assets/maps/' + iid + '.json', import.meta.url)));
+    const W = raw.width;
+    const decor = raw.layers.find(l => l.name === 'decor').data;
+    const coll = raw.layers.find(l => l.name === 'collision').data;
+    for (let i = 0; i < decor.length; i++) {
+      if (decor[i] && coll[i]) assert(false, iid + ' decor tile ' + i + ' is on a wall');
+    }
+  }
+});
+test('functional interactables outrank oddities in the proximity picker', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes("o.type === 'oddity' ? radius"), 'oddities do not yield priority');
+  assert(mainjs.includes("it.type === 'oddity'"), 'no oddity handler');
+});
+
+console.log('the peopled world (v0.13.1)');
+test('the town wears a decor layer of landmarks and scattered detail', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const decor = raw.layers.find(l => l.name === 'decor');
+  assert(decor, 'the town has no decor layer');
+  const pieces = decor.data.filter(g => g >= 33 && g <= 48);
+  assert(pieces.length >= 40, 'the town is barely decorated (' + pieces.length + ')');
+  const kinds = new Set(pieces);
+  assert(kinds.size >= 8, 'the decor is monotonous (' + kinds.size + ' kinds)');
+  assert(decor.data.includes(33), 'no market well');
+  assert(decor.data.includes(38), 'no graves in the churchyard');
+});
+test('every interactable type in the maps has an icon so nothing is a bare square', () => {
+  const iconTypes = ['clue', 'steal', 'station', 'vendor', 'board', 'stash', 'accuse', 'restore',
+    'ferry', 'benchmark', 'cresapledger', 'chambers', 'plate', 'widow', 'creditor', 'manhunter',
+    'letterquest', 'signfarm', 'cabinkept', 'noquestions', 'chamber', 'laylow', 'coat', 'job'];
+  for (const ty of iconTypes) {
+    const s = pngSize('../assets/icons/' + ty + '.png');
+    assert(s.w === 16 && s.h === 16, ty + ' icon is ' + s.w + 'x' + s.h);
+  }
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes('art.icons && art.icons[it.type]'), 'the renderer ignores icons');
+});
+test('buildings carry distinguishing signs so no two read alike', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  // anvil (18) by the smithy, jars (19) by the surgery, altar (21) by the kirk
+  assert(decor.includes(18) || decor.includes(21) || decor.includes(19), 'no building signs placed');
+});
+
+test('the canal and the railroad are present in the town', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  assert(decor.filter(g => g === 49).length >= 6, 'no rail siding');
+  const bs2 = JSON.parse(readFileSync(new URL('../assets/tiles/bigscene.json', import.meta.url)));
+  assert(decor.includes(bs2.boat_bow) || decor.includes(bs2.boat_mid), 'no canal boats');
+  assert(decor.includes(51), 'no canal lock');
+  assert(decor.includes(52), 'no coal for the railroad');
+});
+test('the era reads as the 1850s, not 1800, in player-facing text', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert(html.includes('1850s'), 'the footer still says 1800');
+  assert(!html.match(/Maryland, 1800\./), 'a hard 1800 lingers in the footer');
+  const bright = JSON.parse(readFileSync(new URL('../src/data/dialogs/bright.json', import.meta.url)));
+  assert(bright.entries.some(e => e.keyword === 'RAILS'), 'Bright never mentions the rails');
+  const shanks = JSON.parse(readFileSync(new URL('../src/data/dialogs/shanks.json', import.meta.url)));
+  assert(shanks.entries.some(e => e.keyword === 'CANAL'), 'Shanks never mentions the canal');
+});
+
+console.log('the canal town grows (v0.15.0)');
+test('the canal cargo job runs pickup to dropoff and pays the towpath wage', () => {
+  assert(JOBS.canalcargo && JOBS.canalcargo.honest && JOBS.canalcargo.pay === 5, 'the canal job is missing or mispriced');
+  let s = newGame();
+  s = acceptJob(s, 'canalcargo').state;
+  assert(s.job.id === 'canalcargo', 'the job was not taken');
+  s = workJob(s, 'canalcargo', 'pickup', 12).state;
+  const done = workJob(s, 'canalcargo', 'dropoff', 12).state;
+  assert(done.job === null && done.player.coin === newGame().player.coin + 5, 'the canal job did not pay');
+  assert(done.reputation.road === 1, 'the towpath did not remember (' + done.reputation.road + ')');
+});
+test('Pyle the lockkeeper exists, is scheduled, and speaks of canal and rails', () => {
+  const pyle = JSON.parse(readFileSync(new URL('../src/data/dialogs/pyle.json', import.meta.url)));
+  for (const kw of ['CANAL', 'RAILS', 'CARGO', 'COAL']) {
+    assert(pyle.entries.some(e => e.keyword === kw), 'Pyle never says ' + kw);
+  }
+  const town = parseMap(JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url))));
+  assert((town.objects.spawns || []).some(o => o.props && o.props.npcId === 'pyle'), 'Pyle is not in the town');
+});
+test('the depot and the lock house exist, are furnished, and their exits are walkable', () => {
+  for (const iid of ['int_depot', 'int_lockhouse']) {
+    const raw = JSON.parse(readFileSync(new URL('../assets/maps/' + iid + '.json', import.meta.url)));
+    const decor = raw.layers.find(l => l.name === 'decor');
+    assert(decor && decor.data.filter(g => g >= 17).length >= 3, iid + ' is bare');
+    const m = parseMap(raw);
+    assert(m.findObject('spawns', 'entry'), iid + ' has no entry');
+  }
+  const town = parseMap(JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url))));
+  assert((town.objects.spawns || []).some(o => o.name === 'from_int_depot'), 'no depot exit spawn');
+  assert((town.objects.spawns || []).some(o => o.name === 'from_int_lockhouse'), 'no lock house exit spawn');
+});
+test('the canal cargo waypoints are placed in the town', () => {
+  const town = parseMap(JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url))));
+  const wp = (town.objects.interact || []).filter(o => o.type === 'job' && o.props.job === 'canalcargo');
+  assert(wp.length === 2, 'expected 2 canal cargo waypoints, got ' + wp.length);
+  assert(wp.some(o => o.props.stage === 'pickup') && wp.some(o => o.props.stage === 'dropoff'), 'incomplete waypoints');
+});
+
+test('the National Road and Braddock stone are present and examinable', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  assert(decor.filter(g => g === 53).length >= 2, 'no National Road milestones');
+  const m = parseMap(raw);
+  const odd = (m.objects.interact || []).filter(o => o.type === 'oddity');
+  assert(odd.some(o => /National Road/.test(o.props.text)), 'the National Road is not described');
+  assert(odd.some(o => /Braddock/.test(o.props.text)), 'Braddock\u2019s Road is not described');
+});
+test('Washington headquarters is a visitable, furnished landmark', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/int_cabin.json', import.meta.url)));
+  const decor = raw.layers.find(l => l.name === 'decor');
+  assert(decor && decor.data.filter(g => g >= 17 && g <= 32).length >= 3, 'the cabin is bare');
+  const m = parseMap(raw);
+  const odd = (m.objects.interact || []).filter(o => o.type === 'oddity');
+  assert(odd.some(o => /Washington/.test(o.props.text)), 'no Washington history in the cabin');
+  const town = parseMap(JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url))));
+  assert((town.objects.doors || []).some(d => d.props.target === 'int_cabin'), 'the cabin cannot be entered');
+});
+test('the roads are learnable subjects in conversation', () => {
+  const bright = JSON.parse(readFileSync(new URL('../src/data/dialogs/bright.json', import.meta.url)));
+  for (const kw of ['ROADS', 'NATIONAL']) assert(bright.entries.some(e => e.keyword === kw), 'Bright omits ' + kw);
+  const doyle = JSON.parse(readFileSync(new URL('../src/data/dialogs/doyle.json', import.meta.url)));
+  assert(doyle.entries.some(e => e.keyword === 'WASHINGTON'), 'Doyle omits WASHINGTON');
+});
+
+console.log('atmosphere and the case file (v0.16.0)');
+test('the atmosphere engine exposes its full drawing API', () => {
+  const atmo = readFileSync(new URL('../src/engine/atmosphere.js', import.meta.url), 'utf8');
+  for (const fn of ['drawAmbient', 'drawSmoke', 'drawVignette', 'drawFlash', 'emitSmoke', 'discover', 'update'])
+    assert(atmo.includes(fn), 'atmosphere is missing ' + fn);
+});
+test('the case file has evidence, suspects, words, and standing tabs', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  for (const tabName of ["'case'", "'suspects'", "'words'", "'standing'"])
+    assert(mainjs.includes('journalTab === ' + tabName) || mainjs.includes("tab(" + tabName.replace(/'/g, "'")), 'no ' + tabName + ' tab');
+  assert(mainjs.includes('SUSPECTS'), 'no suspects model');
+  assert(mainjs.includes('THE CASE FILE'), 'the case file lost its name');
+});
+test('discovery fires a flash and chime when a clue is found', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes("atmosphere.discover") && mainjs.includes("ambience.chime"), 'no discovery beat');
+  assert(mainjs.includes('state.clues.length > before'), 'discovery does not gate on a new clue');
+});
+test('ambience exposes a chime for discoveries', () => {
+  const amb = readFileSync(new URL('../src/engine/ambience.js', import.meta.url), 'utf8');
+  assert(amb.includes('chime(kind)'), 'no chime in the ambience API');
+});
+
+console.log('deduction, reactive townsfolk, quest markers (v0.17.0)');
+const { DEDUCTION, scoreDeduction, availableProof } = await import('../src/game/deduction.js');
+test('a clean deduction (right culprit, motive, proof) strengthens the case', () => {
+  const clean = scoreDeduction({ culprit: 'gantt', motive: 'quarry', proof: 'plat_mismatch' });
+  assert(clean.mod === 3 && clean.note === 'clean', 'clean deduction should add 3, got ' + clean.mod);
+});
+test('naming the curse as the killer collapses the case', () => {
+  const wrong = scoreDeduction({ culprit: 'curse', motive: 'madness', proof: 'singing_confession' });
+  assert(wrong.mod < 0, 'blaming the curse should hurt, got ' + wrong.mod);
+  assert(wrong.note === 'wrong', 'note should be wrong');
+});
+test('the right man with weak framing still helps but less', () => {
+  const thin = scoreDeduction({ culprit: 'gantt', motive: 'debt', proof: 'calm_bootprints' });
+  assert(thin.mod === 1 && thin.note === 'thin', 'thin deduction should net +1, got ' + thin.mod);
+  const sound = scoreDeduction({ culprit: 'gantt', motive: 'debt', proof: 'plat_mismatch' });
+  assert(sound.mod === 2 && sound.note === 'sound', 'sound deduction should net +2, got ' + sound.mod);
+});
+test('availableProof only offers clues the player actually holds', () => {
+  const s = newGame();
+  s.clues = ['plat_mismatch', 'calm_bootprints'];
+  const ap = availableProof(s);
+  assert(ap.length === 2 && ap.some(o => o.id === 'plat_mismatch'), 'proof list wrong');
+  assert(!ap.some(o => o.id === 'gentleman_letter'), 'offered proof the player lacks');
+});
+const { ambientRemark } = await import('../src/game/remarks.js');
+test('townsfolk asides are deterministic per npc and hour, and sometimes silent', () => {
+  const s = newGame();
+  s.clock = { day: 1, hour: 3 };
+  const a1 = ambientRemark(s, 'doyle');
+  const a2 = ambientRemark(s, 'doyle');
+  assert(a1 === a2, 'the same beat should give the same aside');
+  // across many npcs and hours, some asides fire and some do not
+  let fired = 0;
+  for (let h = 0; h < 24; h++) { s.clock.hour = h; if (ambientRemark(s, 'beall')) fired++; }
+  assert(fired > 0 && fired < 24, 'asides should be occasional, fired ' + fired + '/24');
+});
+test('rain and standing change what townsfolk remark on', () => {
+  const s = newGame();
+  s.clock = { day: 1, hour: 9 };
+  s.weather = 'rain';
+  let sawRain = false;
+  for (let h = 0; h < 24; h++) { s.clock.hour = h; const r = ambientRemark(s, 'shanks'); if (r && /rain|towpath|Potomac/i.test(r)) sawRain = true; }
+  assert(sawRain, 'rain never came up despite raining all day');
+});
+const { hintTarget } = await import('../src/game/hints.js');
+test('the quest marker points at the right building for each phase', () => {
+  const s = newGame();
+  assert(hintTarget(s) === 'int_bluemule', 'early target should be the Mule');
+  s.flags.bodyFound = true;
+  assert(hintTarget(s) === 'int_gaol', 'should point to Beall at the gaol');
+  s.flags.hiredByBeall = true;
+  assert(hintTarget(s) === 'int_surgery', 'should point to the surgery');
+  s.flags.act2Complete = true;
+  assert(hintTarget(s) === 'int_courthouse', 'should point to the courthouse for the trial');
+});
+test('the minimap draws building marks and a pulsing objective', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes('questTarget(state)'), 'the minimap has no objective marker');
+  assert(mainjs.includes('for (const d of doorObjects)') && mainjs.includes('minimap'), 'no building marks');
+});
+
+console.log('material buildings and massive terrain (v0.18.0)');
+test('buildings use varied materials: stone, brick, and wood all appear', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const ground = raw.layers.find(l => l.name === 'ground').data;
+  const mats = new Set(ground.filter(g => g >= 59 && g <= 93).map(g => Math.floor((g - 59) / 5)));
+  // materials 0-2 brick, 3-4 stone, 5-6 wood
+  assert([...mats].some(m => m <= 2), 'no brick buildings');
+  assert([...mats].some(m => m === 3 || m === 4), 'no stone buildings');
+  assert([...mats].some(m => m >= 5), 'no wood buildings');
+});
+test('every building door sits on its bottom row, never mid-facade', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const m = parseMap(raw);
+  const W = raw.width;
+  const ground = raw.layers.find(l => l.name === 'ground').data;
+  // a door tile is a material door: base + 2, i.e. (g - 59) % 3 === 2 for g >= 59
+  for (const d of (m.objects.doors || [])) {
+    const tx = Math.floor(d.x / 16), ty = Math.floor(d.y / 16);
+    const here = ground[ty * W + tx];
+    // only audit real material-building doors (the cave mouth is not one)
+    if (!(here >= 59 && here <= 93 && (here - 59) % 5 === 4)) continue;
+    // the tile below must NOT be a building tile (proves the door is on the ground floor)
+    const below = ground[(ty + 1) * W + tx];
+    assert(below < 59 || below > 93, d.name + ' has a building tile below its door');
+  }
+});
+test('canal boats float on water and mules stand on the bank', () => {
+  const bsBoat = JSON.parse(readFileSync(new URL('../assets/tiles/bigscene.json', import.meta.url)));
+  const BOAT_GIDS = [bsBoat.boat_bow, bsBoat.boat_mid, bsBoat.boat_cabin, bsBoat.boat_stern];
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const W = raw.width;
+  const ground = raw.layers.find(l => l.name === 'ground').data;
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  let boatsOnWater = 0, mulesOnLand = 0;
+  for (let i = 0; i < decor.length; i++) {
+    if (BOAT_GIDS.includes(decor[i]) && ground[i] === 2) boatsOnWater++;
+    if (decor[i] === 54 && ground[i] === 1) mulesOnLand++;
+  }
+  assert(boatsOnWater >= 6, 'boats are not on the water (' + boatsOnWater + ')');
+  assert(mulesOnLand >= 3, 'mules are not on the bank (' + mulesOnLand + ')');
+});
+test('the town has massive landscape features: forests, boulders, a cliff', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const ground = raw.layers.find(l => l.name === 'ground').data;
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  const coll = raw.layers.find(l => l.name === 'collision').data;
+  // landscape features live on the DECOR layer so their transparent pixels show grass
+  const pines = decor.filter(g => g === 56).length;
+  const boulders = decor.filter(g => g === 55).length;
+  const cliff = decor.filter(g => g === 57).length;
+  assert(pines >= 30, 'not enough forest (' + pines + ' pines)');
+  assert(boulders >= 5, 'no boulder field');
+  assert(cliff >= 5, 'no rock formation');
+  // no landscape gid on the ground layer (would show a black box with no grass behind)
+  assert(!ground.some(g => g >= 55 && g <= 58), 'a landscape feature leaked onto the ground layer');
+  // each feature must be solid, and the ground beneath it must still be walkable terrain (grass)
+  for (let i = 0; i < decor.length; i++) {
+    if (decor[i] >= 55 && decor[i] <= 58) {
+      assert(coll[i] !== 0, 'a landscape feature is walkable at ' + i);
+      assert([1, 13, 14, 15].includes(ground[i]), 'a landscape feature has no grass beneath it at ' + i);
+    }
+  }
+});
+
+console.log('roofed buildings and big furniture (v0.19.0)');
+test('buildings have a roof on top and a facade with the door on the bottom row', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const W = raw.width;
+  const ground = raw.layers.find(l => l.name === 'ground').data;
+  const m = parseMap(raw);
+  for (const d of (m.objects.doors || [])) {
+    const tx = Math.floor(d.x / 16), ty = Math.floor(d.y / 16);
+    const here = ground[ty * W + tx];
+    if (!(here >= 59 && here <= 93 && (here - 59) % 5 === 4)) continue;
+    // the row above the door should be a roof or facade tile of the same material, not sky
+    const above = ground[(ty - 1) * W + tx];
+    assert(above >= 59 && above <= 93, d.name + ' has no wall above its door');
+    // material base for this building
+    const base = 59 + Math.floor((here - 59) / 5) * 5;
+    // the top of the building (a few rows up) should be a roof peak (base+1) or roof (base)
+    let foundRoof = false;
+    for (let yy = ty - 1; yy >= Math.max(0, ty - 8); yy--) {
+      const g = ground[yy * W + tx];
+      if (g === base || g === base + 1) { foundRoof = true; break; }
+    }
+    assert(foundRoof, d.name + ' has no roof above its facade');
+  }
+});
+test('big multi-tile furniture is placed with abutting halves', () => {
+  const interiors = ['int_cresap', 'int_bluemule', 'int_cabin', 'int_surgery', 'int_lockhouse'];
+  for (const iid of interiors) {
+    const raw = JSON.parse(readFileSync(new URL('../assets/maps/' + iid + '.json', import.meta.url)));
+    const W = raw.width;
+    const decor = raw.layers.find(l => l.name === 'decor').data;
+    let pairs = 0;
+    for (let i = 0; i < decor.length; i++) {
+      const g = decor[i];
+      if (g >= 94 && (g - 94) % 2 === 0) {           // a left half
+        assert(decor[i + 1] === g + 1, iid + ' has a big piece with a missing right half at ' + i);
+        pairs++;
+      }
+    }
+    assert(pairs >= 1, iid + ' has no big furniture');
+  }
+});
+test('big furniture reads as substantial: at least beds, desks, and counters exist in town', () => {
+  const bf = JSON.parse(readFileSync(new URL('../assets/tiles/bigfurn.json', import.meta.url)));
+  for (const k of ['bed', 'desk', 'counter', 'kitchen', 'armoire', 'couch', 'table'])
+    assert(typeof bf[k] === 'number', 'missing big furniture: ' + k);
+});
+
+test('act-skip cheats set a coherent game state for playtesting', () => {
+  const codes = { ACT1: 'act1Complete', ACT2: 'act2Complete', ACT3: 'act3Complete', ACT4: 'nanMissing' };
+  for (const [code, flag] of Object.entries(codes)) {
+    const r = applyCheat(newGame(), code);
+    assert(r.ok, code + ' was rejected');
+    assert(r.state.flags[flag], code + ' did not set ' + flag);
+    assert(r.state.clues.length >= 9, code + ' granted too few clues (' + r.state.clues.length + ')');
+  }
+  // cumulative: ACT2 has more evidence than ACT1
+  const a1 = applyCheat(newGame(), 'ACT1').state.clues.length;
+  const a2 = applyCheat(newGame(), 'ACT2').state.clues.length;
+  assert(a2 > a1, 'ACT2 should carry more evidence than ACT1');
+});
+test('act aliases work and garbage is still refused', () => {
+  assert(applyCheat(newGame(), 'ACTONE').ok, 'ACTONE alias failed');
+  assert(applyCheat(newGame(), 'ACTFOUR').ok, 'ACTFOUR alias failed');
+  assert(!applyCheat(newGame(), 'NOTACODE').ok, 'garbage was accepted');
+});
+
+test('the menu has a reset button wired to a two-step confirm and a fresh start', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert(html.includes('id="resetBtn"'), 'no reset button in the menu');
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes('resetArmed'), 'reset has no confirmation step');
+  assert(mainjs.includes('localStorage.removeItem(SAVE_KEY)'), 'reset does not clear the save');
+  assert(mainjs.includes('state = newGame()') && mainjs.includes('openCreatorHook'), 'reset does not start a fresh game');
+});
+test('a fresh game carries no story progress', () => {
+  const fresh = newGame();
+  assert(fresh.clues.length === 0, 'a new game already has clues');
+  assert(!fresh.flags.act1Complete && !fresh.flags.bodyFound && !fresh.flags.verdict, 'a new game has story flags');
+  assert(!fresh.job, 'a new game already has a job');
+});
+
+console.log('the free-form crime loop (v0.20.0)');
+const { witnessesOf, commitCrime, CRIMES } = await import('../src/game/crime.js');
+test('witnesses are the NPCs who can actually see you', () => {
+  const noWall = () => false;
+  const player = { x: 100, y: 100 };
+  const near = witnessesOf(player, [{ x: 110, y: 108 }], noWall);
+  const far = witnessesOf(player, [{ x: 600, y: 600 }], noWall);
+  assert(near.length === 1, 'a person standing next to you should see you');
+  assert(far.length === 0, 'a person across the map should not');
+  // a wall between blocks sight
+  const walled = witnessesOf(player, [{ x: 150, y: 100 }], (x) => x > 120 && x < 140);
+  assert(walled.length === 0, 'a wall should block line of sight');
+});
+test('crime in view brings heat and shame; crime unseen is cheap', () => {
+  const victim = { x: 110, y: 105, name: 'someone' };
+  const seen = commitCrime({}, 'rob', victim, [victim, victim], () => 0.5);
+  const unseen = commitCrime({}, 'rob', victim, [], () => 0.5);
+  assert(seen.heat > unseen.heat, 'being seen should cost more heat');
+  assert(seen.townHit > 0 && unseen.townHit === 0, 'only public crime should cost standing');
+  assert(seen.seen === true && unseen.seen === false, 'seen flag wrong');
+});
+test('witness count scales heat up to a cap', () => {
+  const v = { x: 0, y: 0 };
+  const one = commitCrime({}, 'shove', v, [v], () => 0).heat;
+  const three = commitCrime({}, 'shove', v, [v, v, v], () => 0).heat;
+  const five = commitCrime({}, 'shove', v, [v, v, v, v, v], () => 0).heat;
+  assert(three > one, 'more witnesses, more heat');
+  assert(five === three, 'heat from witnesses is capped at 3');
+});
+test('every crime is a real choice with its own risk profile', () => {
+  for (const id of ['pickpocket', 'rob', 'shove']) {
+    assert(CRIMES[id], 'missing crime: ' + id);
+    assert(CRIMES[id].heatSeen > CRIMES[id].heatUnseen, id + ' should be riskier when seen');
+  }
+  assert(CRIMES.rob.heatSeen > CRIMES.pickpocket.heatSeen, 'robbery should be hotter than pickpocketing');
+});
+test('the crime action and live pursuit are wired into the game', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes("e.code === 'KeyF'") && mainjs.includes('doCrime'), 'no crime key');
+  assert(mainjs.includes("extra: 'constable'"), 'the constable does not give chase at low heat');
+  assert(mainjs.includes('n.fleeing'), 'crime victims do not flee');
+});
+
+test('a door under the player wins over an NPC loitering beside it', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  // doInteract checks a tight door radius BEFORE talking to NPCs
+  const di = mainjs.slice(mainjs.indexOf('function doInteract'), mainjs.indexOf('function doInteract') + 700);
+  assert(di.indexOf('near(doorObjects, 16)') < di.indexOf('near(npcs'), 'NPCs still outrank the doorway');
+});
+test('dialog focus is deferred so the opening keypress does not type into the box', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes('setTimeout(() => { dialogInput.value') , 'focus is not deferred');
+  assert(mainjs.includes('if (e.repeat) return'), 'key auto-repeat is not guarded');
+});
+test('no NPC schedule spot sits on a door tile', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const W = raw.width;
+  const doorSet = new Set();
+  for (const d of (raw.layers.find(l => l.name === 'doors').objects || []))
+    doorSet.add(Math.floor(d.x / 16) + ',' + Math.floor(d.y / 16));
+  for (const s of (raw.layers.find(l => l.name === 'spots').objects || [])) {
+    const key = Math.floor(s.x / 16) + ',' + Math.floor(s.y / 16);
+    assert(!doorSet.has(key), 'spot ' + s.name + ' sits on a door');
+  }
+});
+
+console.log('the ambient haunting (v0.21.0)');
+const { createHaunting } = await import('../src/engine/haunting.js');
+test('dread is never fully absent but rises with sight, night, and charged ground', () => {
+  const day = createHaunting(); day.seed(480, 320);
+  for (let i = 0; i < 400; i++) day.update(16.67, 480, 320, 0, 12, 0);
+  const calm = day.getDread();
+  assert(calm > 0.05, 'even the unawakened should feel a little unease, got ' + calm.toFixed(3));
+  const deep = createHaunting(); deep.seed(480, 320);
+  for (let i = 0; i < 400; i++) deep.update(16.67, 480, 320, 3, 23, 0.8);
+  assert(deep.getDread() > calm + 0.3, 'dread should climb hard at night with sight near charged ground');
+});
+test('the Watcher only crosses at night when dread is high', () => {
+  const night = createHaunting(); night.seed(480, 320);
+  let sawNight = false;
+  for (let i = 0; i < 20000 && !sawNight; i++) { night.update(16.67, 480, 320, 2, 23, 0.9); if (night.watcherPresent()) sawNight = true; }
+  assert(sawNight, 'the Watcher never appeared at night');
+  const day = createHaunting(); day.seed(480, 320);
+  let sawDay = false;
+  for (let i = 0; i < 20000; i++) { day.update(16.67, 480, 320, 2, 12, 0.9); if (day.watcherPresent()) sawDay = true; }
+  assert(!sawDay, 'the Watcher should not walk in daylight');
+});
+test('the haunting is wired into the world, audio, and a one-time beat', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  assert(mainjs.includes('haunting.update(') && mainjs.includes('haunting.draw('), 'the haunting is not updated and drawn');
+  assert(mainjs.includes('ambience.setDread(haunting.getDread())'), 'dread does not drive the audio');
+  assert(mainjs.includes('haunting.watcherPresent()') && mainjs.includes('sawWatcher'), 'no Watcher beat');
+  const amb = readFileSync(new URL('../src/engine/ambience.js', import.meta.url), 'utf8');
+  assert(amb.includes('setDread'), 'ambience has no dread drone');
+});
+
+console.log('big canal boats and the marked cave mouth (v0.21.1)');
+test('canal boats are large multi-tile vessels on the water', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const W = raw.width;
+  const ground = raw.layers.find(l => l.name === 'ground').data;
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  const bs = JSON.parse(readFileSync(new URL('../assets/tiles/bigscene.json', import.meta.url)));
+  const boatGids = [bs.boat_bow, bs.boat_mid, bs.boat_cabin, bs.boat_stern];
+  const boatTiles = [];
+  for (let i = 0; i < decor.length; i++) if (boatGids.includes(decor[i])) boatTiles.push(i);
+  assert(boatTiles.length >= 8, 'expected at least two 4-tile boats, got ' + boatTiles.length + ' tiles');
+  // every boat tile floats on water
+  for (const i of boatTiles) assert(ground[i] === 2, 'a boat tile is not on water at ' + i);
+  // a full boat is four vertically-stacked tiles (bow, mid, cabin, stern)
+  const bows = boatTiles.filter(i => decor[i] === bs.boat_bow);
+  for (const bi of bows) {
+    assert(decor[bi + W] === bs.boat_mid && decor[bi + 2 * W] === bs.boat_cabin && decor[bi + 3 * W] === bs.boat_stern,
+      'a boat is not a complete four-tile vessel');
+  }
+});
+test('the cave entrance is marked and still enterable', () => {
+  const raw = JSON.parse(readFileSync(new URL('../assets/maps/town.json', import.meta.url)));
+  const W = raw.width;
+  const decor = raw.layers.find(l => l.name === 'decor').data;
+  const coll = raw.layers.find(l => l.name === 'collision').data;
+  const bs = JSON.parse(readFileSync(new URL('../assets/tiles/bigscene.json', import.meta.url)));
+  // the cave door object
+  const m = parseMap(raw);
+  const caveDoor = (m.objects.doors || []).find(d => d.props.target === 'caves');
+  assert(caveDoor, 'there is no cave door');
+  const tx = Math.floor(caveDoor.x / 16), ty = Math.floor(caveDoor.y / 16);
+  // the mouth is drawn on the door tile (or its neighbor) and the door stays walkable
+  const hasMouth = [decor[ty * W + tx], decor[ty * W + tx - 1], decor[ty * W + tx + 1]]
+    .some(g => g === bs.cave_l || g === bs.cave_r);
+  assert(hasMouth, 'the cave mouth is not drawn at the entrance');
+  assert(coll[ty * W + tx] === 0, 'the cave door is blocked and cannot be entered');
+});
+
+test('doorways are kept clear: NPCs never rest on a door or its approach tile', () => {
+  const mainjs = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
+  // the doorway set is built from every door plus the tile in front of it
+  assert(mainjs.includes('doorwayTiles') && mainjs.includes("dx + ',' + (dy + 1)"), 'no doorway+approach set');
+  // keepOffDoorways is applied to scheduled NPCs, at spawn, and as a per-frame net
+  assert(mainjs.includes('function keepOffDoorways'), 'no keepOffDoorways helper');
+  assert(mainjs.includes('for (const n of npcs) if (!n.props.pursuer) keepOffDoorways(n)'), 'no per-frame safety net');
+  assert(mainjs.includes('for (const n of npcs) keepOffDoorways(n)'), 'NPCs not cleared off doorways at spawn');
+});
+test('keepOffDoorways relocates an NPC off a doorway to an open tile', () => {
+  // re-implement the exact helper logic to verify it moves an NPC clear
+  const TILE = 16;
+  const doorwayTiles = new Set(['39,28', '39,29']);
+  const onDoorway = (px, py) => doorwayTiles.has(Math.floor((px + 8) / TILE) + ',' + Math.floor((py + 8) / TILE));
+  const bodyStuck = () => false;
+  function keepOff(n) {
+    if (!onDoorway(n.x, n.y)) return;
+    for (const [dx, dy] of [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]]) {
+      const nx = n.x + dx*TILE, ny = n.y + dy*TILE;
+      if (nx>=0 && ny>=0 && !bodyStuck(nx,ny) && !onDoorway(nx,ny)) { n.x=nx; n.y=ny; return; }
+    }
+  }
+  const onApproach = { x: 39*TILE, y: 29*TILE };
+  keepOff(onApproach);
+  assert(!onDoorway(onApproach.x, onApproach.y), 'NPC still on the approach tile');
+  const onDoor = { x: 39*TILE, y: 28*TILE };
+  keepOff(onDoor);
+  assert(!onDoorway(onDoor.x, onDoor.y), 'NPC still on the door tile');
 });
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

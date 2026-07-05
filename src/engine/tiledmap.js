@@ -47,6 +47,8 @@ export function parseMap(json) {
     return data[ty * map.width + tx];
   };
 
+  map.hasLayer = (layerName) => Boolean(map.layers[layerName]);
+
   // Convention: any nonzero gid on the "collision" layer is solid.
   // Out-of-bounds is solid, so maps do not need a wall of trees to be safe.
   map.solidAt = (tx, ty) => {

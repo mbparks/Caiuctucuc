@@ -5,14 +5,17 @@ import { createLoop } from './engine/loop.js';
 import { createInput, isEditable } from './engine/input.js';
 import { createCamera } from './engine/camera.js';
 import { loadMap } from './engine/tiledmap.js';
-import { newGame, storeLocal, loadLocal, serialize, deserialize } from './game/save.js';
+import { newGame, storeLocal, loadLocal, serialize, deserialize, SAVE_KEY } from './game/save.js';
 import { ask } from './game/dialog.js';
 import { addHeat, decay, LEVELS } from './game/huecry.js';
+import { witnessesOf, commitCrime, CRIMES } from './game/crime.js';
 import { seekStep, caught } from './game/pursuit.js';
 import { advance, periodFor } from './game/clock.js';
 import { nextCoat, effectiveLevel, COATS } from './game/disguise.js';
 import { spotFor, SCHEDULES } from './game/schedule.js';
 import { createAmbience } from './engine/ambience.js';
+import { createAtmosphere } from './engine/atmosphere.js';
+import { createHaunting } from './engine/haunting.js';
 import { loadArt, frameFor } from './engine/sprites.js';
 import { fitScale, fmtHour, miniPos } from './engine/scale.js';
 import { acceptJob, workJob, JOBS } from './game/jobs.js';
@@ -24,10 +27,12 @@ import { RECIPES, craft, canCraft } from './game/crafting.js';
 import { buyPrice, sellPrice } from './game/economy.js';
 import { advanceCase, cluesFromFlags, addClue, CLUES, evidenceScore, EVIDENCE, chooseEnding, adoptPet } from './game/quest.js';
 import { verdict, witnessScore, kentScore, GUILTY_AT, HUNG_AT } from './game/trial.js';
+import { DEDUCTION, scoreDeduction, availableProof } from './game/deduction.js';
+import { ambientRemark } from './game/remarks.js';
 import { applyCheat } from './game/cheats.js';
 import { applyDeath } from './game/death.js';
 import { buildCharacter, ORIGINS, TRADES, BURDENS } from './game/creator.js';
-import { nextHint } from './game/hints.js';
+import { nextHint, hintTarget as questTarget } from './game/hints.js';
 import { wardedResolve } from './game/wisps.js';
 import { attemptRank } from './game/sight.js';
 
@@ -46,6 +51,8 @@ function reflectMute() {
   muteBtn.setAttribute('aria-pressed', String(settings.muted));
 }
 const ambience = createAmbience();
+const atmosphere = createAtmosphere();
+const haunting = createHaunting();
 window.addEventListener('pointerdown', () => ambience.boot(), { once: true });
 window.addEventListener('keydown', () => ambience.boot(), { once: true });
 muteBtn.addEventListener('click', () => {
@@ -76,7 +83,9 @@ menuBtn.addEventListener('click', () => {
 // ---- game state ----
 let state = loadLocal(localStorage) || newGame();
 let creatorOpen = !loadLocal(localStorage);
+let openCreatorHook = null;   // set inside start() so the reset button can reopen the creator
 let splashOpen = false;
+let watcherSeen = false;   // latch so the Watcher beat fires once per appearance
 log('state loaded', state);
 
 document.getElementById('exportBtn').addEventListener('click', () => {
@@ -89,6 +98,36 @@ document.getElementById('exportBtn').addEventListener('click', () => {
 });
 const importFile = document.getElementById('importFile');
 document.getElementById('importBtn').addEventListener('click', () => importFile.click());
+
+const resetBtn = document.getElementById('resetBtn');
+let resetArmed = false;
+resetBtn.addEventListener('click', () => {
+  if (!resetArmed) {
+    // first press arms it: destructive, so ask for a second, deliberate press
+    resetArmed = true;
+    resetBtn.textContent = 'Erase everything?';
+    resetBtn.style.color = '#d84838';
+    setTimeout(() => {
+      if (resetArmed) { resetArmed = false; resetBtn.textContent = 'Reset game'; resetBtn.style.color = ''; }
+    }, 4000);
+    return;
+  }
+  // second press within the window: wipe the save and start fresh
+  resetArmed = false;
+  resetBtn.textContent = 'Reset game';
+  resetBtn.style.color = '';
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* private mode */ }
+  state = newGame();
+  creatorOpen = true;
+  if (state.job) state.job = null;
+  menu.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded', 'false');
+  journalEl.classList.remove('open');
+  panelEl.classList.remove('open');
+  storeLocal(state, localStorage);
+  toast('Cumberland forgets you. A new stranger walks in.');
+  if (openCreatorHook) openCreatorHook();
+});
 importFile.addEventListener('change', async () => {
   try {
     state = deserialize(await importFile.files[0].text());
@@ -100,22 +139,11 @@ importFile.addEventListener('change', async () => {
 });
 
 // ---- HUD ----
-const hudHeat = document.getElementById('hudHeat');
-const hudCoin = document.getElementById('hudCoin');
-const hudClock = document.getElementById('hudClock');
-const hudCoat = document.getElementById('hudCoat');
-const hudHealth = document.getElementById('hudHealth');
-function refreshHud() {
-  const eff = effectiveLevel(state.hueCry, state.player.coat);
-  hudHeat.textContent = LEVELS[eff].toUpperCase();
-  hudHeat.dataset.hot = eff >= 2 ? '1' : '';
-  hudHealth.textContent = '\u25c6'.repeat(state.player.health) + '\u25c7'.repeat(Math.max(0, state.player.maxHealth - state.player.health));
-  hudHealth.title = state.player.health + ' of ' + state.player.maxHealth + ' hale';
-  hudHeat.className = 'heat-' + effectiveLevel(state.hueCry, state.player.coat);
-  hudCoin.textContent = state.player.coin + ' silver';
-  hudClock.textContent = 'day ' + state.clock.day + ', ' + fmtHour(state.clock.hour);
-  hudCoat.textContent = state.player.coat + ' coat';
-}
+// The HUD lives in the canvas band now (drawHud); the old DOM spans are retired.
+// The canvas band (drawHud) repaints the HUD every frame from live state,
+// so nothing DOM-side needs updating. Kept as a no-op so existing callers
+// stay valid.
+function refreshHud() {}
 
 // ---- toast ----
 const toastEl = document.getElementById('toast');
@@ -222,10 +250,17 @@ function openDialog(dlg) {
     }
   }
   dialogText.textContent = greeting;
+  const aside = ambientRemark(state, dlg.npcId);
+  if (aside && greeting === dlg.greeting) {
+    dialogText.textContent = '\u201c' + aside + '\u201d ' + greeting;
+  }
   refreshWords();
   dialogEl.classList.add('open');
   hintEl.classList.remove('show');
-  dialogInput.focus();
+  // Focus on the next tick: focusing synchronously inside the KeyE keydown
+  // lets that same physical keypress land in the text field and type "E".
+  dialogInput.value = '';
+  setTimeout(() => { dialogInput.value = ''; dialogInput.focus(); }, 0);
 }
 
 function closeDialog() {
@@ -241,35 +276,90 @@ dialogInput.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeDialog();
 });
 
-// ---- journal ----
+// ---- the case file: a detective's notebook ----
 const journalEl = document.getElementById('journal');
-const journalBody = document.getElementById('journalBody');
+let journalTab = 'case';
+
+// suspects: what the player can learn about each, revealed as flags accrue
+const SUSPECTS = [
+  { id: 'gantt', name: 'Prosper Gantt, surveyor',
+    facts: [
+      ['metGantt', 'Keeps the county survey. Precise, unhurried, always working.'],
+      ['plat_mismatch', 'The plat book was re-inked to disagree with Tam\u2019s scrap. A surveyor\u2019s hand.'],
+      ['he_measures', 'A murmur in the records room, precise to the last: HE MEASURES.'],
+      ['knowsMotive', 'He falsified the plat to hide a quarry on the sealed fort seam, and kills to keep it hidden.']
+    ] },
+  { id: 'cresap', name: 'Cresap, magistrate',
+    facts: [
+      ['metCresap', 'The magistrate. Severe, and richer than the office should allow.'],
+      ['cresapLedger', 'Keeps a private ledger of every bribe he has taken.']
+    ] },
+  { id: 'beall', name: 'Beall, constable',
+    facts: [
+      ['metBeall', 'The constable. Wants the drowning looked into, off the books.'],
+      ['beallSaw', 'He saw something at the fort once, and drinks to keep from seeing it again.']
+    ] },
+  { id: 'ward', name: 'Ward, surgeon',
+    facts: [
+      ['metWard', 'The surgeon. Keeps a cabinet locked and a patient dosed.'],
+      ['wardDoses', 'He blinds a patient with laudanum to keep her from what she sees.']
+    ] }
+];
+
 function renderJournal() {
   const rep = state.reputation;
-  const trustLines = Object.entries(state.trust)
-    .map(([k, v]) => k + ': ' + (v >= 2 ? 'trusted' : v >= 1 ? 'known' : 'stranger'))
-    .join(', ') || 'no one owes you their confidence yet';
-  const jobLine = state.job
-    ? JOBS[state.job.id].name + ' (' + JOBS[state.job.id].stages[state.job.stage] + ' next)'
-    : 'none in hand';
-  const byThread = {};
-  for (const id of state.clues) {
-    const c = CLUES[id];
-    (byThread[c.thread] = byThread[c.thread] || []).push(c);
+  const tab = (name, label) =>
+    '<div class="jtab' + (journalTab === name ? ' active' : '') + '" data-tab="' + name + '">' + label + '</div>';
+
+  let body = '';
+  if (journalTab === 'case') {
+    const byThread = {};
+    for (const id of state.clues) { const c = CLUES[id]; if (c) (byThread[c.thread] = byThread[c.thread] || []).push(c); }
+    body = Object.keys(byThread).length
+      ? Object.entries(byThread).map(([t, cs]) =>
+          '<div class="thread-label">' + t + '</div>' +
+          cs.map(c => '<div class="card"><b>' + c.name + '</b><p>' + c.text + '</p></div>').join('')).join('')
+      : '<p class="empty">No evidence yet. Cumberland is quiet, or pretending to be. Talk to people, and look closely at what does not add up.</p>';
+  } else if (journalTab === 'suspects') {
+    body = SUSPECTS.map(s => {
+      const known = s.facts.filter(([flag]) => state.flags[flag]);
+      const hidden = s.facts.length - known.length;
+      if (!known.length && !state.flags['met' + s.id[0].toUpperCase() + s.id.slice(1)]) return '';
+      return '<div class="suspect"><b>' + s.name + '</b>' +
+        known.map(([, txt]) => '<p class="knows">\u2022 ' + txt + '</p>').join('') +
+        (hidden ? '<p class="unknown">' + hidden + ' thing' + (hidden > 1 ? 's' : '') + ' you do not yet know.</p>' : '') +
+        '</div>';
+    }).join('') || '<p class="empty">No one under suspicion yet. Everyone in a mystery is innocent until the evidence says otherwise.</p>';
+  } else if (journalTab === 'words') {
+    body = '<p class="empty" style="margin-bottom:.6rem">Words open doors in conversation. Say them by talking, or type one at the terminal.</p>' +
+      state.keywordsLearned.map((k, i) =>
+        '<span class="kw' + (i >= state.keywordsLearned.length - 2 ? ' fresh' : '') + '">' + k + '</span>').join('');
+  } else {
+    const trustLines = Object.entries(state.trust)
+      .map(([k, v]) => k + ': ' + (v >= 2 ? 'trusted' : v >= 1 ? 'known' : 'stranger'))
+      .join(', ') || 'no one owes you their confidence yet';
+    const jobLine = state.job
+      ? JOBS[state.job.id].name + ' (' + JOBS[state.job.id].stages[state.job.stage] + ' next)'
+      : 'none in hand';
+    body =
+      '<div class="stand"><span>town</span><span>' + rep.town + '</span></div>' +
+      '<div class="stand"><span>kirk</span><span>' + rep.kirk + '</span></div>' +
+      '<div class="stand"><span>hills</span><span>' + rep.hills + '</span></div>' +
+      '<div class="stand"><span>road</span><span>' + rep.road + '</span></div>' +
+      '<h3>CONFIDENCES</h3><p>' + trustLines + '</p>' +
+      '<h3>WORK</h3><p>' + jobLine + '</p>' +
+      '<h3>THE HOUR</h3><p>day ' + state.clock.day + ', ' + fmtHour(state.clock.hour) +
+        ', wearing the ' + state.player.coat + ' coat</p>';
   }
-  const caseHtml = Object.keys(byThread).length
-    ? Object.entries(byThread).map(([t, cs]) =>
-        '<p class="dim">' + t.toUpperCase() + '</p>' +
-        cs.map(c => '<p><b>' + c.name + '.</b> ' + c.text + '</p>').join('')).join('')
-    : '<p>No case yet. Cumberland is quiet, or pretending to be.</p>';
-  journalBody.innerHTML =
-    '<h3>THE TRAIL</h3><p>' + nextHint(state) + '</p>' +
-    '<h3>THE CASE</h3>' + caseHtml +
-    '<h3>WORDS</h3>' + state.keywordsLearned.map(k => '<span class="kw">' + k + '</span>').join('') +
-    '<h3>STANDING</h3><p>town ' + rep.town + ', kirk ' + rep.kirk + ', hills ' + rep.hills + ', road ' + rep.road + '</p>' +
-    '<h3>CONFIDENCES</h3><p>' + trustLines + '</p>' +
-    '<h3>WORK</h3><p>' + jobLine + '</p>' +
-    '<h3>THE HOUR</h3><p>day ' + state.clock.day + ', ' + fmtHour(state.clock.hour) + ', wearing the ' + state.player.coat + ' coat</p>';
+
+  journalEl.innerHTML =
+    '<div class="jhead"><h2>THE CASE FILE</h2><span class="jtrail">' + nextHint(state) + '</span></div>' +
+    '<div class="jtabs">' + tab('case', 'EVIDENCE') + tab('suspects', 'SUSPECTS') +
+      tab('words', 'WORDS') + tab('standing', 'STANDING') + '</div>' +
+    '<div class="jbody">' + body + '</div>';
+
+  journalEl.querySelectorAll('.jtab').forEach(el =>
+    el.addEventListener('click', () => { journalTab = el.dataset.tab; renderJournal(); }));
 }
 window.addEventListener('keydown', e => {
   if (isEditable(e.target)) return;
@@ -300,6 +390,7 @@ function heatRate() { return HUECRY_RATE[state.difficulty.huecry] || 1; }
 
 // ---- the case ----
 function runCase() {
+  const before = state.clues.length;
   state = cluesFromFlags(state);
   if (evidenceScore(state) >= 2 && !state.flags.caseStrong) state.flags.caseStrong = true;
   if (state.flags.beallHelped && !state.flags.beallHelpedApplied) {
@@ -310,6 +401,7 @@ function runCase() {
   const r = advanceCase(state);
   state = r.state;
   for (const t of r.toasts) { toast(t); }
+  if (state.clues.length > before) { atmosphere.discover('210,180,110'); ambience.chime('clue'); }
   if (r.toasts.length) storeLocal(state, localStorage);
 }
 
@@ -365,6 +457,7 @@ termInput.addEventListener('keydown', e => {
     toast(r.text);
     termInput.value = '';
     termEl.classList.remove('open');
+    runCase();
     refreshHud();
     storeLocal(state, localStorage);
     document.getElementById('game').focus();
@@ -425,6 +518,7 @@ async function start() {
 
   const HUD_H = 48;
   let map, TILE, cam, spawn, npcs, interactables, spots, doorObjects, zoneObjects = [];
+  let doorwayTiles = new Set();   // door tiles + their approach tiles; NPCs stay off these
   const player = { x: 0, y: 0, speed: 70, walked: 0, flip: false };
   const trail = [];
   const pet = { x: 0, y: 0 };
@@ -444,10 +538,23 @@ async function start() {
       .map(o => ({ ...o, home: { x: o.x, y: o.y } }));
     interactables = (map.objects.interact || []).map(o => ({ ...o, used: (o.props.once || o.type === 'clue' || o.type === 'benchmark' || o.type === 'wisp') ? Boolean(state.flags['used_' + o.id]) : false }));
     doorObjects = (map.objects.doors || []);
+    // Tiles NPCs must never stand on: every door tile and the walkable tile
+    // directly in front of it, so a townsperson can never plug a doorway.
+    doorwayTiles = new Set();
+    for (const d of doorObjects) {
+      const dx = Math.floor(d.x / TILE), dy = Math.floor(d.y / TILE);
+      doorwayTiles.add(dx + ',' + dy);
+      doorwayTiles.add(dx + ',' + (dy + 1));   // the approach tile below the door
+    }
     zoneObjects = (map.objects.zones || []);
     spots = {};
     for (const s of (map.objects.spots || [])) spots[s.name] = { x: s.x, y: s.y };
     player.x = spawn.x; player.y = spawn.y;
+    unwedge();                                  // never leave the player inside a wall
+    for (const n of npcs) keepOffDoorways(n);    // and never leave a townsperson in a doorway
+    trail.length = 0;
+    pet.x = player.x; pet.y = player.y;
+    cam.follow(player.x + 8, player.y + 8);   // center at once, before any render
     state.map = target;
     surrenderable = false;
     log('map', target, map.width + 'x' + map.height, 'npcs', npcs.length);
@@ -458,10 +565,39 @@ async function start() {
   function solidAtPx(px, py) {
     return map.solidAt(Math.floor(px / TILE), Math.floor(py / TILE));
   }
+  function bodyStuck(px, py) {
+    const w = 12, h = 12;
+    return [[px, py], [px + w, py], [px, py + h], [px + w, py + h]]
+      .some(([cx, cy]) => solidAtPx(cx, cy));
+  }
+  function unwedge() {
+    if (!bodyStuck(player.x, player.y)) return;
+    for (let r = 1; r <= 6; r++) {
+      for (const [dx, dy] of [[0, -r], [0, r], [-r, 0], [r, 0], [-r, -r], [r, -r], [-r, r], [r, r]]) {
+        const nx = player.x + dx * TILE, ny = player.y + dy * TILE;
+        if (nx >= 0 && ny >= 0 && !bodyStuck(nx, ny)) { player.x = nx; player.y = ny; return; }
+      }
+    }
+  }
   function tryMove(dx, dy) {
     const nx = player.x + dx, ny = player.y + dy, w = 12, h = 12;
     if (![[nx, ny], [nx + w, ny], [nx, ny + h], [nx + w, ny + h]].some(([px, py]) => solidAtPx(px, py))) {
       player.x = nx; player.y = ny;
+    }
+  }
+
+  // An NPC must never come to rest on a doorway (the door tile or the tile just
+  // in front of it), or it plugs the entrance. If one lands there, slide it to
+  // the nearest open, non-doorway tile so the threshold is always clear.
+  function onDoorway(px, py) {
+    const tx = Math.floor((px + 8) / TILE), ty = Math.floor((py + 8) / TILE);
+    return doorwayTiles.has(tx + ',' + ty);
+  }
+  function keepOffDoorways(n) {
+    if (!onDoorway(n.x, n.y)) return;
+    for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      const nx = n.x + dx * TILE, ny = n.y + dy * TILE;
+      if (nx >= 0 && ny >= 0 && !bodyStuck(nx, ny) && !onDoorway(nx, ny)) { n.x = nx; n.y = ny; return; }
     }
   }
 
@@ -470,13 +606,17 @@ async function start() {
     for (const o of list) {
       const dx = o.x - player.x, dy = o.y - player.y;
       const d = dx * dx + dy * dy;
-      if (d < bestD) { best = o; bestD = d; }
+      // decorative oddities yield to any functional interactable in range
+      const penalty = o.type === 'oddity' ? radius * radius * 0.5 : 0;
+      if (d + penalty < bestD) { best = o; bestD = d + penalty; }
     }
     return best;
   }
 
   function hintFor() {
-    const n = near(npcs, 28);
+    const onDoor = near(doorObjects, 16);
+    if (onDoor) return (onDoor.props.requires && !state.flags[onDoor.props.requires]) ? null : 'Press E to enter ' + onDoor.name;
+    const n = near(npcs.filter(o => !o.props.pursuer), 28);
     if (n) return 'Press E to talk';
     const d = near(doorObjects, 20);
     if (d) return (d.props.requires && !state.flags[d.props.requires]) ? null : 'Press E to enter ' + d.name;
@@ -492,6 +632,7 @@ async function start() {
     if (it.type === 'restore') return 'Press E: repairs at ' + it.name;
     if (it.type === 'stash') return 'Press E to open ' + it.name;
     if (it.type === 'clue') return 'Press E to examine ' + it.name;
+    if (it.type === 'oddity') return 'Press E to look closer';
     if (it.type === 'sleeprough') return 'Press E to ' + it.name;
     if (it.type === 'murmur') return state.player.sight >= 2 ? 'Press E to listen at ' + it.name : 'Press E: ' + it.name;
     if (it.type === 'wisp') return state.player.sight >= 1 ? 'Press E to follow ' + it.name : null;
@@ -516,7 +657,15 @@ async function start() {
   }
 
   function doInteract() {
-    const n = near(npcs, 28);
+    // A door the player is standing right on wins over a nearby NPC, so a
+    // townsperson loitering by the threshold can never trap you outside.
+    const onDoor = near(doorObjects, 16);
+    if (onDoor) {
+      if (onDoor.props.requires && !state.flags[onDoor.props.requires]) { toast('Sealed rock, or as good as. Nothing here opens yet.'); return; }
+      switchMap(onDoor.props.target, onDoor.props.spawn).then(() => { refreshHud(); storeLocal(state, localStorage); });
+      return;
+    }
+    const n = near(npcs.filter(o => !o.props.pursuer), 28);
     if (n) { loadDialog(n.props.npcId).then(d => d && openDialog(d)); return; }
     const d = near(doorObjects, 20);
     if (d) {
@@ -539,13 +688,19 @@ async function start() {
       toast('You shrug into the ' + state.player.coat + ' coat. Different man entirely, to a hurried eye.');
     } else if (it.type === 'board') {
       if (state.job) { toast('One job at a time. Finish the ' + JOBS[state.job.id].name.toLowerCase() + ' first.'); return; }
-      const order = ['freight', 'survey', 'nightrun'];
-      const nextId = order.find(j => !state.flags['job_' + j]) || 'freight';
-      const r = acceptJob(state, nextId);
-      if (r.ok) {
-        state = r.state;
-        toast(JOBS[nextId].name + ': ' + JOBS[nextId].offer);
-      }
+      const order = ['freight', 'canalcargo', 'survey', 'nightrun'];
+      openPanel('THE JOBS BOARD', body => {
+        for (const jid of order) {
+          const j = JOBS[jid];
+          if (jid === 'nightrun' && !state.flags.knowsNightRuns) continue;
+          row(body, j.name, j.pay + ' silver' + (j.honest ? '' : ', no questions'), [['Take it', () => {
+            const r = acceptJob(state, jid);
+            if (r.ok) { state = r.state; toast(j.offer); }
+            panelEl.classList.remove('open');
+            storeLocal(state, localStorage);
+          }]]);
+        }
+      });
     } else if (it.type === 'job' && state.flags.ending && it.props.job === 'freight' && it.props.stage === 'dropoff') {
       openPanel('THE ROAD OUT, OR NOT', body => {
         const par = document.createElement('p');
@@ -574,6 +729,8 @@ async function start() {
       if (r.heat) state.hueCry = { ...addHeat(state.hueCry, r.heat, heatRate()), witnessedCoat: state.player.coat };
       if (!state.job) state.flags['job_' + it.props.job] = true;
       toast(r.text);
+    } else if (it.type === 'oddity') {
+      toast(it.props.text);
     } else if (it.type === 'clue') {
       if (it.props.requires && !state.flags[it.props.requires]) { toast('Nothing here asks your attention yet.'); return; }
       it.used = true;
@@ -600,6 +757,7 @@ async function start() {
               state = r.state;
               toast('THE GLIMMER. The morning fog is full of things that were always there. Wisps burn where you took them for swamp gas. A new word sits behind your teeth: SEEN.');
               state.keywordsLearned = [...new Set([...state.keywordsLearned, 'SEEN'])];
+              atmosphere.discover('150,210,180'); ambience.chime('sight');
             }
             panelEl.classList.remove('open');
             runCase(); refreshHud(); storeLocal(state, localStorage);
@@ -639,49 +797,85 @@ async function start() {
       if (state.flags.acquittedAt !== undefined && ev <= state.flags.acquittedAt) { toast('Kent will not rehear the case on the same file. Bring more.'); return; }
       const wit = witnessScore(state);
       const kent = kentScore(state);
-      openPanel('THE CASE AGAINST PROSPER GANTT', body => {
-        for (const c of state.clues) {
-          if (EVIDENCE[c]) row(body, CLUES[c].name, 'weight ' + EVIDENCE[c], []);
+      // First: assemble the accusation. The player must deduce, not just submit.
+      const pick = {};
+      function askCulprit() {
+        openPanel('THE ACCUSATION: WHO', body => {
+          const q = document.createElement('p'); q.className = 'dim';
+          q.textContent = DEDUCTION.culprit.question; body.appendChild(q);
+          for (const o of DEDUCTION.culprit.options)
+            row(body, o.label, '', [['Name them', () => { pick.culprit = o.id; askMotive(); }]]);
+        });
+      }
+      function askMotive() {
+        openPanel('THE ACCUSATION: WHY', body => {
+          const q = document.createElement('p'); q.className = 'dim';
+          q.textContent = DEDUCTION.motive.question; body.appendChild(q);
+          for (const o of DEDUCTION.motive.options)
+            row(body, o.label, '', [['This', () => { pick.motive = o.id; askProof(); }]]);
+        });
+      }
+      function askProof() {
+        const proofs = availableProof(state);
+        openPanel('THE ACCUSATION: PROOF', body => {
+          const q = document.createElement('p'); q.className = 'dim';
+          q.textContent = proofs.length ? DEDUCTION.proof.question
+            : 'You hold no hard proof at all. You can still make the charge on your word alone.';
+          body.appendChild(q);
+          const opts = proofs.length ? proofs : [{ id: 'none', label: 'Only my word' }];
+          for (const o of opts)
+            row(body, o.label, '', [['Lay it down', () => { pick.proof = o.id; layCase(); }]]);
+        });
+      }
+      function layCase() {
+        const d = scoreDeduction(pick);
+        const evAdj = Math.max(0, ev + d.mod);
+        const r = verdict(evAdj, wit, kent);
+        panelEl.classList.remove('open');
+        const preface = d.note === 'clean' ? 'You name Gantt, the quarry, and the plat, and the three lock together like survey pins. '
+          : d.note === 'sound' ? 'You name the right man and set the plat before the bench. The motive you leave to the record. '
+          : d.note === 'thin' ? 'You name the right man, but the frame around him is loose. '
+          : 'You build the charge on the wrong bones, and everyone in the room feels it. ';
+        if (r.verdict === 'guilty') {
+          state.flags.verdict = 'guilty';
+          state.flags.deductionClean = d.note === 'clean';
+          toast(preface + 'GUILTY. The gavel sounds like a quarry hammer.');
+        } else if (r.verdict === 'hung') {
+          hungJury(r);
+          return;
+        } else {
+          state.flags.verdict = undefined;
+          state.flags.acquittedAt = ev;
+          toast(preface + 'ACQUITTED for want of weight: the file made ' + r.total + '. ' +
+            (d.note === 'wrong' ? 'A wrong accusation is worse than none; Gantt smiles on the steps.' : 'Bring a heavier file.'));
         }
-        row(body, 'Witnesses', wit >= 2 ? 'Beall, sober and certain' + (wit > 2 ? '; the chainman\u2019s widow' : '') : wit === 1 ? 'the chainman\u2019s widow' : 'none the court will hear', []);
-        row(body, 'The bench', state.flags.kentAlly ? 'Kent, in atonement' : state.flags.kentPressured ? 'Kent, under your thumb' : 'Kent, unread', []);
-        row(body, 'The file weighs ' + (ev + wit + kent) + '. Conviction wants ' + GUILTY_AT + '.', '', [['Lay the case', () => {
-          const r = verdict(ev, wit, kent);
-          panelEl.classList.remove('open');
-          if (r.verdict === 'guilty') {
+        runCase(); refreshHud(); storeLocal(state, localStorage);
+      }
+      function hungJury(r) {
+        openPanel('THE JURY HANGS', body2 => {
+          const par = document.createElement('p');
+          par.textContent = 'The file weighed ' + r.total + ': enough to frighten, not enough to hang. Cresap appears at your elbow with the elders\u2019 offer already drafted: bury the case, Gantt re-surveys the line, the quarry stays legal, the town stays fed. Nobody says the word innocent.';
+          body2.appendChild(par);
+          if (state.flags.cresapLedger) row(body2, 'The magistrate\u2019s ledger', 'three copied pages, heavy as shot', [['Produce it', () => {
             state.flags.verdict = 'guilty';
-            toast('Kent hears it all, and the file holds. GUILTY. The gavel sounds like a quarry hammer.');
-          } else if (r.verdict === 'hung') {
-            openPanel('THE JURY HANGS', body2 => {
-              const par = document.createElement('p');
-              par.textContent = 'The file weighed ' + r.total + ': enough to frighten, not enough to hang. Cresap appears at your elbow with the elders\u2019 offer already drafted: bury the case, Gantt re-surveys the line, the quarry stays legal, the town stays fed. Nobody says the word innocent.';
-              body2.appendChild(par);
-              if (state.flags.cresapLedger) row(body2, 'The magistrate\u2019s ledger', 'three copied pages, heavy as shot', [['Produce it', () => {
-                state.flags.verdict = 'guilty';
-                state.flags.forcedTrial = true;
-                panelEl.classList.remove('open');
-                toast('You lay the copied pages beside the file, and Cresap goes the color of old suet. The offer evaporates. The trial proceeds, and holds. GUILTY, by mathematics and by fear, and only you know the ratio.');
-                runCase(); refreshHud(); storeLocal(state, localStorage);
-              }]]);
-              row(body2, '', '', [['Let them bury it', () => {
-                state.flags.verdict = 'deal';
-                state.reputation.town += 1;
-                panelEl.classList.remove('open');
-                runCase(); refreshHud(); storeLocal(state, localStorage);
-              }], ['Withdraw and dig deeper', () => {
-                toast('You pull the file before the offer can close over it. The case keeps. So does Gantt.');
-                panelEl.classList.remove('open');
-              }]]);
-            });
-            return;
-          } else {
-            state.flags.verdict = undefined;
-            state.flags.acquittedAt = ev;
-            toast('ACQUITTED for want of weight: the file made ' + r.total + '. Gantt shakes hands on the steps. Bring a heavier file.');
-          }
-          runCase(); refreshHud(); storeLocal(state, localStorage);
-        }]]);
-      });
+            state.flags.forcedTrial = true;
+            panelEl.classList.remove('open');
+            toast('You lay the copied pages beside the file, and Cresap goes the color of old suet. The offer evaporates. The trial proceeds, and holds. GUILTY, by mathematics and by fear, and only you know the ratio.');
+            runCase(); refreshHud(); storeLocal(state, localStorage);
+          }]]);
+          row(body2, '', '', [['Let them bury it', () => {
+            state.flags.verdict = 'deal';
+            state.reputation.town += 1;
+            panelEl.classList.remove('open');
+            runCase(); refreshHud(); storeLocal(state, localStorage);
+          }], ['Withdraw and dig deeper', () => {
+            toast('You pull the file before the offer can close over it. The case keeps. So does Gantt.');
+            panelEl.classList.remove('open');
+          }]]);
+        });
+      }
+      askCulprit();
+      return;
     } else if (it.type === 'chambers') {
       if (!state.flags.act2Complete) { toast('The judge\u2019s chambers, and the best lock in the county. No reason to test it yet.'); return; }
       if (state.flags.kentAlly || state.flags.kentPressured) { toast('You have Kent\u2019s measure already.'); return; }
@@ -1057,12 +1251,44 @@ async function start() {
 
   window.addEventListener('keydown', e => {
     if (isEditable(e.target)) return;
+    if (e.repeat) return;   // ignore auto-repeat so a held key fires once
     if (e.code === 'KeyE' && !talking) doInteract();
+    if (e.code === 'KeyF' && !talking && !panelEl.classList.contains('open')) doCrime();
     if (e.code === 'KeyI' && !talking) {
       panelEl.classList.contains('open') ? panelEl.classList.remove('open') : openSatchel();
     }
     if (e.code === 'KeyQ' && !talking && surrenderable) onSurrender();
   });
+
+  function doCrime() {
+    const victim = near(npcs.filter(n => !n.props.pursuer), 26);
+    if (!victim) { toast('No one within reach to trouble.'); return; }
+    const seers = witnessesOf(player, npcs.filter(n => n !== victim), solidAtPx);
+    openPanel('WHAT DO YOU DO TO ' + (victim.name || 'them').toUpperCase() + '?', body => {
+      const note = document.createElement('p');
+      note.className = 'dim';
+      note.textContent = seers.length
+        ? seers.length + (seers.length === 1 ? ' person can see you here.' : ' people can see you here.')
+        : 'No one is watching. This is the time, if there is one.';
+      body.appendChild(note);
+      for (const [id, c] of Object.entries(CRIMES)) {
+        row(body, c.label, '', [['Do it', () => {
+          const r = commitCrime(state, id, victim, seers);
+          panelEl.classList.remove('open');
+          if (!r.ok) { toast(r.text); return; }
+          state.hueCry = { ...addHeat(state.hueCry, r.heat, heatRate()), witnessedCoat: state.player.coat };
+          if (r.coin) state.player.coin += r.coin;
+          if (r.townHit) state.reputation.town -= r.townHit;
+          // the victim flees toward home
+          victim.fleeing = true;
+          toast(r.text);
+          refreshHud();
+          storeLocal(state, localStorage);
+        }]]);
+      }
+      row(body, 'Leave them be', '', [['Back', () => panelEl.classList.remove('open')]]);
+    });
+  }
 
   function onSurrender() {
     const fine = Math.min(3, state.player.coin);
@@ -1109,6 +1335,37 @@ async function start() {
   let drownAcc = 0;
   let hungerAcc = 0;
   function update(dt) {
+    atmosphere.update(dt, canvas.width, canvas.height);
+    // the haunting intensifies near charged ground: the churchyard, the mountain
+    // edge (north), the deep cut, and inside the caves
+    let charged = 0;
+    if (state.map === 'caves') charged = 0.8;
+    else if (state.map === 'town') {
+      const px = player.x / TILE, py = player.y / TILE;
+      if (py < 10) charged += 0.4;                                   // the mountain's shadow, north edge
+      if (px > 73 && px < 80 && py > 20 && py < 27) charged += 0.5;  // the churchyard
+      charged = Math.min(1, charged);
+    }
+    haunting.update(dt, canvas.width, canvas.height,
+      state.player.sight || 0, state.clock.hour, charged);
+    ambience.setDread(haunting.getDread());
+    // a quiet beat when the Watcher crosses: atmosphere, not threat. Fires once
+    // per appearance, and only murmurs a first-sighting line the very first time.
+    if (haunting.watcherPresent()) {
+      if (!watcherSeen) {
+        watcherSeen = true;
+        ambience.chime('sight');
+        if (!state.flags.sawWatcher) {
+          state.flags.sawWatcher = true;
+          toast((state.player.sight || 0) >= 1
+            ? 'Something crosses the far treeline, upright and unhurried, and it has two pale eyes and it is looking back. Then the dark folds over it.'
+            : 'At the edge of the trees, for a breath, a shape too tall and too still. When you look straight at it there is nothing there.');
+          storeLocal(state, localStorage);
+        }
+      }
+    } else {
+      watcherSeen = false;
+    }
     if (talking || creatorOpen || splashOpen) return;
     const h = surrenderable ? 'Press Q to surrender' : hintFor();
     hintEl.textContent = h || '';
@@ -1161,34 +1418,54 @@ async function start() {
     const eff = effectiveLevel(state.hueCry, state.player.coat);
     if (state.map === 'town') {
       const hasExtra = id => npcs.some(n => n.props.extra === id);
+      // the constable himself gives chase the moment heat reaches the constable band
+      if (eff >= 2 && !hasExtra('constable') && spots.gaol) {
+        npcs.push({ name: 'constable', x: spots.gaol.x, y: spots.gaol.y, props: { npcId: 'beallpursuit', pursuer: true, extra: 'constable' }, home: { ...spots.gaol } });
+        toast('Beall has heard, and Beall is coming. Lose him, cross the river, or lie low.');
+      }
       if (eff >= 3 && !hasExtra('militia') && spots.gaol) {
         npcs.push({ name: 'militiaman', x: spots.gaol.x, y: spots.gaol.y, props: { npcId: 'militia', pursuer: true, extra: 'militia' }, home: { ...spots.gaol } });
-        toast('Drums off the square: the militia musters. Two pairs of boots on your trail now.');
+        toast('Drums off the square: the militia musters. More boots on your trail now.');
       }
       if (eff >= 4 && !hasExtra('bounty') && spots.shanks_work) {
         npcs.push({ name: 'bounty man', x: spots.shanks_work.x, y: spots.shanks_work.y, props: { npcId: 'bounty', pursuer: true, extra: 'bounty' }, home: { ...spots.shanks_work } });
         toast('A posted bill with your coat on it, and a professional reading it. The bounty men do not muster. They just start.');
       }
-      if (eff < 3) {
-        for (let i = npcs.length - 1; i >= 0; i--) if (npcs[i].props.extra) npcs.splice(i, 1);
-      }
+      // as heat cools, pursuers peel off, worst first
+      if (eff < 4) for (let i = npcs.length - 1; i >= 0; i--) if (npcs[i].props.extra === 'bounty') npcs.splice(i, 1);
+      if (eff < 3) for (let i = npcs.length - 1; i >= 0; i--) if (npcs[i].props.extra === 'militia') npcs.splice(i, 1);
+      if (eff < 2) for (let i = npcs.length - 1; i >= 0; i--) if (npcs[i].props.extra === 'constable') npcs.splice(i, 1);
     }
     for (const n of npcs) {
       if (n.props.pursuer && eff >= 2) {
-        const next = seekStep(n, player, 62, dt, solidAtPx);
+        const speed = n.props.extra === 'bounty' ? 70 : n.props.extra === 'militia' ? 60 : 54;
+        const next = seekStep(n, player, speed, dt, solidAtPx);
         n.x = next.x; n.y = next.y;
         surrenderable = caught(n, player, 44);
         if (caught(n, player)) onCaught();
         continue;
       }
+      if (n.fleeing) {
+        // a victim of crime bolts for home, then settles
+        const away = { x: n.home.x, y: n.home.y };
+        const next = seekStep(n, away, 66, dt, solidAtPx);
+        n.x = next.x; n.y = next.y;
+        if (Math.hypot(n.x - n.home.x, n.y - n.home.y) < 8) n.fleeing = false;
+        continue;
+      }
       const sched = SCHEDULES[n.props.npcId];
-      if (!sched) continue;
+      if (!sched) { keepOffDoorways(n); continue; }
       const spot = spots[spotFor(sched, state.clock.hour)];
       if (spot && Math.hypot(spot.x - n.x, spot.y - n.y) > 2) {
         const next = seekStep(n, spot, 40, dt, solidAtPx);
         n.x = next.x; n.y = next.y;
       }
+      // never let a townsperson settle in a doorway, wherever their spot sits
+      keepOffDoorways(n);
     }
+    // final safety net: any non-pursuer resting on a doorway gets cleared off,
+    // so a door is ALWAYS reachable no matter how an NPC arrived there
+    for (const n of npcs) if (!n.props.pursuer) keepOffDoorways(n);
     if (!npcs.some(n => n.props.pursuer && eff >= 2)) surrenderable = false;
 
     // deep water drowns; fords and bridges do not
@@ -1269,10 +1546,32 @@ async function start() {
   function drawHud() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, HUD_H);
-    // minimap: the county in gray, you in green
+    // minimap: the county in gray, buildings as faint marks, you in green
     ctx.fillStyle = '#7c7c7c';
     ctx.fillRect(8, 7, 72, 34);
-    const mp = miniPos(player.x, player.y, map.width * TILE, map.height * TILE, 72, 34);
+    const mapW = map.width * TILE, mapH = map.height * TILE;
+    // building doors as small dark marks so the town is legible at a glance
+    if (state.map === 'town') {
+      ctx.fillStyle = '#5a5a5a';
+      for (const d of doorObjects) {
+        const dp = miniPos(d.x, d.y, mapW, mapH, 72, 34);
+        ctx.fillRect(8 + dp.x, 7 + dp.y, 1, 1);
+      }
+      // the active objective: a pulsing amber marker at the target building's door
+      const targetId = questTarget(state);
+      if (targetId) {
+        const door = doorObjects.find(d => d.props.target === targetId);
+        if (door) {
+          const tp = miniPos(door.x, door.y, mapW, mapH, 72, 34);
+          const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 300);
+          ctx.fillStyle = 'rgba(240,180,60,' + (0.5 + pulse * 0.5).toFixed(2) + ')';
+          ctx.fillRect(8 + tp.x - 1, 7 + tp.y - 1, 4, 4);
+          ctx.fillStyle = '#3a2a10';
+          ctx.fillRect(8 + tp.x, 7 + tp.y, 2, 2);
+        }
+      }
+    }
+    const mp = miniPos(player.x, player.y, mapW, mapH, 72, 34);
     ctx.fillStyle = '#80d010';
     ctx.fillRect(8 + mp.x, 7 + mp.y, 3, 3);
     const eff = effectiveLevel(state.hueCry, state.player.coat);
@@ -1293,7 +1592,7 @@ async function start() {
     ctx.fillStyle = '#88b8f8';
     ctx.fillText((state.player.coat || 'drover').toUpperCase() + ' COAT', 170, 10);
     ctx.fillStyle = '#8c8c8c';
-    ctx.fillText('E TALK  I SATCHEL  J JOURNAL', 170, 24);
+    ctx.fillText('E TALK  F ROB  I SATCHEL  J CASE', 170, 24);
     if (state.player.sight > 0) { ctx.fillStyle = '#a0e8c0'; ctx.fillText('SIGHT ' + state.player.sight, 170, 34); }
     // -HALE- and the hearts, right, two rows of five
     ctx.fillStyle = '#d82820';
@@ -1328,6 +1627,15 @@ async function start() {
       }
       else { ctx.fillStyle = GID_COLORS[gid] || '#333'; ctx.fillRect(x * TILE - cam.x, y * TILE - cam.y, TILE, TILE); }
     }
+    // decor layer: non-solid furnishings and oddities, drawn over the floor
+    if (sheet && map.hasLayer && map.hasLayer('decor')) {
+      for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+        const gid = map.gidAt('decor', x, y);
+        if (!gid) continue;
+        const sy = gid === 32 && Math.floor(performance.now() / 500) % 2 ? TILE : 0;
+        ctx.drawImage(sheet, (gid - 1) * TILE, sy, TILE, TILE, x * TILE - cam.x, y * TILE - cam.y, TILE, TILE);
+      }
+    }
     for (const it of interactables) {
       if (it.used) continue;
       if (it.type === 'wisp') {
@@ -1340,9 +1648,15 @@ async function start() {
         }
         continue;
       }
-      if (it.type === 'murmur' || it.type === 'sleeprough') continue;
-      ctx.fillStyle = '#b09a4f';
-      ctx.fillRect(it.x - cam.x + 5, it.y - cam.y + 5, 6, 6);
+      if (it.type === 'murmur' || it.type === 'sleeprough' || it.type === 'oddity') continue;
+      const bob = Math.round(Math.sin(performance.now() / 400 + it.id) * 1.5);
+      const icon = art.icons && art.icons[it.type];
+      if (icon) {
+        ctx.drawImage(icon, Math.round(it.x - cam.x), Math.round(it.y - cam.y) + bob - 2);
+      } else {
+        ctx.fillStyle = '#c8b45a';
+        ctx.fillRect(it.x - cam.x + 5, it.y - cam.y + 5 + bob, 6, 6);
+      }
     }
     for (const w of (state.wards || [])) {
       if (w.map !== state.map) continue;
@@ -1362,19 +1676,6 @@ async function start() {
     drawChar(psheet, player.x, player.y, frameFor(player.walked), player.flip, '#d8cfb8');
 
     ctx.restore();
-    // the mountain watches the town: parallax ridge along the north edge, under the band
-    if (state.map === 'town' && art.sprites.ridge) {
-      ctx.save();
-      ctx.translate(0, HUD_H);
-      const r = art.sprites.ridge;
-      const off = Math.floor(cam.x * 0.25) % r.width;
-      ctx.globalAlpha = 0.85;
-      ctx.drawImage(r, -off, 0);
-      ctx.drawImage(r, -off + r.width, 0);
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    }
-
     // dithered lantern darkness after dusk, outdoors
     const caveDark = state.map === 'caves';
     if ((caveDark || ((period === 'night' || period === 'dusk') && state.map === 'town')) && art.sprites.lantern && !state.flags.cheatLanterns) {
@@ -1390,6 +1691,24 @@ async function start() {
       const tint = TINTS[period];
       if (tint) { ctx.fillStyle = tint; ctx.fillRect(0, HUD_H, canvas.width, canvas.height - HUD_H); }
     }
+
+    // ---- atmosphere: smoke from lit chimneys, drifting fog and motes, vignette ----
+    if (state.map === 'town') {
+      // emit chimney smoke from each building door-top in view (a proxy for hearths)
+      for (const d of doorObjects) {
+        const sx = d.x - cam.x + 8, sy = d.y - cam.y - HUD_H - 8;
+        if (sx > -20 && sx < canvas.width + 20 && sy > HUD_H && sy < canvas.height)
+          atmosphere.emitSmoke(sx, sy + HUD_H);
+      }
+      atmosphere.drawSmoke(ctx);
+    }
+    atmosphere.drawAmbient(ctx, canvas.width, canvas.height, period,
+      state.map === 'caves' ? -0.5 : (state.weather === 'rain' ? 0.8 : 0));
+    // the haunting rides above the fog: spectral wisps, cold spots, the Watcher
+    haunting.draw(ctx, canvas.width, canvas.height, state.player.sight || 0);
+    atmosphere.drawFlash(ctx, canvas.width, canvas.height);
+    atmosphere.drawVignette(ctx, canvas.width, canvas.height);
+
     drawHud();
   }
 
@@ -1418,13 +1737,14 @@ async function start() {
         panelEl.classList.remove('open');
         refreshHud();
         storeLocal(state, localStorage);
-        toast('Cumberland, 1800, at dusk. Arrows or WASD walk, E speaks and touches, I is your satchel, J your journal. The journal keeps THE TRAIL if you lose the thread.');
+        toast('Cumberland, a dusk in the 1850s, where the canal ends and the rails begin. Arrows or WASD walk, E speaks and touches, I is your satchel, J your journal. The journal keeps THE TRAIL if you lose the thread.');
         if (state.player.sight >= 1) toast('And you were born with the Glimmer. The lights in the fog are not swamp gas, and never were.');
       }]]);
     });
   }
 
   refreshHud();
+  openCreatorHook = openCreator;
   createLoop(update, render).start();
 
   const splashEl = document.getElementById('splash');

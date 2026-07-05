@@ -22,7 +22,14 @@
     "LIST",
     "MEASURES",
     "BOOTS",
-    "BRANDY"
+    "BRANDY",
+    "RAILS",
+    "CANAL",
+    "CARGO",
+    "COAL",
+    "ROADS",
+    "NATIONAL",
+    "WASHINGTON"
   ],
   "tier3": [
     "SEEN",

@@ -18,7 +18,9 @@ DASHES = re.compile("[\u2014\u2013]")
 def check_dashes() -> int:
     bad = 0
     for path in ROOT.rglob("*"):
-        if path.is_dir() or DIST in path.parents or ".git" in path.parts:
+        if path.is_dir() or DIST in path.parents:
+            continue
+        if any(part in (".git", "node_modules") for part in path.parts):
             continue
         if path.suffix not in CHECK_SUFFIXES:
             continue
@@ -52,7 +54,7 @@ def main() -> int:
     stamp = DIST / "index.html"
     stamp.write_text(
         stamp.read_text(encoding="utf-8").replace(
-            "<!-- CAIUCTUCUC v0.11.0 -->", f"<!-- CAIUCTUCUC v{version} build -->"
+            "<!-- CAIUCTUCUC v0.21.2 -->", f"<!-- CAIUCTUCUC v{version} build -->"
         ),
         encoding="utf-8",
     )

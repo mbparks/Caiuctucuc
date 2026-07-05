@@ -325,6 +325,154 @@
    ]
   },
   {
+   "type": "tilelayer",
+   "name": "decor",
+   "width": 14,
+   "height": 10,
+   "data": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    22,
+    0,
+    0,
+    0,
+    32,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    21,
+    0,
+    0,
+    0,
+    21,
+    0,
+    0,
+    21,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    21,
+    0,
+    0,
+    0,
+    21,
+    0,
+    0,
+    21,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
    "type": "objectgroup",
    "name": "spawns",
    "objects": [
@@ -352,6 +500,150 @@
      "width": 16,
      "height": 16,
      "properties": []
+    },
+    {
+     "id": 700,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 112,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "Beeswax candles and a plain brass cross, and beneath the cloth, older marks the whitewash never quite covered."
+      }
+     ]
+    },
+    {
+     "id": 701,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 48,
+     "y": 96,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The pew backs are carved with initials going back three generations, and one set nobody will claim."
+      }
+     ]
+    },
+    {
+     "id": 702,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 112,
+     "y": 96,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The pew backs are carved with initials going back three generations, and one set nobody will claim."
+      }
+     ]
+    },
+    {
+     "id": 703,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 160,
+     "y": 96,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The pew backs are carved with initials going back three generations, and one set nobody will claim."
+      }
+     ]
+    },
+    {
+     "id": 704,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 48,
+     "y": 128,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The pew backs are carved with initials going back three generations, and one set nobody will claim."
+      }
+     ]
+    },
+    {
+     "id": 705,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 112,
+     "y": 128,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The pew backs are carved with initials going back three generations, and one set nobody will claim."
+      }
+     ]
+    },
+    {
+     "id": 706,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 160,
+     "y": 128,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The pew backs are carved with initials going back three generations, and one set nobody will claim."
+      }
+     ]
+    },
+    {
+     "id": 707,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 48,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A tin lantern on a chain, its punched holes throwing a constellation on the ceiling that is almost, not quite, ours."
+      }
+     ]
+    },
+    {
+     "id": 708,
+     "name": "an oddity",
+     "type": "oddity",
+     "x": 176,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "text",
+       "type": "string",
+       "value": "A tin lantern on a chain, its punched holes throwing a constellation on the ceiling that is almost, not quite, ours."
+      }
+     ]
     }
    ]
   },

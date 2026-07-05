@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CAIUCTUCUC v0.11.0 -->
+<!-- CAIUCTUCUC v0.21.2 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -35,7 +35,6 @@
   #splash.gone { opacity: 0; pointer-events: none; }
   @keyframes splashin { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { #splash img { animation: none; } #splash { transition: none; } }
-  #hud { display: none; /* the canvas band took the watch */ }
   #hud-retired { display: inline-flex; align-items: baseline; gap: .9rem; padding: .28rem .9rem;
     border-top: 1px solid var(--dim); border-bottom: 1px solid var(--dim);
     box-shadow: 0 2px 0 -1px var(--dim), 0 -2px 0 -1px var(--dim);
@@ -59,18 +58,47 @@
   #menu .row { margin: .45rem 0; display: flex; gap: .5rem; align-items: center; justify-content: space-between; }
   footer { padding: .3rem 1rem; color: var(--dim); font-size: .75rem; }
   a { color: var(--accent); }
-  #hud { display: flex; gap: 1rem; align-items: baseline; font-size: .8rem; color: var(--dim); }
+  #hud { display: none; }  /* retired: the in-canvas band is the HUD now */
   #hudHeat[data-hot="1"] { color: var(--accent); }
   #toast { position: absolute; left: 50%; top: 3.2rem; transform: translateX(-50%);
     width: min(34rem, 90vw); background: var(--panel); border: 1px solid var(--dim);
     padding: .5rem .9rem; font-size: .9rem; opacity: 0; transition: opacity .25s; pointer-events: none; }
   #toast.show { opacity: 1; }
-  #journal { position: absolute; left: 50%; top: 4rem; transform: translateX(-50%);
-    width: min(30rem, 92vw); max-height: 70vh; overflow: auto; background: var(--panel);
-    border: 1px solid var(--dim); padding: 1rem 1.2rem; display: none; }
+  #journal { position: absolute; left: 50%; top: 3.5rem; transform: translateX(-50%);
+    width: min(34rem, 94vw); max-height: 74vh; overflow: auto; display: none;
+    background: linear-gradient(180deg, #d8cdb0 0%, #cabf9f 100%); color: #2a2118;
+    border: 2px solid #4a3c28; border-radius: 2px; padding: 0;
+    box-shadow: 0 8px 30px rgba(0,0,0,.55); }
   #journal.open { display: block; }
-  #journal h2 { font-size: .85rem; letter-spacing: .3em; color: var(--accent); margin: 0 0 .6rem; font-weight: normal; }
-  #journal h3 { font-size: .78rem; letter-spacing: .2em; color: var(--dim); margin: .8rem 0 .3rem; font-weight: normal; }
+  #journal .jhead { display: flex; align-items: baseline; justify-content: space-between;
+    padding: .7rem 1rem .4rem; border-bottom: 1px solid #8a7a58; }
+  #journal h2 { font-size: .85rem; letter-spacing: .3em; color: #5a3a2a; margin: 0; font-weight: normal; }
+  #journal .jtrail { font-size: .72rem; color: #6a5a3a; font-style: italic; }
+  #journal .jtabs { display: flex; gap: 0; padding: 0 .6rem; border-bottom: 1px solid #8a7a58;
+    position: sticky; top: 0; background: #d0c5a6; z-index: 2; }
+  #journal .jtab { flex: 1; text-align: center; padding: .45rem .3rem; font-size: .72rem;
+    letter-spacing: .12em; color: #6a5a3a; cursor: pointer; border-bottom: 2px solid transparent; }
+  #journal .jtab.active { color: #3a2a1a; border-bottom-color: #7a3a2a; font-weight: bold; }
+  #journal .jbody { padding: .8rem 1rem 1.2rem; }
+  #journal .thread-label { font-size: .68rem; letter-spacing: .22em; color: #7a5a3a;
+    margin: .9rem 0 .35rem; text-transform: uppercase; }
+  #journal .card { background: #e6ddc4; border: 1px solid #a89870; border-left: 3px solid #7a3a2a;
+    padding: .5rem .6rem; margin: .35rem 0; box-shadow: 1px 1px 0 rgba(0,0,0,.1);
+    transform: rotate(-.3deg); }
+  #journal .card:nth-child(even) { transform: rotate(.4deg); }
+  #journal .card b { color: #5a2a1a; }
+  #journal .card p { margin: .2rem 0 0; font-size: .8rem; line-height: 1.35; }
+  #journal .empty { font-style: italic; color: #6a5a3a; }
+  #journal .kw { display: inline-block; background: #e6ddc4; border: 1px solid #8a7a58;
+    padding: .1rem .5rem; margin: .15rem; font-size: .76rem; letter-spacing: .08em; color: #3a2a1a; }
+  #journal .kw.fresh { border-color: #7a3a2a; box-shadow: 0 0 0 1px #7a3a2a inset; }
+  #journal .suspect { border: 1px solid #a89870; background: #e6ddc4; padding: .5rem .6rem; margin: .4rem 0; }
+  #journal .suspect b { color: #5a2a1a; }
+  #journal .suspect .knows { font-size: .78rem; margin: .25rem 0 0; }
+  #journal .suspect .unknown { font-size: .78rem; color: #8a7a58; font-style: italic; }
+  #journal .stand { display: flex; justify-content: space-between; font-size: .8rem;
+    padding: .2rem 0; border-bottom: 1px dotted #a89870; }
+  #journal h3 { font-size: .72rem; letter-spacing: .2em; color: #7a5a3a; margin: .8rem 0 .3rem; font-weight: normal; }
   #panel { position: absolute; left: 50%; top: 4rem; transform: translateX(-50%);
     width: min(30rem, 92vw); max-height: 70vh; overflow: auto; background: var(--panel);
     border: 1px solid var(--dim); padding: 1rem 1.2rem; display: none; }
@@ -85,7 +113,6 @@
   #term input { width: 100%; background: #000; color: var(--accent); border: none;
     font: inherit; text-transform: uppercase; letter-spacing: .2em; }
   #term input:focus { outline: none; }
-  #journal .kw { display: inline-block; border: 1px solid var(--dim); padding: .05rem .45rem; margin: .12rem; font-size: .78rem; }
   @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
   #dialog { position: absolute; left: 50%; bottom: 3rem; transform: translateX(-50%);
     width: min(38rem, 92vw); background: var(--panel); border: 1px solid var(--dim);
@@ -110,8 +137,6 @@
   <header>
     <h1>CAIUCTUCUC</h1>
     <span class="ver" id="version"></span>
-    <span id="hud"><span id="hudHeat">QUIET</span><span id="hudHealth"></span><span id="hudCoin"></span><span id="hudClock"></span><span id="hudCoat"></span></span>
-    <span class="spacer"></span>
     <button id="fullBtn" aria-label="Toggle fullscreen">Fullscreen</button>
     <button id="muteBtn" aria-pressed="false" aria-label="Mute audio">Sound: on</button>
     <button id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
@@ -125,6 +150,7 @@
     <div class="row"><span>Hue and cry</span><select id="diffHuecry"><option>lenient</option><option selected>standard</option><option>sharp</option></select></div>
     <div class="row"><span>Save</span><button id="exportBtn">Export</button></div>
     <div class="row"><span>Load</span><button id="importBtn">Import</button></div>
+    <div class="row"><span>Start over</span><button id="resetBtn">Reset game</button></div>
     <div class="row"><span>Feedback</span><a href="https://mbparks.com" target="_blank" rel="noopener">mbparks.com</a></div>
     <input type="file" id="importFile" accept=".json" hidden>
   </div>
@@ -137,10 +163,7 @@
     <div id="panelBody"></div>
     <div style="margin-top:.6rem"><button id="panelClose">Close</button></div>
   </div>
-  <div id="journal" role="dialog" aria-label="Journal">
-    <h2>JOURNAL</h2>
-    <div id="journalBody"></div>
-  </div>
+  <div id="journal" role="dialog" aria-label="Case file"></div>
   <div id="term" role="dialog" aria-label="Terminal">
     <input id="termInput" placeholder="speak, friend" aria-label="Cheat code" maxlength="20" autocomplete="off">
   </div>
@@ -156,7 +179,7 @@
       <button id="dialogBye">Bye</button>
     </div>
   </div>
-  <footer>Arrow keys or WASD to walk, E to interact, I for satchel, J for journal, Q to surrender when cornered. A supernatural mystery, Cumberland, Maryland, 1800.</footer>
+  <footer>Arrow keys or WASD to walk, E to interact, I for satchel, J for journal, Q to surrender when cornered. A supernatural mystery, Cumberland, Maryland, the 1850s.</footer>
 </div>
 <script>
   window.addEventListener('error', function (e) {

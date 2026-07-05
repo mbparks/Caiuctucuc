@@ -18,9 +18,14 @@ export async function loadArt() {
   const tiles = {};
   for (const p of periods) tiles[p] = await loadImage('assets/tiles/tileset_' + p + '.png');
   const sprites = {};
-  const npcIds = ['doyle', 'cresap', 'ward', 'feig', 'gantt', 'rood', 'mcteague', 'coombs', 'fenwick', 'shanks', 'bright'];
-  for (const n of ['player_drover', 'player_frock', 'player_preacher', 'npc', 'constable', 'lantern', 'ridge',
+  const npcIds = ['doyle', 'cresap', 'ward', 'feig', 'gantt', 'rood', 'mcteague', 'coombs', 'fenwick', 'shanks', 'bright', 'beall', 'brahm', 'pyle'];
+  for (const n of ['player_drover', 'player_frock', 'player_preacher', 'npc', 'constable', 'lantern', 'ridge', 'dog', 'cat',
                    ...npcIds.map(i => 'npc_' + i)])
     sprites[n] = await loadImage('assets/sprites/' + n + '.png');
-  return { tiles, sprites, ready: Boolean(tiles.day) };
+  const icons = {};
+  const iconTypes = ['clue', 'steal', 'station', 'vendor', 'board', 'stash', 'accuse', 'restore',
+    'ferry', 'benchmark', 'cresapledger', 'chambers', 'plate', 'widow', 'creditor', 'manhunter',
+    'letterquest', 'signfarm', 'cabinkept', 'noquestions', 'chamber', 'laylow', 'coat', 'job'];
+  for (const t of iconTypes) icons[t] = await loadImage('assets/icons/' + t + '.png');
+  return { tiles, sprites, icons, ready: Boolean(tiles.day) };
 }
