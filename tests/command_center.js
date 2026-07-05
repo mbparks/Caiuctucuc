@@ -24,6 +24,14 @@ test('command center moves existing feature buttons rather than duplicating them
   }
 });
 
+test('command drawer is temporary and does not push the HUD layout', () => {
+  assert(center.includes('position: absolute'), 'command drawer should not expand the header layout');
+  assert(center.includes('max-height'), 'command drawer should be scrollable instead of covering everything');
+  assert(center.includes('closeCommands();'), 'command drawer should close before launching actions');
+  assert(center.includes("e.key === 'Escape'"), 'Escape close behavior missing');
+  assert(center.includes('pointerdown'), 'outside-click close behavior missing');
+});
+
 test('canvas command prompt is suppressed', () => {
   assert(render.includes("E TALK  F ROB  I SATCHEL  J CASE"), 'duplicate canvas command text not suppressed');
   assert(render.includes('patchedFillText'), 'fillText suppression patch missing');
