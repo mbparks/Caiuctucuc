@@ -4,19 +4,28 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.29.2** (render integrity: no stage grid, no subpixel tile seams)
+**Version: 0.35.0** (story world pass: connected travel, eavesdropping, stronger case board, Gantt pressure, dog and mountain, set pieces)
+
+## What changed from v0.30 to v0.35
+
+This release deepens the systems added in v0.23 through v0.29 and makes them work together as story experience.
+
+- v0.30 World Connections: town now receives physical road exits to the canal, rail yard, quarry, and Wills Mountain. The Districts panel remains as a fast travel ledger, but the maps are no longer only menu destinations.
+- v0.31 Time-Based Interiors and Eavesdropping: key interiors gain hour-sensitive overheard conversations. The Blue Mule, courthouse, survey office, and surgery now reveal different story fragments by time of day.
+- v0.32 Case Board 2.0: the Case Board separates contradictions, legal proof, supernatural truth, accusation logic, evidence threads, and open leads. It makes the difference between true and provable explicit.
+- v0.33 Gantt Pressure: Prosper Gantt now reacts to evidence weight. As the file grows, his chainman appears, quarry pressure rises, moved powder appears, and burned notes can surface in the survey office.
+- v0.34 Dog and Mountain Systems: the dog now points toward the next investigative place, while Mountain Attention gains readable world effects in the Mountain panel and map objects.
+- v0.35 Story Set Pieces: the records room, Coombs's grave, Tam's dry boots, the true survey line, Nan's ribbon, and trial access are now physical interactables tied to the existing clue and trial systems.
+
+Most of the pass lives in `src/game/story_world.js`, which decorates loaded maps with story objects. The map loader preserves object ids and applies the decorator after generated maps and interior occupants are loaded.
 
 ## What changed in v0.29.2
 
 This release fixes visible grid-line artifacts and screen tearing while walking. The camera now snaps to whole pixels instead of fractional positions, which prevents tile edges from being drawn between pixels. A new `src/render_integrity.js` guard loads before the main game renderer, snaps canvas draw calls to whole pixels, keeps image smoothing off, and removes the decorative stage grid introduced during the UI cohesion pass.
 
-The render integrity test verifies that the camera returns integer coordinates, the guard loads before `main.js`, the stage grid is explicitly disabled, and canvas draw calls are snapped.
-
 ## What changed in v0.29.1
 
 This release cleans up the interface so it feels like one game instead of several feature layers bolted together. A new `src/ui_cohesion.js` module loads after the main game, Trail helper, and world expansion UI. It normalizes the header, buttons, Trail strip, Trail deck, Districts, Case Board, Law panel, Mountain status, toast messages, journal, dialog, menu, action panel, terminal, canvas frame, and footer under one frontier-ledger visual language.
-
-The design keeps two intentional surfaces: dark brass-and-wood chrome for HUD, menus, law, travel, dialog, and action panels, and parchment paper for the journal and Trail deck. Spacing, borders, shadows, typography, button hierarchy, modal positions, and mobile wrapping now follow the same rules.
 
 ## What changed from v0.24 to v0.29
 
@@ -28,8 +37,6 @@ This release built the planned gameplay expansion as real playable systems.
 - v0.27 Quarry and Gantt Pressure: the quarry map now contains the singing stone, calm bootprints, gentleman boot nail, sealed seam murmur, benchmark, and Gantt presence.
 - v0.28 Supernatural Systems: Mountain Attention reacts to SIGHT, night, sealed maps, benchmark progress, Nan, and the chamber.
 - v0.29 Final Act Expansion: Wills Mountain, cave chain, and Cold Cathedral maps provide the marked path to Nan and the ending chamber.
-
-The expansion UI loads after the main game and adds Districts, Case Board, Law, and Mountain status controls to the header. The normal map loader, object parser, dialog system, clue system, job system, benchmark system, wisp system, and chamber ending are used for the new districts.
 
 ## What changed in v0.23.0
 
@@ -63,6 +70,7 @@ or directly:
     node tests/world_expansion.js
     node tests/ui_cohesion.js
     node tests/render_integrity.js
+    node tests/story_world.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -74,7 +82,8 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 ## Repository layout
 
 - src/ engine and game code (ES modules, no framework, Canvas 2D)
-- src/game/ gameplay logic including generated districts, case board, law, and mountain attention
+- src/game/ gameplay logic including generated districts, case board, law, mountain attention, and story world decoration
+- src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
 - src/render_integrity.js/ pixel-snapping and render artifact cleanup loaded before the renderer
 - src/data/ game content as JSON: NPC roster, keyword matrix, item list, dialogs
@@ -93,17 +102,18 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - F: commit a direct crime against a nearby NPC, when possible
 - Q: surrender when cornered
 - Districts: travel to the expanded world maps
-- Case Board: review evidence and open leads
+- Case Board: review contradictions, legal proof, supernatural truth, and open leads
 - Law: manage heat, coat memory, and hiding actions
+- Mountain: click the Mountain status to review mountain attention, dog leads, and Gantt pressure
 - Backtick: open the cheat terminal
 
 ## Known limitations
 
 - The generated districts are real playable maps, but hand-authored art layouts can still make them prettier.
-- District travel is header-driven for now. Later map art should add physical town exits that point to these districts.
-- Interior life has occupants, but deep room-specific hourly patrols still need a later pass.
+- Physical exits exist, but later art passes should make their road geometry clearer and more scenic.
+- Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.29.2 does not change the save format.
+- Saves are localStorage plus JSON export. v0.35.0 does not change the save format.
 
 ## License
 
