@@ -1,10 +1,10 @@
 {
   "name": "caiuctucuc",
-  "version": "0.39.0",
+  "version": "0.40.0",
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "node tests/run.js && node tests/trail.js && node tests/pursuit_no_bounce.js && node tests/module_contracts.js && node tests/interior_life.js && node tests/world_expansion.js && node tests/ui_cohesion.js && node tests/render_integrity.js && node tests/story_world.js && node tests/command_center.js && node tests/map_placement.js && node tests/real_places.js && node tests/opening_story.js"
+    "test": "node tests/run.js && node tests/trail.js && node tests/pursuit_no_bounce.js && node tests/module_contracts.js && node tests/interior_life.js && node tests/world_expansion.js && node tests/ui_cohesion.js && node tests/render_integrity.js && node tests/story_world.js && node tests/command_center.js && node tests/map_placement.js && node tests/real_places.js && node tests/opening_story.js && node tests/case_file_unified.js"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
