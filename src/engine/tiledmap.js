@@ -71,10 +71,49 @@ function mapIdFromUrl(url) {
   return file.replace(/\.json(?:\?.*)?$/, '');
 }
 
+function objectTile(map, o) {
+  return {
+    tx: Math.floor((o.x + Math.min(8, Math.max(0, o.width / 2 || 8))) / map.tileWidth),
+    ty: Math.floor((o.y + Math.min(8, Math.max(0, o.height / 2 || 8))) / map.tileHeight)
+  };
+}
+
+function clearObjectTile(map, tx, ty) {
+  return tx >= 0 && ty >= 0 && tx < map.width && ty < map.height && !map.solidAt(tx, ty);
+}
+
+function nearestClearObjectPosition(map, o) {
+  const start = objectTile(map, o);
+  if (clearObjectTile(map, start.tx, start.ty)) return o;
+  for (let r = 1; r <= 5; r++) {
+    const candidates = [];
+    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) === r) candidates.push({ tx: start.tx + dx, ty: start.ty + dy });
+    }
+    candidates.sort((a, b) => Math.abs(a.tx - start.tx) + Math.abs(a.ty - start.ty) - (Math.abs(b.tx - start.tx) + Math.abs(b.ty - start.ty)));
+    const found = candidates.find(c => clearObjectTile(map, c.tx, c.ty));
+    if (found) {
+      return { ...o, x: found.tx * map.tileWidth, y: found.ty * map.tileHeight,
+        props: { ...o.props, placedFromX: o.x, placedFromY: o.y } };
+    }
+  }
+  return o;
+}
+
+function normalizeInteractablePlacement(map) {
+  // Hand-authored and generated story objects occasionally land on building or
+  // roof collision tiles. They are still useful interactables, but their icons
+  // must not render on top of buildings. Move those prompts to the nearest
+  // reachable ground tile so the visual layer stays coherent.
+  if (!map.objects.interact) return map;
+  map.objects.interact = map.objects.interact.map(o => nearestClearObjectPosition(map, o));
+  return map;
+}
+
 function finishMap(mapId, map) {
   const extraNpcs = staticInteriorNpcObjects(mapId, map);
   if (extraNpcs.length) map.objects.spawns = [...(map.objects.spawns || []), ...extraNpcs];
-  return decorateStoryWorld(mapId, map);
+  return normalizeInteractablePlacement(decorateStoryWorld(mapId, map));
 }
 
 export async function loadMap(url) {
