@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CAIUCTUCUC v0.22.0 -->
+<!-- CAIUCTUCUC v0.22.1 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -182,30 +182,32 @@
   <footer>Arrow keys or WASD to walk, E to interact, T for trail, I for satchel, J for journal, Q to surrender when cornered. A supernatural mystery, Cumberland, Maryland, the 1850s.</footer>
 </div>
 <script>
+  function caiuctucucBasicBootFailure(message) {
+    var stage = document.getElementById('stage');
+    if (!stage || window.__CAIUCTUCUC_BOOTED) return;
+    var box = document.createElement('div');
+    box.style.cssText = 'max-width:42rem;padding:1.2rem 1.5rem;border:1px solid #7a715c;background:#1d1a14;line-height:1.5';
+    box.innerHTML = '<p style="letter-spacing:.2em;color:#9a4a32;margin:0 0 .6rem">THE GAME DID NOT START</p>'
+      + '<p>The boot loader did not finish. First error: <span style="font-family:monospace">'
+      + String(message || window.__CAIUCTUCUC_ERR || 'No browser error was reported.').replace(/[&<>]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]); })
+      + '</span></p><p>On shared hosting, upload the complete dist folder and preserve the src and assets folder names exactly.</p>';
+    stage.replaceChildren(box);
+  }
   window.addEventListener('error', function (e) {
-    if (!window.__CAIUCTUCUC_ERR) window.__CAIUCTUCUC_ERR = (e.message || 'unknown error') + (e.filename ? ' in ' + e.filename.split('/').pop() : '');
+    if (!window.__CAIUCTUCUC_ERR) {
+      var target = e.target && e.target !== window ? (e.target.src || e.target.href) : '';
+      window.__CAIUCTUCUC_ERR = target ? 'Could not load ' + target : (e.message || 'unknown error');
+    }
+  }, true);
+  window.addEventListener('unhandledrejection', function (e) {
+    if (!window.__CAIUCTUCUC_ERR) window.__CAIUCTUCUC_ERR = (e.reason && e.reason.message) || String(e.reason || 'unhandled promise rejection');
   }, true);
   setTimeout(function () {
     if (window.__CAIUCTUCUC_BOOTED) return;
-    var stage = document.getElementById('stage');
-    var box = document.createElement('div');
-    box.style.cssText = 'max-width:34rem;padding:1.2rem 1.5rem;border:1px solid #7a715c;background:#1d1a14;line-height:1.5';
-    var why;
-    if (location.protocol === 'file:') {
-      why = '<p style="letter-spacing:.2em;color:#9a4a32;margin:0 0 .6rem">THE GAME DID NOT START</p>'
-        + '<p>It was opened straight from the disk (file://), and browsers refuse to run module scripts or load map data that way. No error is shown; the screen just stays dark. This one is on the browser, not on you.</p>'
-        + '<p>Serve the folder with any static server and open it by address instead. From the repo folder:</p>'
-        + '<p style="font-family:monospace;background:#000;padding:.5rem .7rem">python3 -m http.server 8000</p>'
-        + '<p>Then visit <span style="font-family:monospace">http://localhost:8000</span></p>';
-    } else {
-      why = '<p style="letter-spacing:.2em;color:#9a4a32;margin:0 0 .6rem">THE GAME DID NOT START</p>'
-        + '<p>The main script never ran.' + (window.__CAIUCTUCUC_ERR ? ' First error: <span style="font-family:monospace">' + window.__CAIUCTUCUC_ERR + '</span>' : ' No error was reported, which usually means the script file did not load; check the address and the browser console.') + '</p>';
-    }
-    box.innerHTML = why;
-    stage.replaceChildren(box);
-  }, 1500);
+    if (window.__CAIUCTUCUC_SHOW_BOOT_FAILURE) window.__CAIUCTUCUC_SHOW_BOOT_FAILURE('The game did not finish booting.', window.__CAIUCTUCUC_ERR);
+    else caiuctucucBasicBootFailure();
+  }, 5500);
 </script>
-<script type="module" src="src/main.js"></script>
-<script type="module" src="src/gameplay_boost.js"></script>
+<script type="module" src="src/boot.js"></script>
 </body>
 </html>
