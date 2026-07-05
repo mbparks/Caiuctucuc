@@ -4,7 +4,17 @@ A single player, top down, open world supernatural mystery set in Cumberland, Ma
 
 Part of the MBPARKS ARCADE collection.
 
-**Version: 0.38.0** (real Cumberland place naming)
+**Version: 0.39.0** (opening backstory screen)
+
+## What changed in v0.39.0
+
+New games now have a three-step opening flow:
+
+1. The postcard opening screen.
+2. A new backstory screen explaining Cumberland, Tam Hollis, Constable Beall, the human murder case, and the older haunting under the mountain.
+3. The character creator, where the player chooses who walks into town.
+
+The backstory screen appears only for new games, after the postcard fades and before the character creator becomes playable. Existing saves skip it. The screen is implemented in `src/opening_story.js`, loaded before `src/main.js` so it can observe the splash flow and defer the creator panel until the player continues.
 
 ## What changed in v0.38.0
 
@@ -81,6 +91,7 @@ or directly:
     node tests/command_center.js
     node tests/map_placement.js
     node tests/real_places.js
+    node tests/opening_story.js
 
 Pure logic tests run in Node with no dependencies. The same modules load in the browser.
 
@@ -95,6 +106,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - src/game/ gameplay logic including generated districts, case board, law, mountain attention, and story world decoration
 - src/game/generated_maps.js/ generated playable districts with real Cumberland place naming in visible labels and text
 - src/game/story_world.js/ physical travel, eavesdropping, Gantt pressure, dog leads, mountain effects, and set pieces
+- src/opening_story.js/ new-game backstory screen between postcard and character creator
 - src/command_center.js/ one consolidated command structure for immediate, story, and system actions
 - src/ui_overlay_manager.js/ one-active-overlay coordination across panels
 - src/ui_cohesion.js/ unified interface skin loaded last in the browser boot path
@@ -129,7 +141,7 @@ For a browser boot smoke test, install the optional jsdom dependency and run:
 - Real place names are now used for the quarry and final cave locations, but the mystery events themselves remain fictionalized.
 - Interior life and eavesdropping are hour-sensitive, but room-specific patrol paths still need a later pass.
 - Named NPCs still share generic sprites until final character sheets are ready.
-- Saves are localStorage plus JSON export. v0.38.0 does not change the save format.
+- Saves are localStorage plus JSON export. v0.39.0 does not change the save format.
 
 ## License
 
