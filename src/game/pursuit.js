@@ -62,9 +62,8 @@ function separationVector(key, pos, minDistance) {
   return { x: vx, y: vy };
 }
 
-function applySeparation(mover, pos, solidAtPx, size) {
+function applySeparation(mover, pos, solidAtPx, size, minDistance = Math.max(size + 8, 22)) {
   const key = crowdKey(mover);
-  const minDistance = Math.max(size + 8, 22);
   let out = { x: pos.x, y: pos.y };
   for (let pass = 0; pass < 2; pass++) {
     const v = separationVector(key, out, minDistance);
@@ -92,12 +91,12 @@ function scheduledTargetFor(mover, target, solidAtPx, size) {
   const lane = ((h % 9) - 4) * 18;
   const side = h % 2 === 0 ? 1 : -1;
   const candidates = [
-    [lane, 46], [lane, 64], [lane, 82],
-    [lane + side * 22, 46], [lane - side * 22, 46],
-    [lane + side * 22, 64], [lane - side * 22, 64],
-    [side * 42, 46], [-side * 42, 46],
-    [side * 60, 64], [-side * 60, 64],
-    [0, 46], [0, 64], [0, 82]
+    [lane, 56], [lane, 74], [lane, 92],
+    [lane + side * 24, 56], [lane - side * 24, 56],
+    [lane + side * 24, 74], [lane - side * 24, 74],
+    [side * 48, 56], [-side * 48, 56],
+    [side * 66, 74], [-side * 66, 74],
+    [0, 56], [0, 74], [0, 92]
   ];
   for (const [ox, oy] of candidates) {
     const candidate = { x: target.x + ox, y: target.y + oy };
@@ -114,14 +113,15 @@ export function seekStep(from, target, speed, dt, solidAtPx, size = 12) {
   const dx = goal.x - from.x, dy = goal.y - from.y;
   const dist = Math.hypot(dx, dy) || 1;
 
-  // Scheduled townsfolk do not need to hit one exact pixel. They should look
-  // settled in a doorway crowd, not vibrate against collision cleanup forever.
+  // Scheduled townsfolk need a generous arrival zone. If they are already near
+  // their street-side standing lane, do not keep taking tiny corrective steps
+  // back toward a doorway target after crowd/door cleanup has nudged them.
   // Faster uses of seekStep are pursuit and fleeing, and still close all the way.
-  const settleRadius = scheduled ? Math.max(size * 0.5, 6) : 0;
-  if (dist <= settleRadius) return applySeparation(from, from, solidAtPx, size);
+  const settleRadius = scheduled ? Math.max(size + 12, 24) : 0;
+  if (dist <= settleRadius) return applySeparation(from, from, solidAtPx, size, Math.max(size + 5, 18));
 
   const step = Math.min(speed * dt, Math.max(0, dist - settleRadius));
-  if (step <= 0) return applySeparation(from, from, solidAtPx, size);
+  if (step <= 0) return applySeparation(from, from, solidAtPx, size, Math.max(size + 5, 18));
 
   const move = (nx, ny) => clearAt(nx, ny, solidAtPx, size) ? { x: nx, y: ny } : null;
   // Try the direct step, then axis-aligned slides, so walls corner rather than stop him.
@@ -129,7 +129,7 @@ export function seekStep(from, target, speed, dt, solidAtPx, size = 12) {
       || move(from.x + Math.sign(dx) * step, from.y)
       || move(from.x, from.y + Math.sign(dy) * step)
       || from;
-  return applySeparation(from, moved, solidAtPx, size);
+  return applySeparation(from, moved, solidAtPx, size, scheduled ? Math.max(size + 5, 18) : Math.max(size + 8, 22));
 }
 
 export function caught(a, b, radius = 14) {
