@@ -2,6 +2,7 @@
 // Pure functions: runs identically in the browser and in Node tests.
 import { staticInteriorNpcObjects } from '../game/interior_life.js';
 import { generatedMapJson } from '../game/generated_maps.js';
+import { decorateStoryWorld } from '../game/story_world.js';
 
 // Tiled stores flip state in the top three bits of each gid.
 const FLIP_MASK = 0x1fffffff;
@@ -34,6 +35,7 @@ export function parseMap(json) {
       map.layers[layer.name] = layer.data.map(g => g & FLIP_MASK);
     } else if (layer.type === 'objectgroup') {
       map.objects[layer.name] = layer.objects.map(o => ({
+        id: o.id || 0,
         name: o.name,
         type: o.type || o.class || '',
         x: o.x, y: o.y,
@@ -72,7 +74,7 @@ function mapIdFromUrl(url) {
 function finishMap(mapId, map) {
   const extraNpcs = staticInteriorNpcObjects(mapId, map);
   if (extraNpcs.length) map.objects.spawns = [...(map.objects.spawns || []), ...extraNpcs];
-  return map;
+  return decorateStoryWorld(mapId, map);
 }
 
 export async function loadMap(url) {
