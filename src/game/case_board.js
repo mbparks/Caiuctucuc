@@ -40,7 +40,8 @@ export function openLeads(state) {
 export function trialReadiness(state) {
   const score = evidenceScore(state);
   const proofs = availableProof(state);
-  const clean = scoreDeduction({ culprit: 'gantt', motive: 'sealed_seam', proof: proofs.includes('plat') ? 'plat' : proofs[0]?.id || 'none' });
+  const proofId = proofs.find(p => p.id === 'plat_mismatch')?.id || proofs[0]?.id || 'none';
+  const clean = scoreDeduction({ culprit: 'gantt', motive: 'quarry', proof: proofId });
   return {
     score,
     proofs,
