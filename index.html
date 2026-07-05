@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- CAIUCTUCUC v0.4.2 -->
+<!-- CAIUCTUCUC v0.11.0 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -27,6 +27,25 @@
   header h1 { font-size: clamp(1rem, 2.5vw, 1.4rem); letter-spacing: .35em; margin: 0; font-weight: normal; }
   header .ver { color: var(--dim); font-size: .8rem; }
   header .spacer { flex: 1; }
+  #splash { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center;
+    background: radial-gradient(ellipse at center, #2a2620 0%, #16130e 70%);
+    cursor: pointer; transition: opacity .6s ease; }
+  #splash img { max-width: min(92%, 60rem); max-height: 92%; box-shadow: 0 14px 50px rgba(0,0,0,.65);
+    border-radius: 2px; animation: splashin 1.1s ease both; }
+  #splash.gone { opacity: 0; pointer-events: none; }
+  @keyframes splashin { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { #splash img { animation: none; } #splash { transition: none; } }
+  #hud { display: none; /* the canvas band took the watch */ }
+  #hud-retired { display: inline-flex; align-items: baseline; gap: .9rem; padding: .28rem .9rem;
+    border-top: 1px solid var(--dim); border-bottom: 1px solid var(--dim);
+    box-shadow: 0 2px 0 -1px var(--dim), 0 -2px 0 -1px var(--dim);
+    background: linear-gradient(#241f17, #1c1812); }
+  #hud > span:not(:first-child)::before { content: '\2219'; color: var(--dim); margin-right: .9rem; }
+  #hudHealth { color: #b8564a; letter-spacing: .06em; }
+  #hudCoin { color: #c9b458; }
+  .heat-0 { color: #7d8a6a; } .heat-1 { color: #b8a25a; } .heat-2 { color: #c08048; }
+  .heat-3 { color: #b8564a; } .heat-4 { color: #d24a3a; font-weight: bold; }
+  select { background: var(--panel); color: var(--ink); border: 1px solid var(--dim); font: inherit; padding: .2rem; }
   button { background: var(--panel); color: var(--ink); border: 1px solid var(--dim);
     font: inherit; padding: .25rem .7rem; cursor: pointer; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -59,6 +78,13 @@
   #panel h2 { font-size: .85rem; letter-spacing: .3em; color: var(--accent); margin: 0 0 .6rem; font-weight: normal; }
   #panel .row { display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; margin: .3rem 0; }
   #panel .dim { color: var(--dim); font-size: .8rem; }
+  #term { position: absolute; left: 50%; bottom: 3rem; transform: translateX(-50%);
+    width: min(22rem, 80vw); background: #000; border: 1px solid var(--accent);
+    padding: .5rem .7rem; display: none; font-family: 'Courier New', monospace; }
+  #term.open { display: block; }
+  #term input { width: 100%; background: #000; color: var(--accent); border: none;
+    font: inherit; text-transform: uppercase; letter-spacing: .2em; }
+  #term input:focus { outline: none; }
   #journal .kw { display: inline-block; border: 1px solid var(--dim); padding: .05rem .45rem; margin: .12rem; font-size: .78rem; }
   @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
   #dialog { position: absolute; left: 50%; bottom: 3rem; transform: translateX(-50%);
@@ -84,7 +110,7 @@
   <header>
     <h1>CAIUCTUCUC</h1>
     <span class="ver" id="version"></span>
-    <span id="hud"><span id="hudHeat">QUIET</span><span id="hudCoin"></span><span id="hudClock"></span><span id="hudCoat"></span></span>
+    <span id="hud"><span id="hudHeat">QUIET</span><span id="hudHealth"></span><span id="hudCoin"></span><span id="hudClock"></span><span id="hudCoat"></span></span>
     <span class="spacer"></span>
     <button id="fullBtn" aria-label="Toggle fullscreen">Fullscreen</button>
     <button id="muteBtn" aria-pressed="false" aria-label="Mute audio">Sound: on</button>
@@ -93,12 +119,19 @@
   <div id="menu" role="dialog" aria-label="Game menu">
     <h2>SETTINGS</h2>
     <div class="row"><span>Theme</span><button id="themeBtn">Night</button></div>
+    <div class="row"><span>Scale</span><button id="scaleBtn">Fill the room</button></div>
+    <div class="row"><span>Combat</span><select id="diffCombat"><option>storied</option><option selected>frontier</option><option>perilous</option></select></div>
+    <div class="row"><span>Survival</span><select id="diffSurvival"><option>off</option><option selected>buffs</option><option>hard</option></select></div>
+    <div class="row"><span>Hue and cry</span><select id="diffHuecry"><option>lenient</option><option selected>standard</option><option>sharp</option></select></div>
     <div class="row"><span>Save</span><button id="exportBtn">Export</button></div>
     <div class="row"><span>Load</span><button id="importBtn">Import</button></div>
     <div class="row"><span>Feedback</span><a href="https://mbparks.com" target="_blank" rel="noopener">mbparks.com</a></div>
     <input type="file" id="importFile" accept=".json" hidden>
   </div>
-  <div id="stage"><canvas id="game" width="480" height="320" tabindex="0" aria-label="Game view"></canvas></div>
+  <div id="stage">
+    <div id="splash" role="button" aria-label="Begin">
+      <img src="assets/splash.png" alt="A hand-tinted postcard: the stone bridge in the Narrows of Wills Creek, Cumberland, Maryland">
+    </div><canvas id="game" width="480" height="320" tabindex="0" aria-label="Game view"></canvas></div>
   <div id="panel" role="dialog" aria-label="Actions">
     <h2 id="panelTitle"></h2>
     <div id="panelBody"></div>
@@ -107,6 +140,9 @@
   <div id="journal" role="dialog" aria-label="Journal">
     <h2>JOURNAL</h2>
     <div id="journalBody"></div>
+  </div>
+  <div id="term" role="dialog" aria-label="Terminal">
+    <input id="termInput" placeholder="speak, friend" aria-label="Cheat code" maxlength="20" autocomplete="off">
   </div>
   <div id="toast" role="status" aria-live="polite"></div>
   <div id="hint">Press E to talk</div>
@@ -122,6 +158,30 @@
   </div>
   <footer>Arrow keys or WASD to walk, E to interact, I for satchel, J for journal, Q to surrender when cornered. A supernatural mystery, Cumberland, Maryland, 1800.</footer>
 </div>
+<script>
+  window.addEventListener('error', function (e) {
+    if (!window.__CAIUCTUCUC_ERR) window.__CAIUCTUCUC_ERR = (e.message || 'unknown error') + (e.filename ? ' in ' + e.filename.split('/').pop() : '');
+  }, true);
+  setTimeout(function () {
+    if (window.__CAIUCTUCUC_BOOTED) return;
+    var stage = document.getElementById('stage');
+    var box = document.createElement('div');
+    box.style.cssText = 'max-width:34rem;padding:1.2rem 1.5rem;border:1px solid #7a715c;background:#1d1a14;line-height:1.5';
+    var why;
+    if (location.protocol === 'file:') {
+      why = '<p style="letter-spacing:.2em;color:#9a4a32;margin:0 0 .6rem">THE GAME DID NOT START</p>'
+        + '<p>It was opened straight from the disk (file://), and browsers refuse to run module scripts or load map data that way. No error is shown; the screen just stays dark. This one is on the browser, not on you.</p>'
+        + '<p>Serve the folder with any static server and open it by address instead. From the repo folder:</p>'
+        + '<p style="font-family:monospace;background:#000;padding:.5rem .7rem">python3 -m http.server 8000</p>'
+        + '<p>Then visit <span style="font-family:monospace">http://localhost:8000</span></p>';
+    } else {
+      why = '<p style="letter-spacing:.2em;color:#9a4a32;margin:0 0 .6rem">THE GAME DID NOT START</p>'
+        + '<p>The main script never ran.' + (window.__CAIUCTUCUC_ERR ? ' First error: <span style="font-family:monospace">' + window.__CAIUCTUCUC_ERR + '</span>' : ' No error was reported, which usually means the script file did not load; check the address and the browser console.') + '</p>';
+    }
+    box.innerHTML = why;
+    stage.replaceChildren(box);
+  }, 1500);
+</script>
 <script type="module" src="src/main.js"></script>
 </body>
 </html>

@@ -23,7 +23,10 @@ export function parseMap(json) {
     objects: {}
   };
 
+  const seen = new Set();
   for (const layer of json.layers) {
+    if (seen.has(layer.name)) throw new Error('duplicate layer name: ' + layer.name);
+    seen.add(layer.name);
     if (layer.type === 'tilelayer') {
       if (typeof layer.data === 'string') throw new Error('layer "' + layer.name + '" must use CSV encoding');
       map.layers[layer.name] = layer.data.map(g => g & FLIP_MASK);

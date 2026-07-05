@@ -26,5 +26,6 @@ export const SCHEDULES = {
   coombs: [{ from: 20, to: 5, spot: 'coombs_work' }, { from: 5, to: 20, spot: 'coombs_home' }],
   fenwick: [{ from: 10, to: 15, spot: 'fenwick_court' }, { from: 15, to: 24, spot: 'fenwick_work' }, { from: 0, to: 10, spot: 'fenwick_home' }],
   shanks: [{ from: 6, to: 20, spot: 'shanks_work' }, { from: 20, to: 23, spot: 'shanks_tavern' }, { from: 23, to: 6, spot: 'shanks_home' }],
-  bright: day('bright_work', 'bright_tavern', 'bright_home', 7, 19, 22)
+  bright: day('bright_work', 'bright_tavern', 'bright_home', 7, 19, 22),
+  brahm: [{ from: 0, to: 24, spot: 'brahm_home' }]
 };

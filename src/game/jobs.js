@@ -36,7 +36,8 @@ export function workJob(state, jobId, stage, hour) {
 
   if (next.job.stage >= def.stages.length) {
     next = { ...next, job: null, player: { ...next.player, coin: next.player.coin + def.pay } };
-    text = 'Done and paid: ' + def.pay + ' silver.';
+    if (!def.honest) next = { ...next, reputation: { ...next.reputation, road: next.reputation.road + 2 } };
+    text = 'Done and paid: ' + def.pay + ' silver.' + (!def.honest ? ' The Road remembers who carries without asking.' : '');
     if (def.nightOnly && hour >= 6 && hour < 20) {
       heat = def.dayHeat;
       text += ' Done in daylight, though, and daylight has eyes.';

@@ -1,13 +1,16 @@
 // Local-first save: localStorage plus JSON export and import.
 // Pure functions here so the same module runs in Node for tests.
 export const SAVE_KEY = 'caiuctucuc-save';
-export const SAVE_FORMAT = 4;
+export const SAVE_FORMAT = 7;
 
 export function newGame() {
   return {
     format: SAVE_FORMAT,
-    version: '0.4.2',
-    player: { x: 12, y: 10, marks: [], sight: 0, coin: 8, coat: 'drover', equip: {} },
+    version: '0.11.0',
+    player: { x: 12, y: 10, marks: [], sight: 0, coin: 8, coat: 'drover', equip: {}, health: 10, maxHealth: 10, fedAbs: 0 },
+    difficulty: { combat: 'frontier', survival: 'buffs', huecry: 'standard' },
+    wards: [],
+    pet: null,
     clock: { day: 1, hour: 18 },
     hueCry: { level: 0, heat: 0, witnessedCoat: null },
     flags: {},
@@ -21,6 +24,7 @@ export function newGame() {
       { id: 'whetstone', qty: 1 }
     ],
     stash: [],
+    clues: [],
     rumors: [],
     job: null,
     map: 'town'
@@ -50,6 +54,22 @@ function migrate(s) {
     s.stash = s.stash || [];
     s.inventory = (s.inventory || []).map(e =>
       typeof e === 'string' ? { id: e, qty: 1 } : e);
+  }
+  if (s.format === 4) {
+    s.format = 5;
+    s.clues = s.clues || [];
+  }
+  if (s.format === 5) {
+    s.format = 6;
+    s.player.health = s.player.health ?? 10;
+    s.player.maxHealth = s.player.maxHealth ?? 10;
+    s.player.fedAbs = s.player.fedAbs ?? 0;
+    s.difficulty = s.difficulty || { combat: 'frontier', survival: 'buffs', huecry: 'standard' };
+    s.wards = s.wards || [];
+  }
+  if (s.format === 6) {
+    s.format = 7;
+    s.pet = s.pet || null;
   }
   return s;
 }

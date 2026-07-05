@@ -389,6 +389,36 @@
      "width": 16,
      "height": 16,
      "properties": []
+    },
+    {
+     "id": 615,
+     "name": "a woman by the cold hearth",
+     "type": "widow",
+     "x": 192,
+     "y": 80,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    },
+    {
+     "id": 616,
+     "name": "a man with a ledger and no malice",
+     "type": "creditor",
+     "x": 32,
+     "y": 80,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    },
+    {
+     "id": 617,
+     "name": "a traveler who keeps looking at you",
+     "type": "manhunter",
+     "x": 128,
+     "y": 96,
+     "width": 16,
+     "height": 16,
+     "properties": []
     }
    ]
   },

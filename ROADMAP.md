@@ -1,6 +1,6 @@
 # CAIUCTUCUC Roadmap
 
-Current: **v0.4.0**, pockets and workbenches. All sixty items are real, the satchel has a bottom, a flintlock can be worn to Broke, patched in the field, and made sound at the anvil, and whiskey sells at the full rate because whiskey is money. This document is the path from here to the v1.0 MVP defined in docs/design_doc.md Section 20, and it is kept in sync with the code per the standing documentation rule.
+Current: **v0.11.0**, the overworld pass. Vivid fields, clump trees on black, brick-red Cumberland, and a proper black band across the top of the screen: the county in gray, you in green, your silver by a gold coin, and HALE in red hearts.
 
 ## Now, next, later
 

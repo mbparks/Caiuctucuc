@@ -342,7 +342,18 @@
   {
    "type": "objectgroup",
    "name": "interact",
-   "objects": []
+   "objects": [
+    {
+     "id": 620,
+     "name": "the swept hearth",
+     "type": "cabinkept",
+     "x": 112,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    }
+   ]
   },
   {
    "type": "objectgroup",

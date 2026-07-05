@@ -1,16 +1,39 @@
 {
-  "npcId": "gantt",
-  "displayName": "Prosper Gantt",
-  "greeting": "The surveyor's office smells of ink and good tobacco. \"Welcome, welcome. Prosper Gantt, at the town's service and yours. Property, boundaries, certainty. Do sit.\"",
-  "shrug": "\"Beyond my instruments, I fear, and I do not speculate. A surveyor deals in what can be measured.\"",
-  "deflect": "\"Client matters. You understand. Confidence is the whole of my stock.\"",
-  "entries": [
-    { "keyword": "NAME", "gate": "open", "text": "\"Prosper Gantt, licensed surveyor. The name is on half the deeds in the county, which is a responsibility I take with perfect seriousness.\"" },
-    { "keyword": "JOB", "gate": "open", "text": "\"Lines, friend. Where yours ends and your neighbor's begins. A town without a surveyor is a fistfight with fences.\"" },
-    { "keyword": "SURVEY", "gate": "open", "text": "\"My predecessor, old Crane, worked with a compass you would not trust to find noon. I have re-run most of his lines. Corrections, you understand. The county is tidier for it.\"" },
-    {
-      "keyword": "PLAT", "gate": "open",
-      "text": "\"The quarry plat? Filed, recorded, and correct, and I will show it to any man who asks in daylight.\" The smile does not move while the eyes do. \"People do love a mystery where there is only mathematics.\""
-    }
-  ]
+ "npcId": "gantt",
+ "displayName": "Prosper Gantt",
+ "greeting": "The surveyor's office smells of ink and good tobacco. \"Welcome, welcome. Prosper Gantt, at the town's service and yours. Property, boundaries, certainty. Do sit.\"",
+ "shrug": "\"Beyond my instruments, I fear, and I do not speculate. A surveyor deals in what can be measured.\"",
+ "deflect": "\"Client matters. You understand. Confidence is the whole of my stock.\"",
+ "entries": [
+  {
+   "keyword": "NAME",
+   "gate": "open",
+   "text": "\"Prosper Gantt, licensed surveyor. The name is on half the deeds in the county, which is a responsibility I take with perfect seriousness.\""
+  },
+  {
+   "keyword": "JOB",
+   "gate": "open",
+   "text": "\"Lines, friend. Where yours ends and your neighbor's begins. A town without a surveyor is a fistfight with fences.\""
+  },
+  {
+   "keyword": "SURVEY",
+   "gate": "open",
+   "text": "\"My predecessor, old Crane, worked with a compass you would not trust to find noon. I have re-run most of his lines. Corrections, you understand. The county is tidier for it.\""
+  },
+  {
+   "keyword": "PLAT",
+   "gate": "open",
+   "text": "\"The quarry plat? Filed, recorded, and correct, and I will show it to any man who asks in daylight.\" The smile does not move while the eyes do. \"People do love a mystery where there is only mathematics.\""
+  },
+  {
+   "keyword": "SURVEY",
+   "gate": "flag",
+   "flag": "caseStrong",
+   "deflect": "\"My predecessor's compass, again? I have re-run his lines. Corrections, you understand.\"",
+   "text": "You mention nails, and rubbings, and the arithmetic of re-inked pages, and watch the reasonable man arrive at a decision behind his reasonable face. \"You have been diligent,\" he says pleasantly, capping his ink. \"Diligence is admirable. Do be careful on the Narrows road at dusk, sir. The grades this time of year are treacherous.\" It is the politest threat you will ever receive.",
+   "sets": {
+    "ganttProvoked": true
+   }
+  }
+ ]
 }

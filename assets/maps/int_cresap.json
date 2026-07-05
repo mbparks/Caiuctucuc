@@ -342,7 +342,18 @@
   {
    "type": "objectgroup",
    "name": "interact",
-   "objects": []
+   "objects": [
+    {
+     "id": 622,
+     "name": "the magistrate's strongbox",
+     "type": "cresapledger",
+     "x": 112,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    }
+   ]
   },
   {
    "type": "objectgroup",

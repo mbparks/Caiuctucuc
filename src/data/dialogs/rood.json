@@ -1,18 +1,43 @@
 {
-  "npcId": "rood",
-  "displayName": "Pelham Rood",
-  "greeting": "The schoolmaster blinks up from a ledger through smudged spectacles. \"Oh. Company. Forgive the ink, it is everywhere, it is always everywhere. How may I help?\"",
-  "shrug": "\"I am sure I have read something about it somewhere. I will think where.\"",
-  "deflect": "\"I ought not say. I copy the court's papers, you see, and a copyist who talks is soon a copyist who starves.\"",
-  "entries": [
-    { "keyword": "NAME", "gate": "open", "text": "\"Pelham Rood. Schoolmaster by day, court clerk by candle. The children misspell my name forty ways and I treasure every one.\"" },
-    { "keyword": "JOB", "gate": "open", "text": "\"Letters and sums for the young, fair copies for the court. And lately the old FORT papers, which the judge wants transcribed before the damp finishes them.\"" },
-    {
-      "keyword": "LEDGER", "gate": "trust", "npc": "rood", "min": 1,
-      "deflect": "\"The fort ledger is court property. I really must not. Please do not ask me kindly, kindness works on me and I resent it.\"",
-      "text": "He glances at the door first. \"Since you ask. The fort ledger, the old garrison book. Someone has been through it before me. Pages razored, entries inked over, and done well, done by a careful hand.\" He pushes the spectacles up. \"The damp did not do that. The damp is not careful.\"",
-      "sets": { "roodShared": true },
-      "teaches": ["1755"]
-    }
-  ]
+ "npcId": "rood",
+ "displayName": "Pelham Rood",
+ "greeting": "The schoolmaster blinks up from a ledger through smudged spectacles. \"Oh. Company. Forgive the ink, it is everywhere, it is always everywhere. How may I help?\"",
+ "shrug": "\"I am sure I have read something about it somewhere. I will think where.\"",
+ "deflect": "\"I ought not say. I copy the court's papers, you see, and a copyist who talks is soon a copyist who starves.\"",
+ "entries": [
+  {
+   "keyword": "NAME",
+   "gate": "open",
+   "text": "\"Pelham Rood. Schoolmaster by day, court clerk by candle. The children misspell my name forty ways and I treasure every one.\""
+  },
+  {
+   "keyword": "JOB",
+   "gate": "open",
+   "text": "\"Letters and sums for the young, fair copies for the court. And lately the old FORT papers, which the judge wants transcribed before the damp finishes them.\""
+  },
+  {
+   "keyword": "LEDGER",
+   "gate": "trust",
+   "npc": "rood",
+   "min": 1,
+   "deflect": "\"The fort ledger is court property. I really must not. Please do not ask me kindly, kindness works on me and I resent it.\"",
+   "text": "He glances at the door first. \"Since you ask. The fort ledger, the old garrison book. Someone has been through it before me. Pages razored, entries inked over, and done well, done by a careful hand.\" He pushes the spectacles up. \"The damp did not do that. The damp is not careful.\"",
+   "sets": {
+    "roodShared": true
+   },
+   "teaches": [
+    "1755"
+   ]
+  },
+  {
+   "keyword": "LIST",
+   "gate": "flag",
+   "flag": "sawTheList",
+   "deflect": "\"A list? I keep several. Which misfiling am I accused of?\"",
+   "text": "You tell him his name is on Fenwick's procurement list, and for a moment the ink-smudged mildness is gone entirely. \"I see.\" He takes off the spectacles and cleans them very slowly. \"Then I shall not work the records room alone at night, and I shall borrow the constable's dog-headed cane, and I thank you, sir, more plainly than I have thanked anyone in years.\"",
+   "sets": {
+    "warnedRood": true
+   }
+  }
+ ]
 }

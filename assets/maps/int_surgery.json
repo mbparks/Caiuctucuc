@@ -358,6 +358,37 @@
        "value": "apothecary"
       }
      ]
+    },
+    {
+     "id": 611,
+     "name": "Tam's effects",
+     "type": "clue",
+     "x": 48,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "requires",
+       "type": "string",
+       "value": "bodyFound"
+      },
+      {
+       "name": "gives",
+       "type": "string",
+       "value": "survey_plat"
+      },
+      {
+       "name": "sets",
+       "type": "string",
+       "value": "hasPlatScrap"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "value": "Tam's effects on Ward's back table: a survey chain, dry boots, and a folded scrap of plat with a line on it. Worth carrying to the courthouse plat book."
+      }
+     ]
     }
    ]
   },

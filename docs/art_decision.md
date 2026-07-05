@@ -19,3 +19,30 @@ If any file is missing the renderer falls back to flat rectangles, so partial ar
 3. **Licensed base tileset** with custom characters: cheapest; the loader is agnostic, but the palette LUTs should be re-derived from the licensed art's palette to keep period swaps coherent.
 
 Decision owner: M.B. Parks. Record the choice here when made.
+
+## v0.10.0 addendum: the postcard pass
+
+The generated art moved from placeholder-plus to presentable: 16 tiles in two
+animation rows (water and flowers alternate on the half second), building
+facades carry window tiles whose glass is a keyed color that the night and
+dusk LUTs remap to lamplight, and characters gained 1px outlines, two-tone
+coat shading, a walk bob, and five hat shapes (tricorn, slouch, flat, cap,
+bonnet). The splash is a generated hand-tinted postcard of the stone bridge
+in the Narrows (tools/gensplash.py), after a c.1920 linen card of the same
+view. The three-way final art decision REMAINS OPEN; the bar any option must
+clear is simply higher now, and the slot specs above gained: tilesheets are
+256x32 (16 tiles, 2 rows), and assets/splash.png is 960x640.
+
+## v0.11.0 addendum: the overworld pass
+
+Direction sharpened by playtest feedback with a first-quest NES screenshot on
+the table: the look now speaks 1986 with an 1800 accent. Flat saturated
+fields (Zelda-tan streets, vivid greens, brick red for Cumberland's walls),
+trees as rounded clumps sitting on black gaps, sparse texture instead of
+dense speckle, and townsfolk in bold poster cloth. The HUD moved INTO the
+canvas as a 48px black band: gray minimap with a green player dot, heat word,
+gold coin counter, day and hour, coat and controls, and HALE in red pixel
+hearts drawn rect by rect. The band is part of the game screen the way the
+NES band was, and the camera viewport shrinks to honor it. Final art decision
+STILL OPEN; any hand-drawn or licensed replacement should keep this palette
+discipline and the band.

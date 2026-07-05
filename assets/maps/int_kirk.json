@@ -342,7 +342,18 @@
   {
    "type": "objectgroup",
    "name": "interact",
-   "objects": []
+   "objects": [
+    {
+     "id": 621,
+     "name": "the collection box",
+     "type": "plate",
+     "x": 112,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    }
+   ]
   },
   {
    "type": "objectgroup",

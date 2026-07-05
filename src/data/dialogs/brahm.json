@@ -1,0 +1,28 @@
+{
+  "npcId": "brahm",
+  "displayName": "Widow Adelheid Brahm",
+  "greeting": "The garden gate is open and she is already looking at you, as if the path announced you a while back. \"So. You found the house. Most people manage not to.\"",
+  "shrug": "\"Some questions are doors and some are walls. That one is a wall, or I am.\"",
+  "deflect": "\"Not yet. The words know when it is their time, and it is not their time.\"",
+  "entries": [
+    { "keyword": "NAME", "gate": "open", "text": "\"Adelheid Brahm. Widow Brahm to the town, when the town wants something. The garden and I keep each other.\"" },
+    { "keyword": "HEX", "gate": "open", "text": "\"The signs, yes. My mother's patterns, and hers before. The farms that painted over theirs are learning what the paint was for. If you would ward a thing, bring me HERBS and I will teach your hands the start of it.\"" },
+    {
+      "keyword": "HERBS", "gate": "open",
+      "itemCost": { "dried_sassafras": 2 },
+      "broke": "\"Two good bundles of dried sassafras. The store keeps it, the creek bank grows it. Come back with your hands full.\"",
+      "text": "She takes the bundles, smells them, and nods once, which from her is a ceremony. \"Good. You gather, you carry, you keep your word. That is most of warding and half of everything else.\" Her eyes settle on you differently now. \"There is a RITUAL, if you have noticed the town needs more than paint. Ask, if you are certain you want to have asked.\"",
+      "sets": { "brahmFavor": true }
+    },
+    {
+      "keyword": "RITUAL", "gate": "flag", "flag": "brahmFavor",
+      "deflect": "\"Rituals are not sold to strangers at the gate. Bring me herbs first. Show me your hands work.\"",
+      "text": "She sets down her cup. \"The Listening. It opens the second door, and you will hear what the dead have been saying all along.\" A long pause. \"The price is a night of your memory, gone entire, and a small scar on what you are. I pay a price too, each time, and mine does not grow back.\" She watches you steadily. \"If you still want it, say so plainly when the offer is put to you.\"",
+      "sets": { "ritualOffered": true }
+    },
+    {
+      "keyword": "CROSSED", "gate": "flag", "flag": "crossed",
+      "text": "She looks at you the way a ferryman looks at the far bank. \"You have been across and come back. It shows, to those of us it shows to.\" She pours a second cup without asking. \"The dead will be easier with you now, and the living a little less. That is the trade. Nobody offers it; everybody pays it.\""
+    }
+  ]
+}

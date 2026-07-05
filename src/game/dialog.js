@@ -21,6 +21,21 @@ export function buildCtx(state) {
   };
 }
 
+function countItem(state, id) {
+  return (state.inventory || []).filter(e => e.id === id).reduce((n, e) => n + e.qty, 0);
+}
+function removeItems(state, id, qty) {
+  const inv = state.inventory.map(e => ({ ...e }));
+  let left = qty;
+  for (let i = inv.length - 1; i >= 0 && left > 0; i--) {
+    if (inv[i].id !== id) continue;
+    const take = Math.min(inv[i].qty, left);
+    inv[i].qty -= take; left -= take;
+    if (inv[i].qty <= 0) inv.splice(i, 1);
+  }
+  return { ...state, inventory: inv };
+}
+
 // ask() never mutates; it returns the response and a new state.
 export function ask(dialog, keyword, state, allKeywords) {
   const entry = (dialog.entries || []).find(e => e.keyword === keyword);
@@ -33,10 +48,18 @@ export function ask(dialog, keyword, state, allKeywords) {
   if (entry.cost && state.player.coin < entry.cost) {
     return { text: entry.broke || 'Coin first. That is the house rule.', state };
   }
+  if (entry.itemCost) {
+    for (const [id, n] of Object.entries(entry.itemCost))
+      if (countItem(state, id) < n)
+        return { text: entry.broke || 'You have not brought what this asks for.', state };
+  }
 
   let next = state;
   if (entry.cost) {
     next = { ...next, player: { ...next.player, coin: next.player.coin - entry.cost } };
+  }
+  if (entry.itemCost) {
+    for (const [id, n] of Object.entries(entry.itemCost)) next = removeItems(next, id, n);
   }
   const taught = [
     ...(entry.teaches || []),

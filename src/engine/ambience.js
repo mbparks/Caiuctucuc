@@ -26,14 +26,50 @@ export function createAmbience() {
     src.start();
   }
 
+  // the mill wheel: a slow wooden thump, until the night it stops
+  let millTimer = null, millGain = null;
+  function millThump() {
+    if (!ctx || muted || !millGain) return;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(70, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(38, ctx.currentTime + 0.22);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+    osc.connect(g).connect(millGain);
+    osc.start(); osc.stop(ctx.currentTime + 0.32);
+  }
+
   return {
-    boot,
+    boot() {
+      boot();
+      if (ctx && !millGain) {
+        millGain = ctx.createGain();
+        millGain.gain.value = 0;
+        millGain.connect(ctx.destination);
+        millTimer = setInterval(millThump, 1400);
+      }
+    },
     setMuted(m) { muted = m; if (gain) gain.gain.value = m ? 0 : 0.05; },
-    // night wind blows harder; the tavern muffles it
-    setScene(period) {
+    // scenes: outdoor periods, indoors, and the caves each have a voice
+    setScene(period, place = 'town') {
       if (!filter) return;
-      filter.frequency.value = period === 'night' ? 240 : 380;
-      if (gain && !muted) gain.gain.value = period === 'night' ? 0.07 : 0.05;
+      if (place === 'caves') {
+        filter.frequency.value = 140;
+        if (gain && !muted) gain.gain.value = 0.09;
+      } else if (place === 'indoor') {
+        filter.frequency.value = 200;
+        if (gain && !muted) gain.gain.value = 0.03;
+      } else {
+        filter.frequency.value = period === 'night' ? 240 : 380;
+        if (gain && !muted) gain.gain.value = period === 'night' ? 0.07 : 0.05;
+      }
+    },
+    // 0 = silent (far or stopped), up to 1 = at the millpond
+    setMill(nearness) {
+      if (millGain) millGain.gain.value = muted ? 0 : nearness * 0.6;
     }
   };
 }

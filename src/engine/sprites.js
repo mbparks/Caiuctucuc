@@ -18,7 +18,9 @@ export async function loadArt() {
   const tiles = {};
   for (const p of periods) tiles[p] = await loadImage('assets/tiles/tileset_' + p + '.png');
   const sprites = {};
-  for (const n of ['player_drover', 'player_frock', 'player_preacher', 'npc', 'constable', 'lantern', 'ridge'])
+  const npcIds = ['doyle', 'cresap', 'ward', 'feig', 'gantt', 'rood', 'mcteague', 'coombs', 'fenwick', 'shanks', 'bright'];
+  for (const n of ['player_drover', 'player_frock', 'player_preacher', 'npc', 'constable', 'lantern', 'ridge',
+                   ...npcIds.map(i => 'npc_' + i)])
     sprites[n] = await loadImage('assets/sprites/' + n + '.png');
   return { tiles, sprites, ready: Boolean(tiles.day) };
 }

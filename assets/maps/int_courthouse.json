@@ -342,7 +342,90 @@
   {
    "type": "objectgroup",
    "name": "interact",
-   "objects": []
+   "objects": [
+    {
+     "id": 612,
+     "name": "the bench of Judge Kent",
+     "type": "accuse",
+     "x": 112,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    },
+    {
+     "id": 613,
+     "name": "Kent's chambers",
+     "type": "chambers",
+     "x": 160,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": []
+    },
+    {
+     "id": 614,
+     "name": "the records room",
+     "type": "murmur",
+     "x": 192,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "rank",
+       "type": "int",
+       "value": 2
+      },
+      {
+       "name": "requires",
+       "type": "string",
+       "value": "roodDead"
+      },
+      {
+       "name": "teaches",
+       "type": "string",
+       "value": "MEASURES"
+      },
+      {
+       "name": "clue",
+       "type": "string",
+       "value": "he_measures"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The records room is cold in a way the season cannot claim. Two words, in a voice still surprised about it, precise to the last: HE MEASURES."
+      }
+     ]
+    },
+    {
+     "id": 610,
+     "name": "the plat book",
+     "type": "clue",
+     "x": 64,
+     "y": 32,
+     "width": 16,
+     "height": 16,
+     "properties": [
+      {
+       "name": "clue",
+       "type": "string",
+       "value": "plat_mismatch"
+      },
+      {
+       "name": "requires",
+       "type": "string",
+       "value": "hasPlatScrap"
+      },
+      {
+       "name": "text",
+       "type": "string",
+       "value": "The county plat book, open to the mountain. Against Tam's scrap the line disagrees with itself: the record has been re-inked, and beautifully. People do love a mystery where there is only mathematics."
+      }
+     ]
+    }
+   ]
   },
   {
    "type": "objectgroup",
