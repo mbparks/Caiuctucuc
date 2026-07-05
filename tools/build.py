@@ -54,6 +54,9 @@ def stamp_index(version: str) -> None:
     stamped = STAMP_RE.sub(f"<!-- CAIUCTUCUC v{version} build -->", text, count=1)
     if stamped == text:
         stamped = text.replace("<html", f"<!-- CAIUCTUCUC v{version} build -->\n<html", 1)
+    plain = 'src=' + '"' + 'src/boot.js' + '"'
+    marked = 'src=' + '"' + 'src/boot.js?v=' + version + '"'
+    stamped = stamped.replace(plain, marked)
     stamp.write_text(stamped, encoding="utf-8")
 
 
