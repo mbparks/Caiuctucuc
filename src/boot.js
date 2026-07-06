@@ -1,7 +1,7 @@
 // Browser boot loader. Keep this file small and dependency-free so deployment
 // failures report a useful message instead of a black screen or "unknown error".
 
-const BOOT_VERSION = '0.40.3';
+const BOOT_VERSION = '0.40.4';
 const CACHE_TOKEN = new URL(import.meta.url).searchParams.get('v') || BOOT_VERSION;
 const moduleUrl = path => path + '?v=' + encodeURIComponent(CACHE_TOKEN);
 const loadModule = path => import(moduleUrl(path));
