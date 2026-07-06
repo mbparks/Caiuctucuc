@@ -42,6 +42,14 @@ function rememberCrowd(key, pos) {
   }
 }
 
+function holdPosition(mover, pos) {
+  // Scheduled townsfolk who are already near their authored spot should stop.
+  // Do not run live separation on every idle frame, because that creates the
+  // visible back-and-forth loop near doorways when several NPCs are settling.
+  rememberCrowd(crowdKey(mover), pos);
+  return { x: pos.x, y: pos.y };
+}
+
 function separationVector(key, pos, minDistance) {
   let vx = 0, vy = 0;
   for (const [otherKey, other] of crowdMemory) {
@@ -116,22 +124,21 @@ export function seekStep(from, target, speed, dt, solidAtPx, size = 12) {
   // as an exact waypoint. The doorway cleaner may still nudge them one tile out,
   // but this prevents the schedule loop from immediately pulling them back.
   if (scheduled && originalDistance > size && originalDistance <= 96 && clearAt(from.x, from.y, solidAtPx, size)) {
-    return applySeparation(from, from, solidAtPx, size, Math.max(size + 5, 18));
+    return holdPosition(from, from);
   }
 
   const goal = scheduled ? scheduledTargetFor(from, target, solidAtPx, size) : target;
   const dx = goal.x - from.x, dy = goal.y - from.y;
   const dist = Math.hypot(dx, dy) || 1;
 
-  // Scheduled townsfolk need a generous arrival zone. If they are already near
-  // their street-side standing lane, do not keep taking tiny corrective steps
-  // back toward a doorway target after crowd/door cleanup has nudged them.
-  // Faster uses of seekStep are pursuit and fleeing, and still close all the way.
+  // Scheduled townsfolk need a generous arrival zone. Once inside that zone,
+  // they are done for this frame. Dynamic separation is only used while they
+  // are actually moving; otherwise idle NPCs can jitter forever around doors.
   const settleRadius = scheduled ? Math.max(size + 12, 24) : 0;
-  if (dist <= settleRadius) return applySeparation(from, from, solidAtPx, size, Math.max(size + 5, 18));
+  if (dist <= settleRadius) return holdPosition(from, from);
 
   const step = Math.min(speed * dt, Math.max(0, dist - settleRadius));
-  if (step <= 0) return applySeparation(from, from, solidAtPx, size, Math.max(size + 5, 18));
+  if (step <= 0) return holdPosition(from, from);
 
   const move = (nx, ny) => clearAt(nx, ny, solidAtPx, size) ? { x: nx, y: ny } : null;
   // Try the direct step, then axis-aligned slides, so walls corner rather than stop him.
